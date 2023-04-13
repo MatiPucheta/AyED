@@ -1,7 +1,7 @@
 
 
 import sys
-5
+55
 def salir():
     sys.exit(0)
 
