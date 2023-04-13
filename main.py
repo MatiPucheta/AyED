@@ -65,6 +65,9 @@ print("Aquí se le mostrará el menú principal: ")
 for clave, valor in menú.items():
     print(clave, ":", valor)
 
+comida = 0
+indumentaria = 0
+perfumería = 0
 
 while True:
     elección = int(input("¿Que parte del menú principal le gustaría ver?: ")) 
@@ -80,7 +83,7 @@ while True:
     else:
         
         for clave, valor in gestión_menú.items():
-             print(clave, ":", valor)
+            print(clave, ":", valor)
         
         while True:
             
@@ -97,31 +100,24 @@ while True:
                 rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por comas acorde al orden de su nombre: ").split(",")
                 ubicaciones = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
                 
-                comida = 0
-                indumentaria = 0
-                perfumería = 0
+                for rubro in rubros:
+                    if rubro == "comida":
+                        comida += 1
+                    elif rubro == "indumentaria":
+                        indumentaria += 1
+                    elif rubro == "perfumería":
+                        perfumería += 1
                 
-                for I in rubros:
-                    if "comida".count() == 2:
-                        print("El rubro comida tiene dos locales")
-                    elif "comida".count() == 3:
-                        print("El rubro comida tiene tres locales")
-                    elif "indumentaria".count() == 2:
-                        print("El rubro indumentaria tiene tres locales")
-                    elif "indumentaria".count() == 3:
-                        print("El rubro indumentaria tiene tres locales")
-                    elif "perfumería".count() == 2:
-                        print("El rubro comida tiene tres locales")
-                    elif "perfumería".count() == 3:
-                        print("El rubro perfumería tiene tres locales")
-                    
-                    
-
-                    else:
-                        print("Todos los rubros tienen la misma cantidad de locales.")
+                if comida > indumentaria and comida > perfumería:
+                    print(f"El rubro con más locales es comida, con {comida} locales")
+                elif indumentaria > comida and indumentaria > perfumería:
+                    print(f"El rubro con más locales es indumentaria, con {indumentaria} locales")
+                elif perfumería > indumentaria and perfumería > comida:
+                    print(f"El rubro con más locales es perfumería, con {perfumería} locales")
+                
+                
+                
                 
             else:
                 print("Volviendo...")
                 break
-                
-                
