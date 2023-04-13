@@ -1,12 +1,10 @@
-
-
 import sys
-55
+
 def salir():
     sys.exit(0)
 
 def sep():
-    return print("_"*50)
+    return print("-"*70)
 
 user = "administrador"
 contraseña = "12345"
@@ -21,33 +19,26 @@ intentos = 0
 
 
 if respuesta == "si":
-    while intentos < 4:
-        
+    while intentos < 3:
         login_user = input("Ingrese su nombre de usuario: ")
+        login_password = str(input("Ingrese su contraseña: "))
         
-        login_contra = str(input("Ingrese su contraseña: "))
-        
-        if user == login_user and contraseña == login_contra:
-            
-            print("Felicidades has podido ingresar!")
-            
+        if user == login_user and contraseña == login_password:
+            print("Felicidades, has podido ingresar!")
             break
+        
         else:
-            print("Usuario o contraseña incorrectos. Intenta nuevamente.")
-            
             intentos += 1
+            if intentos < 3:
+                print("Usuario o contraseña incorrectos. Intenta nuevamente.")
             
-    if intentos == 4:
-        
+    if intentos == 3:
         input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
-        
         salir()
+
 else: 
     input("Entonces que tenga un buen día, hasta luego: ")
-    
     salir()
-
-
 
 
 sep()
@@ -65,11 +56,14 @@ menú = {
 gestión_menú = {
     "a": "Crear locales",
     "b": "Modificar local",
-    "c":" Eliminar local",
+    "c": "Eliminar local",
     "d": "Volver"
 }
 
-print(f"Aquí se le mostrará el menú principal: {menú}")
+print("Aquí se le mostrará el menú principal: ")
+
+for clave, valor in menú.items():
+    print(clave, ":", valor)
 
 
 while True:
@@ -85,7 +79,8 @@ while True:
         
     else:
         
-        print(gestión_menú)
+        for clave, valor in gestión_menú.items():
+             print(clave, ":", valor)
         
         while True:
             
@@ -97,22 +92,14 @@ while True:
             elif sub_menú == "a":
                 sep()
                 
-                print("Lamentamos informar se deben de almacenar 4(cuatro) locales en total si o si por ahora")
-                nombres = nombre1, nombre2, nombre3, nombre4 = input("Ingrese los nombres separados por espacios por favor: ").split()
-                rubros = rubro1, rubro2, rubro3, rubro4 = input("Ingrese los rubros separados por espacios acorde con el orden que los nombres: ").split()
-                ubicaciones = ubicación1, ubicación2, ubicación3, ubicación4 = input("Ingrese las ubicaciones separadas por espacios acorde con el orden que los rubros: ").split()
-                if rubro1 == rubro2 and rubro1 == rubro3  :
-                    print(f"El rubro '{rubro1}' tiene la mayor cantidad de locales")
-                elif rubro2 == rubro3 and rubro2 == rubro4:
-                    print(f"El rubro '{rubro2}' tiene la mayor cantidad de locales")
-                elif rubro3 == rubro4 and rubro3 == rubro1:
-                    print(f"El rubro '{rubro3}' tiene la mayor cantidad de locales")
-                elif rubro4 == rubro1 and rubro4 == rubro2:
-                    print(f"El rubro '{rubro4}' tiene la mayor cantidad de locales")
-                elif rubro4 == rubro2 and rubro4 == rubro3:
-                    print(f"El rubro '{rubro2}' tiene la mayor cantidad de locales")
-                else: 
-                    print("Ningún rubro tiene más locales que el otro")
+                print("Ingrese los datos de los locales que desee crear (máximo tres)")
+                nombres = nomnbre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
+                rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por comas acorde al orden de su nombre: ").split(",")
+                ubicaciones = ubi_1, ubi_2, ubi_3, ubi_4, ubi_5, ubi_6 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
+                
+                
+                
             else:
                 print("Volviendo...")
                 break
+                
