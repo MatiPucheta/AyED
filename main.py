@@ -93,13 +93,35 @@ while True:
                 sep()
                 
                 print("Ingrese los datos de los locales que desee crear (máximo tres)")
-                nombres = nomnbre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
+                nombres = nombre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
                 rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por comas acorde al orden de su nombre: ").split(",")
-                ubicaciones = ubi_1, ubi_2, ubi_3, ubi_4, ubi_5, ubi_6 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
+                ubicaciones = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
                 
+                comida = 0
+                indumentaria = 0
+                perfumería = 0
                 
+                for I in rubros:
+                    if "comida".count() == 2:
+                        print("El rubro comida tiene dos locales")
+                    elif "comida".count() == 3:
+                        print("El rubro comida tiene tres locales")
+                    elif "indumentaria".count() == 2:
+                        print("El rubro indumentaria tiene tres locales")
+                    elif "indumentaria".count() == 3:
+                        print("El rubro indumentaria tiene tres locales")
+                    elif "perfumería".count() == 2:
+                        print("El rubro comida tiene tres locales")
+                    elif "perfumería".count() == 3:
+                        print("El rubro perfumería tiene tres locales")
+                    
+                    
+
+                    else:
+                        print("Todos los rubros tienen la misma cantidad de locales.")
                 
             else:
                 print("Volviendo...")
                 break
+                
                 
