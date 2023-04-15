@@ -98,7 +98,7 @@ while True:
                 
                 print("Ingrese los datos de los locales que desee crear (máximo tres)")
                 nombres = nombre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
-                rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacio acorde al orden de su nombre: ").split()
+                rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacios acorde al orden de su nombre: ").split()
                 ubicaciones = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
                 
                 for rubro in rubros:
@@ -108,8 +108,10 @@ while True:
                         indumentaria += 1
                     elif rubro == "perfumería":
                         perfumería += 1
-                
-                if comida > indumentaria and comida > perfumería:
+                        
+                if comida == indumentaria and comida == perfumería:
+                    print("Ningún rubro tiene más locales que los demás.")
+                elif comida > indumentaria and comida > perfumería:
                     print(f"El rubro con más locales es 'comida', con {comida} locales")
                 elif indumentaria > comida and indumentaria > perfumería:
                     print(f"El rubro con más locales es 'indumentaria', con {indumentaria} locales")
@@ -117,18 +119,15 @@ while True:
                     print(f"El rubro con más locales es 'perfumería', con {perfumería} locales")
                 
                 menor_local = min(comida, indumentaria, perfumería)
-                
+
                 if menor_local == comida:
-                        menor_local_nombre = "comida"
+                    menor_local_nombre = "comida"
                 elif menor_local == indumentaria:
-                        menor_local_nombre = "indumentaria"
+                    menor_local_nombre = "indumentaria"
                 else:
-                        menor_local_nombre = "perfumería"
-                
-                
-                print(f"El rubro con menos locales es '{menor_local_nombre}' con {menor_local} locales")
-                
-                
+                    menor_local_nombre = "perfumería"
+                    print(f"El rubro con menos locales es '{menor_local_nombre}' con {menor_local} locales")
+
             else:
                 print("Volviendo...")
                 break
