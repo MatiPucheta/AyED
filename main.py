@@ -1,4 +1,5 @@
 import sys
+import getpass
 
 def salir():
     sys.exit(0)
@@ -21,9 +22,9 @@ intentos = 0
 if respuesta == "si":
     while intentos < 3:
         login_user = input("Ingrese su nombre de usuario: ")
-        login_password = str(input("Ingrese su contraseña: "))
+        login_pass = getpass.getpass("Ingrese su contraseña: ")
         
-        if user == login_user and contraseña == login_password:
+        if user == login_user and contraseña == login_pass:
             print("Felicidades, has podido ingresar!")
             break
         
@@ -131,3 +132,4 @@ while True:
             else:
                 print("Volviendo...")
                 break
+            
