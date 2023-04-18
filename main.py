@@ -74,11 +74,9 @@ while True:
     elección = int(input("¿Que parte del menú principal le gustaría ver?: ")) 
     
     if elección > 1:
-        
         print("Lo lamentamos pero esta sección está en construcción")
         
     elif elección == 0: 
-        
         salir()
         
     else:
@@ -127,7 +125,10 @@ while True:
                 else:
                     menor_local_nombre = "perfumería"
                     print(f"El rubro con menos locales es '{menor_local_nombre}' con {menor_local} locales")
-
+            
+            elif sub_menú != "d":
+                print("Opción inválida.")
+            
             else:
                 print("Volviendo...")
                 break
