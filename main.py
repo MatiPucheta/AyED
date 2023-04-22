@@ -47,7 +47,7 @@ sep()
 
 menú = {
     1: "Gestion de locales",
-    2: "Crear cuentas de dueños locales",
+    2: "Crear cuentas de dueños de locales",
     3: "Aprobar / Denegar solicitud de descuento",
     4: "Gestión de novedades",
     5: "Reporte de utilización de descuentos",
@@ -88,7 +88,7 @@ while True:
         for clave, valor in gestión_menú.items():
             print(clave, ":", valor)
         
-        while not terminar:
+        while terminar:
             sub_menú = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
             sep()
             if sub_menú == "b" or sub_menú == "c":
@@ -132,4 +132,4 @@ while True:
             
             else:
                 print("Volviendo...")
-                terminar = True
+                terminar = False
