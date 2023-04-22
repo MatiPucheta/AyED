@@ -72,6 +72,7 @@ perfumería = 0
 
 
 while True:
+    terminar = False
     elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
     
     if elección == 2 or elección == 3 or elección == 4 or elección == 5:
@@ -88,7 +89,7 @@ while True:
         for clave, valor in gestión_menú.items():
             print(clave, ":", valor)
         
-        while terminar:
+        while not terminar:
             sub_menú = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
             sep()
             if sub_menú == "b" or sub_menú == "c":
@@ -132,4 +133,4 @@ while True:
             
             else:
                 print("Volviendo...")
-                terminar = False
+                terminar = True
