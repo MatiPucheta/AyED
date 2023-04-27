@@ -1,6 +1,7 @@
-
+#librería importada para la contraseña oculta
 import getpass
 
+#módulo para calcular el rubro con menos locales
 def menorlocal():
     if comida == indumentaria and comida == perfumería:
         print("Ningún rubro tiene menos locales que los demás.")
@@ -17,6 +18,7 @@ def menorlocal():
     elif comida == perfumería:
         print("Los rubros 'comida' y 'perfumería' tienen la misma cantidad de locales.")
 
+#módulo para calcular el rubro con más locales
 def mayorlocal():
     if comida == indumentaria and comida == perfumería:
         print("Ningún rubro tiene más locales que los demás.")
@@ -33,25 +35,31 @@ def mayorlocal():
     elif comida == perfumería:
         print("Los rubros 'comida' y 'perfumería' tienen la misma cantidad de locales.")
 
+#separador a fin de estética
 def sep():
     return print("-"*70)
 
+
+#constantes
 user = "administrador"
 contraseña = "12345"
 
-
+#bienvenida
 inicio = input("Bienvenido estimado, ¿le interesaría ingresar al programa? (conteste con 'Si' o 'No'): ")
 
+#se convierte al input a minúscula
 respuesta = inicio.lower()
 
-
+#contador
 intentos = 0
+
+#variables booleanas (utilizadas para cortar un loop)
 terminar = False
 finalizar = False
+parar = False
 
 
-
-
+#menú principal
 menú = {
     1: "Gestion de locales",
     2: "Crear cuentas de dueños de locales",
@@ -61,6 +69,7 @@ menú = {
     0: "Salir"
 }
 
+#menú de gestión de locales
 gestión_menú = {
     "a": "Crear locales",
     "b": "Modificar local",
@@ -69,14 +78,16 @@ gestión_menú = {
 }
 
 
-
+#contadores de los rubros
 comida = 0
 indumentaria = 0
 perfumería = 0
 
+#programa principal
 
-if respuesta == "si" or respuesta == "sí":
-    while not terminar:
+if respuesta == "si" or respuesta == "sí": #logeo
+    while not terminar: 
+        
         login_user = input("Ingrese su nombre de usuario: ")
         login_pass = getpass.getpass("Ingrese su contraseña: ")
         
@@ -88,8 +99,8 @@ if respuesta == "si" or respuesta == "sí":
             for clave, valor in menú.items():
                 print(clave, ":", valor)
                 
-            while not finalizar:
-                
+            while not finalizar: #menú principal
+                #variable booleana
                 terminar = False
                 
                 elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
@@ -105,7 +116,7 @@ if respuesta == "si" or respuesta == "sí":
                     for clave, valor in gestión_menú.items():
                         print(clave, ":", valor)
                     
-                    while not terminar:
+                    while not terminar: #menú gestion de locales
                         sub_menú = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
                         sep()
                         if sub_menú == "b" or sub_menú == "c":
@@ -113,11 +124,26 @@ if respuesta == "si" or respuesta == "sí":
                         
                         elif sub_menú == "a":
                             sep()
+                            #variable booleana
+                            parar = False
+                            
                             print("Ingrese los datos de los locales que desee crear (máximo tres)")
+                            
                             nombres = nombre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
-                            rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacios acorde al orden de su nombre: ").split()
+                            
+                            #verificación de los rubros
+                            while not parar:
+                                rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacios acorde al orden de su nombre: ").split()
+                                if rubro1 == "comida" or rubro1 == "indumentaria" or rubro1 == "perfumería":
+                                    if rubro2 == "comida" or rubro2 == "indumentaria" or rubro2 == "perfumería":
+                                        if rubro3 == "comida" or rubro3 == "indumentaria" or rubro3 == "perfumería":
+                                            parar = True
+                                        else: print("Algún rubro ingresado no es válido")
+                                    else: print("Algún rubro ingresado no es válido")
+                            
                             ubicaciones = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
                             
+                            #se cuenta cuantas veces los rurbos fueron ingresados
                             for rubro in rubros:
                                 if rubro == "comida":
                                     comida += 1
@@ -125,31 +151,34 @@ if respuesta == "si" or respuesta == "sí":
                                     indumentaria += 1
                                 elif rubro == "perfumería":
                                     perfumería += 1
-                                    
+                            
                             mayorlocal()
                             
                             menorlocal()
                         
-                        elif sub_menú != "d":
+                        elif sub_menú != "d": #verificación
                             print("Opción inválida. Eliga una de de las opciones disponibles.")
                         
                         else:
                             print("Volviendo...")
                             terminar = True
-                else:
+                else: #se corta el loop del menú principal y del de logeo
                     finalizar = True
                     terminar = True
+                    input("Que tenga un buen día, hasta luego") #mensajes de despedida
+                    
         
-        else:
+        else: #se suman los intentos
             intentos += 1
             if intentos < 3:
                 print("Usuario o contraseña incorrectos. Intenta nuevamente.")
             
-        if intentos == 3:
+        if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
             input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
             terminar = True
-else: 
-    input("Que tenga un buen día, hasta luego: ")
+            
+else: #mensaje de despedida 
+    input("Entonces que tenga un buen día, hasta luego")
 
 
 
