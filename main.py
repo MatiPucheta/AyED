@@ -125,7 +125,7 @@ Elija el tipo de usuario con el que quiere ingresar: """))
                     print("Opción inválida. Eliga una de las opciones disponibles.")
                     
                 elif elección == 1:
-                    
+                    sep()
                     print(gestión_menú)
                     
                     while not terminar: #menú gestion de locales
