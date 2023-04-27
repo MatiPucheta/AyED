@@ -2,7 +2,7 @@
 import getpass
 
 #módulo para calcular el rubro con menos locales
-def menorlocal():
+def menorLocal():
     if comida == indumentaria and comida == perfumería:
         print("Ningún rubro tiene menos locales que los demás.")
     elif comida < indumentaria and comida < perfumería:
@@ -19,7 +19,7 @@ def menorlocal():
         print("Los rubros 'comida' y 'perfumería' tienen la misma cantidad de locales.")
 
 #módulo para calcular el rubro con más locales
-def mayorlocal():
+def mayorLocal():
     if comida == indumentaria and comida == perfumería:
         print("Ningún rubro tiene más locales que los demás.")
     elif comida > indumentaria and comida > perfumería:
@@ -53,10 +53,11 @@ respuesta = inicio.lower()
 #contador
 intentos = 0
 
-#variables booleanas (utilizadas para cortar un loop)
+#variables booleanas (utilizadas para evitar un loop)
 terminar = False
 finalizar = False
 parar = False
+concluir = False
 
 
 #menú principal
@@ -86,8 +87,22 @@ perfumería = 0
 #programa principal
 
 if respuesta == "si" or respuesta == "sí": #logeo
-    while not terminar: 
-        
+   
+    while not concluir:  #verificación del tipo de usuario
+        clase_user = int(input("""¿Quién es usted?
+1. Administrador
+2. Dueño de local
+3. Cliente
+Elija el tipo de usuario con el que quiere ingresar: """))
+        if clase_user == 1:
+            print("Bienvenido Administrador!")
+            concluir = True
+        elif clase_user == 2 or clase_user == 3:
+            print("En construcción...")
+        elif clase_user != 1:
+            print("Opción inválida.")
+
+    while not terminar:         
         login_user = input("Ingrese su nombre de usuario: ")
         login_pass = getpass.getpass("Ingrese su contraseña: ")
         
@@ -152,9 +167,8 @@ if respuesta == "si" or respuesta == "sí": #logeo
                                 elif rubro == "perfumería":
                                     perfumería += 1
                             
-                            mayorlocal()
-                            
-                            menorlocal()
+                            mayorLocal()
+                            menorLocal()
                         
                         elif sub_menú != "d": #verificación
                             print("Opción inválida. Eliga una de de las opciones disponibles.")
@@ -162,12 +176,12 @@ if respuesta == "si" or respuesta == "sí": #logeo
                         else:
                             print("Volviendo...")
                             terminar = True
+                            
                 else: #se corta el loop del menú principal y del de logeo
                     finalizar = True
                     terminar = True
                     input("Que tenga un buen día, hasta luego") #mensajes de despedida
-                    
-        
+                            
         else: #se suman los intentos
             intentos += 1
             if intentos < 3:
