@@ -61,22 +61,18 @@ concluir = False
 
 
 #menú principal
-menú = {
-    1: "Gestion de locales",
-    2: "Crear cuentas de dueños de locales",
-    3: "Aprobar / Denegar solicitud de descuento",
-    4: "Gestión de novedades",
-    5: "Reporte de utilización de descuentos",
-    0: "Salir"
-}
+menú_principal = ("""1: Gestion de locales
+2: Crear cuentas de dueños de locales
+3: Aprobar / Denegar solicitud de descuento
+4: Gestión de novedades
+5: Reporte de utilización de descuentos
+0: Salir""""")
 
 #menú de gestión de locales
-gestión_menú = {
-    "a": "Crear locales",
-    "b": "Modificar local",
-    "c": "Eliminar local",
-    "d": "Volver"
-}
+gestión_menú = ("""a: Crear locales
+b: Modificar local
+c: Eliminar local
+d: Volver""")
 
 
 #contadores de los rubros
@@ -87,8 +83,9 @@ perfumería = 0
 #programa principal
 
 if respuesta == "si" or respuesta == "sí": #logeo
-   
+    
     while not concluir:  #verificación del tipo de usuario
+        
         clase_user = int(input("""¿Quién es usted?
 1. Administrador
 2. Dueño de local
@@ -101,6 +98,7 @@ Elija el tipo de usuario con el que quiere ingresar: """))
             print("En construcción...")
         elif clase_user != 1:
             print("Opción inválida.")
+        sep()
 
     while not terminar:         
         login_user = input("Ingrese su nombre de usuario: ")
@@ -110,10 +108,9 @@ Elija el tipo de usuario con el que quiere ingresar: """))
             print("Felicidades, has podido ingresar!")
             sep()
             print("Aquí se le mostrará el menú principal: ")
-                
-            for clave, valor in menú.items():
-                print(clave, ":", valor)
-                
+            
+            print(menú_principal)
+            sep()
             while not finalizar: #menú principal
                 #variable booleana
                 terminar = False
@@ -128,8 +125,8 @@ Elija el tipo de usuario con el que quiere ingresar: """))
                     print("Opción inválida. Eliga una de las opciones disponibles.")
                     
                 elif elección == 1:
-                    for clave, valor in gestión_menú.items():
-                        print(clave, ":", valor)
+                    
+                    print(gestión_menú)
                     
                     while not terminar: #menú gestion de locales
                         sub_menú = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
