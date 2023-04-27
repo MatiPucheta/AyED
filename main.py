@@ -67,7 +67,6 @@ if respuesta == "si" or respuesta == "sí":
                 if elección == 2 or elección == 3 or elección == 4 or elección == 5:
                     print("Lo lamentamos pero esta sección está en construcción")
                 
-                
                 elif elección > 5 or elección < 0:
                     sep()
                     print("Opción inválida. Eliga una de las opciones disponibles.")
@@ -105,16 +104,28 @@ if respuesta == "si" or respuesta == "sí":
                                 print(f"El rubro con más locales es 'indumentaria', con {indumentaria} locales")
                             elif perfumería > indumentaria and perfumería > comida:
                                 print(f"El rubro con más locales es 'perfumería', con {perfumería} locales")
-                                
-                            menor_local = min(comida, indumentaria, perfumería)
-                            if menor_local == comida:
-                                menor_local_nombre = "comida"
-                            elif menor_local == indumentaria:
-                                menor_local_nombre = "indumentaria"
-                            else:
-                                menor_local_nombre = "perfumería"
-                                print(f"El rubro con menos locales es '{menor_local_nombre}' con {menor_local} locales")
-                        
+                            elif comida == indumentaria:
+                                print("Los rubros 'comida' e 'indumentaria' tienen la misma cantidad de locales.")
+                            elif indumentaria == perfumería :
+                                print("Los rubros 'indumentaria' y 'perfumería' tienen la misma cantidad de locales.")
+                            elif comida == perfumería:
+                                print("Los rubros 'comida' y 'perfumería' tienen la misma cantidad de locales.")
+                            
+                            if comida == indumentaria and comida == perfumería:
+                                print("Ningún rubro tiene menos locales que los demás.")
+                            elif comida < indumentaria and comida < perfumería:
+                                print(f"El rubro con menos locales es 'comida', con {comida} locales")
+                            elif indumentaria < comida and indumentaria < perfumería:
+                                print(f"El rubro con menos locales es 'indumentaria', con {indumentaria} locales")
+                            elif perfumería < comida and perfumería < indumentaria:
+                                print(f"El rubro con menos locales es 'perfumería', con {perfumería} locales")
+                            elif comida == indumentaria:
+                                print("Los rubros 'comida' e 'indumentaria' tienen la misma cantidad de locales.")
+                            elif indumentaria == perfumería :
+                                print("Los rubros 'indumentaria' y 'perfumería' tienen la misma cantidad de locales.")
+                            elif comida == perfumería:
+                                print("Los rubros 'comida' y 'perfumería' tienen la misma cantidad de locales.")
+                          
                         elif sub_menú != "d":
                             print("Opción inválida. Eliga una de de las opciones disponibles.")
                         
