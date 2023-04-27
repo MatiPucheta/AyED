@@ -41,7 +41,7 @@ def sep():
 
 
 #constantes
-user = "administrador"
+user = "admin@shopping.com"
 contraseña = "12345"
 
 #bienvenida
@@ -177,7 +177,7 @@ Elija el tipo de usuario con el que quiere ingresar: """))
                 else: #se corta el loop del menú principal y del de logeo
                     finalizar = True
                     terminar = True
-                    input("Que tenga un buen día, hasta luego") #mensajes de despedida
+                    input("Que tenga un buen día, hasta luego") #mensaje de despedida
                             
         else: #se suman los intentos
             intentos += 1
