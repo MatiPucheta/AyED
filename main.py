@@ -41,8 +41,8 @@ def sep():
 
 
 #constantes
-user = "admin@shopping.com"
-contraseña = "12345"
+nombreUsuario = "admin@shopping.com"
+claveUsuario = "12345"
 
 #bienvenida
 inicio = input("Bienvenido estimado, ¿le interesaría ingresar al programa? (conteste con 'Si' o 'No'): ")
@@ -104,7 +104,7 @@ Elija el tipo de usuario con el que quiere ingresar: """))
         login_user = input("Ingrese su nombre de usuario: ")
         login_pass = getpass.getpass("Ingrese su contraseña: ")
         
-        if user == login_user and contraseña == login_pass:
+        if nombreUsuario == login_user and claveUsuario == login_pass:
             print("Felicidades, has podido ingresar!")
             sep()
             print("Aquí se le mostrará el menú principal: ")
@@ -141,11 +141,11 @@ Elija el tipo de usuario con el que quiere ingresar: """))
                             
                             print("Ingrese los datos de los locales que desee crear (máximo tres)")
                             
-                            nombres = nombre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
+                            nombreLocal = nombre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
                             
                             #verificación de los rubros
                             while not parar:
-                                rubros = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacios acorde al orden de su nombre: ").split()
+                                rubroLocal = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacios acorde al orden de su nombre: ").split()
                                 if rubro1 == "comida" or rubro1 == "indumentaria" or rubro1 == "perfumería":
                                     if rubro2 == "comida" or rubro2 == "indumentaria" or rubro2 == "perfumería":
                                         if rubro3 == "comida" or rubro3 == "indumentaria" or rubro3 == "perfumería":
@@ -153,10 +153,10 @@ Elija el tipo de usuario con el que quiere ingresar: """))
                                         else: print("Algún rubro ingresado no es válido")
                                     else: print("Algún rubro ingresado no es válido")
                             
-                            ubicaciones = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
+                            ubicacionLocal = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
                             
                             #se cuenta cuantas veces los rurbos fueron ingresados
-                            for rubro in rubros:
+                            for rubro in rubroLocal:
                                 if rubro == "comida":
                                     comida += 1
                                 elif rubro == "indumentaria":
