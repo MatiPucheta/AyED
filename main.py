@@ -74,6 +74,12 @@ b: Modificar local
 c: Eliminar local
 d: Volver""")
 
+#menú de gestión de novedades
+novedades_menú = ("""a: Crear novedades
+b: Modificar novedad
+c: Eliminar novedad
+d: Ver reporte de novedades
+e: Volver""")   
 
 #contadores de los rubros
 comida = 0
@@ -117,8 +123,19 @@ Elija el tipo de usuario con el que quiere ingresar: """))
                 
                 elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
                 
-                if elección == 2 or elección == 3 or elección == 4 or elección == 5:
+                if elección == 2 or elección == 3 or elección == 5:
                     print("Lo lamentamos pero esta sección está en construcción")
+                
+                elif elección == 4:
+                    print(novedades_menú)
+                    sep()
+                    sub_men = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
+                    while sub_men != "e":
+                        print("Lo lamentamos pero esta sección está en construcción")
+                        sep()
+                        sub_men = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
+                    print("Volviendo al menú principal...")
+                    
                 
                 elif elección > 5 or elección < 0:
                     sep()
