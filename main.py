@@ -16,12 +16,6 @@ perfumería = 0
 nombreUsuario = "admin@shopping.com"
 claveUsuario = "12345"
 
-#bienvenida
-inicio = input("Bienvenido estimado, ¿le interesaría ingresar al programa? (conteste con 'Si' o 'No'): ")
-
-#se convierte al input a minúscula
-respuesta = inicio.lower()
-
 #contador
 intentos = 0
 
@@ -50,7 +44,7 @@ e: Volver""")
 def sep():
     return print("-"*70)
 
-#módulo del menú principal
+#MÓDULO del menú principal
 def menuPrincipal():
     global terminar, finalizar
     while not finalizar: #menú principal
@@ -86,7 +80,7 @@ def menuPrincipal():
             terminar = True
             input("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-#módulo de la sección crear Locales
+#MÓDULO de la sección crear Locales
 def menuGestionLocales():
     global terminar, parar
     while not terminar: #menú gestion de locales
@@ -126,7 +120,7 @@ def menuGestionLocales():
             print("Volviendo...")
             terminar = True
 
-#módulo para calcular el rubro con menos locales
+#MÓDULO para calcular el rubro con menos locales
 def calcLoc():
     global rubroLocal
     global comida, indumentaria, perfumería
@@ -170,7 +164,13 @@ def calcLoc():
         print(f"Los rubros 'comida' y 'perfumería' tienen la misma cantidad de locales, con {perfumería} locales.")
 
 
-#programa principal
+#PROGAMA PRINCIPAL
+
+#bienvenida
+inicio = input("Bienvenido estimado, ¿le interesaría ingresar al programa? (conteste con 'Si' o 'No'): ")
+
+#se convierte al input a minúscula
+respuesta = inicio.lower()
 
 if respuesta == "si" or respuesta == "sí": #logeo
     
