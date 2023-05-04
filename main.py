@@ -5,7 +5,8 @@ import getpass
 concluir = False
 finalizar = False
 terminar = False
-parar = False  
+parar = False
+acabar = False  
 
 #contadores de los rubros
 comida = 0
@@ -47,24 +48,14 @@ def sep():
 #MÓDULO del menú principal
 def menuPrincipal():
     global terminar, finalizar
-    while not finalizar: #menú principal
-        #variable booleana
-        terminar = False
-
+    while not finalizar:         
         elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
 
         if elección == 2 or elección == 3 or elección == 5:
             print("Lo lamentamos pero esta sección está en construcción")
 
         elif elección == 4:
-            print(novedades_menú)
-            sep()
-            sub_men = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
-            while sub_men != "e":
-                print("Lo lamentamos pero esta sección está en construcción")
-                sep()
-                sub_men = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
-            print("Volviendo...") 
+            menuGestionNov()
 
         elif elección > 5 or elección < 0:
             sep()
@@ -72,24 +63,40 @@ def menuPrincipal():
 
         elif elección == 1:
             sep()
-            print(gestión_menú)
             menuGestionLocales()
 
-        else: #se corta el loop del menú principal y del de logeo
+        else:
             finalizar = True
             terminar = True
             input("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-#MÓDULO de la sección crear Locales
+#MÓDULO de la sección Gestión de Novedades
+def menuGestionNov():
+    global acabar
+    sep()
+    print(novedades_menú)        
+    while not acabar:
+        sub_menu_4 = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
+        sep()    
+        if sub_menu_4 == "a" or sub_menu_4 == "b" or sub_menu_4 == "c" or sub_menu_4 == "d":
+            print("Lo lamentamos pero esta sección está en construcción")
+        elif sub_menu_4 != "e":
+            print("Opción inválida. Elija una de las opciones disponibles.")
+        else:
+            print("Volviendo...")
+            acabar = True
+
+#MÓDULO de la sección Gestión de Locales
 def menuGestionLocales():
     global terminar, parar
+    print(gestión_menú)
     while not terminar: #menú gestion de locales
-        sub_menú = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
+        sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
         sep()
-        if sub_menú == "b" or sub_menú == "c":
+        if sub_menu_1 == "b" or sub_menu_1 == "c":
             print("Lo lamentamos pero esta sección está en construcción")
 
-        elif sub_menú == "a":
+        elif sub_menu_1 == "a":
             sep()
             #variable booleana
             parar = False
@@ -113,12 +120,12 @@ def menuGestionLocales():
 
             calcLoc()
 
-        elif sub_menú != "d": #verificación
+        elif sub_menu_1 != "d": #verificación
             print("Opción inválida. Eliga una de de las opciones disponibles.")
 
         else:
             print("Volviendo...")
-            terminar = True
+            menuPrincipal()
 
 #MÓDULO para calcular el rubro con menos locales
 def calcLoc():
