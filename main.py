@@ -127,7 +127,7 @@ def menuGestionLocales():
             print("Volviendo...")
             menuPrincipal()
 
-#MÓDULO para calcular el rubro con menos locales
+#MÓDULO para calcular los locales de los rubros
 def calcLoc():
     global rubroLocal
     global comida, indumentaria, perfumería
@@ -197,7 +197,7 @@ Elija el tipo de usuario con el que quiere ingresar: """))
             print("Opción inválida.")
         sep()
 
-    while not terminar:         
+    while not terminar:   #verificación del usuario y contraseña
         login_user = input("Ingrese su nombre de usuario: ")
         login_pass = getpass.getpass("Ingrese su contraseña: ")
         
@@ -208,7 +208,7 @@ Elija el tipo de usuario con el que quiere ingresar: """))
             print(menú_principal)
             sep()
             menuPrincipal()
-                            
+            
         else: #se suman los intentos
             intentos += 1
             if intentos < 3:
