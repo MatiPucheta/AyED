@@ -21,7 +21,8 @@ claveUsuario = "12345"
 intentos = 0
 
 #menú principal
-menú_principal = ("""1: Gestion de locales
+menú_principal = ("""-- Menú Principal --
+1: Gestion de locales
 2: Crear cuentas de dueños de locales
 3: Aprobar / Denegar solicitud de descuento
 4: Gestión de novedades
@@ -29,13 +30,15 @@ menú_principal = ("""1: Gestion de locales
 0: Salir""")
 
 #menú de gestión de locales
-gestión_menú = ("""a: Crear locales
+gestión_menú = ("""-- Gestión de Locales --
+a: Crear locales
 b: Modificar local
 c: Eliminar local
 d: Volver""")
 
 #menú de gestión de novedades
-novedades_menú = ("""a: Crear novedades
+novedades_menú = ("""-- Gestión de Novedades --
+a: Crear novedades
 b: Modificar novedad
 c: Eliminar novedad
 d: Ver reporte de novedades
@@ -48,7 +51,9 @@ def sep():
 #MÓDULO del menú principal
 def menuPrincipal():
     global terminar, finalizar
-    while not finalizar:         
+    print(menú_principal)
+    sep()
+    while not finalizar:
         elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
 
         if elección == 2 or elección == 3 or elección == 5:
@@ -74,7 +79,8 @@ def menuPrincipal():
 def menuGestionNov():
     global acabar
     sep()
-    print(novedades_menú)        
+    print(novedades_menú)
+    acabar = False        
     while not acabar:
         sub_menu_4 = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
         sep()    
@@ -90,6 +96,7 @@ def menuGestionNov():
 def menuGestionLocales():
     global terminar, parar
     print(gestión_menú)
+    terminar = False
     while not terminar: #menú gestion de locales
         sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
         sep()
@@ -125,7 +132,7 @@ def menuGestionLocales():
 
         else:
             print("Volviendo...")
-            menuPrincipal()
+            terminar = True
 
 #MÓDULO para calcular el rubro con menos locales
 def calcLoc():
@@ -203,9 +210,6 @@ Elija el tipo de usuario con el que quiere ingresar: """))
         
         if nombreUsuario == login_user and claveUsuario == login_pass:
             print("Felicidades, has podido ingresar!")
-            sep()
-            print("Aquí se le mostrará el menú principal: ")
-            print(menú_principal)
             sep()
             menuPrincipal()
                             
