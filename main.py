@@ -58,6 +58,8 @@ def menuPrincipal():
 
         if elección == 2 or elección == 3 or elección == 5:
             print("Lo lamentamos pero esta sección está en construcción")
+            sep()
+            print(menú_principal)
 
         elif elección == 4:
             menuGestionNov()
