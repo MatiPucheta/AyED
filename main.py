@@ -58,8 +58,6 @@ def menuPrincipal():
 
         if elección == 2 or elección == 3 or elección == 5:
             print("Lo lamentamos pero esta sección está en construcción")
-            sep()
-            print(menú_principal)
 
         elif elección == 4:
             menuGestionNov()
@@ -92,8 +90,11 @@ def menuGestionNov():
             print("Opción inválida. Elija una de las opciones disponibles.")
         else:
             print("Volviendo...")
+            sep()
+            print(menú_principal)
+            sep()
             acabar = True
-
+            
 #MÓDULO de la sección Gestión de Locales
 def menuGestionLocales():
     global terminar, parar
@@ -134,6 +135,9 @@ def menuGestionLocales():
 
         else:
             print("Volviendo...")
+            sep()
+            print(menú_principal)
+            sep()
             terminar = True
 
 #MÓDULO para calcular los locales de los rubros
