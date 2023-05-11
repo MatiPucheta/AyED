@@ -111,25 +111,42 @@ def menuGestionLocales():
             #variable booleana
             parar = False
 
-            print("Ingrese los datos de los locales que desee crear (máximo tres)")
-            global nombreLocal, nombre1, nombre2, nombre3
-            nombreLocal = nombre1, nombre2, nombre3 = input("Ingrese los nombres separados por comas, por favor: ").split(",")
+            print("Ingrese los datos del local que quiera crear: ")
+            global nombreLocal
+            global ubicacionLocal
+            global rubroLocal
+            global opcion
+            global comida, indumentaria, perfumería
             
-            #verificación de los rubros
             while not parar:
-                global rubroLocal
-                rubroLocal = rubro1, rubro2, rubro3 = input("Ingrese los rubros separados por espacios acorde al orden de su nombre: ").split()
-                if rubro1 == "comida" or rubro1 == "indumentaria" or rubro1 == "perfumería":
-                    if rubro2 == "comida" or rubro2 == "indumentaria" or rubro2 == "perfumería":
-                        if rubro3 == "comida" or rubro3 == "indumentaria" or rubro3 == "perfumería":
-                            parar = True
-                        else: print("Algún rubro ingresado no es válido")
-                    else: print("Algún rubro ingresado no es válido")
-            global ubicacionLocal, ubi_1, ubi_2, ubi_3
-            ubicacionLocal = ubi_1, ubi_2, ubi_3 = input("Ingrese las ubicaciones separadas por comas acorde al orden de su rubro: ").split(",")
-
-            calcLoc()
-
+                nombreLocal = input("Ingrese el nombre de su local, por favor: ")
+                
+                rubroLocal = input("Ingrese el rubro del local: ")
+                
+                while rubroLocal != "comida" and rubroLocal != "indumentaria" and rubroLocal != "perfumería":
+                    rubroLocal = input("El rubro ingresado es inválido, intentelo de nuevo por favor: ")
+                
+                #se cuenta cuantas veces los rurbos fueron ingresados
+                if rubroLocal == "comida":
+                    comida += 1
+                elif rubroLocal == "indumentaria":
+                    indumentaria += 1
+                elif rubroLocal == "perfumería":
+                    perfumería += 1
+                ubicacionLocal = input("Ingrese la ubicación del local: ")
+                
+                
+                opcion = input("¿Le gustaría seguir ingresando datos de sus locales?: ").lower()
+                
+                while opcion != "si" and opcion != "sí" and opcion != "no":
+                    opcion = input("Opción inválida, intentelo de nuevo por favor: ")
+                
+                if opcion == "si" or opcion == "sí":
+                    sep()
+                elif opcion == "no":
+                    parar = True
+                    calcLoc()
+                
         elif sub_menu_1 != "d": #verificación
             print("Opción inválida. Eliga una de de las opciones disponibles.")
 
@@ -144,14 +161,6 @@ def menuGestionLocales():
 def calcLoc():
     global rubroLocal
     global comida, indumentaria, perfumería
-    #se cuenta cuantas veces los rurbos fueron ingresados
-    for rubro in rubroLocal:
-        if rubro == "comida":
-            comida += 1
-        elif rubro == "indumentaria":
-            indumentaria += 1
-        elif rubro == "perfumería":
-            perfumería += 1
     
     if comida == indumentaria and comida == perfumería:
         print("Ningún rubro tiene menos locales que los demás.")
