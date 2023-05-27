@@ -229,7 +229,7 @@ def crear_local():
         
         # Validación del código de usuario
         while codigo_usuario not in (4, 6):
-            codigo_usuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
+            codigo_usuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
         
         
         # Creación del nuevo local
@@ -267,10 +267,10 @@ def modificar_local():
         mostrar_locales()
     
     sep()
-    confirm = input("¿Está seguro de querer modificar la información de algún local?").lower()
+    confirm = input("¿Está seguro de querer modificar la información de algún local?: ").lower()
     
     if confirm in ("sí", "si"):
-        
+        sep()
         codigo = int(input("Ingrese el código del local que desea modificar: "))
         os.system("cls")
         
@@ -370,6 +370,8 @@ def eliminar_local():
 def mostrar_mapa_locales():
     global locales
     
+    os.system('cls')
+    
     print("Mapa de Locales:")
     sep()
     # Ordenar los locales por nombre
@@ -413,6 +415,7 @@ def menuGestionLocales():
             crear_local()
             
             calcLoc()
+            sep()
         
         elif sub_menu_1 == "b": #verificación
             modificar_local()
@@ -426,6 +429,7 @@ def menuGestionLocales():
             mostrar_mapa_locales()
             sep()
         
+        print(gestión_menú)
         sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
     
     print("Volviendo...")
