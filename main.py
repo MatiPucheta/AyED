@@ -11,7 +11,7 @@ indumentaria = 0
 perfumería = 0
 
 
-nombreUsuario = ["admin@shopping.com", "localA@shopping.com","localB@shopping.com", "unCliente@shopping.com"]
+
 
 #constantes
 usuarios = {
@@ -99,25 +99,39 @@ def menuDueño():
     sep()
     
     elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
+    
     while elección != 0:
         
         if elección not in (1,2,3):
             sep()
             print("Opción inválida. Eliga una de las opciones disponibles.")
+            sep()
         else:
             
             if elección == 1:
-                operación = input("¿Que operación le gustaría realizar?: ")
+                sep()
+                operación = input("¿Que operación le gustaría realizar?: ").lower()
                 
-                while operación not in ("a", "b", "c", "d"):
-                    operación = input("Opción inválida. Eliga una de las opciones disponibles: ")
-                
-                if operación in ("a", "b", "c"):
-                    print("Lo lamentamos pero esta sección está en construcción")
-                
-                else: print("Volviendo...")
+                while operación != "d":
+                    os.system('cls')
+                    while operación not in ("a", "b", "c","d"):
+                        operación = input("Opción inválida. Eliga una de las opciones disponibles: ")
+                    
+                    if operación in ("a", "b", "c"):
+                        print("Lo lamentamos pero esta sección está en construcción")
+                        sep()
+                        operación = input("¿Que operación le gustaría realizar?: ").lower()
+                        os.system('cls')
+                    
+                    elif operación == "d": 
+                        print("Volviendo...")
+                    sep()
+                    print(menú_Dueño)
+                    sep()
             
-            else: print("Lo lamentamos pero esta sección está en construcción")
+            else: 
+                print("Lo lamentamos pero esta sección está en construcción")
+                sep()
         
         elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
     intentos = 3
@@ -487,7 +501,7 @@ Elija el tipo de usuario que es usted por favor: """))
         sep()
         
         clase_user = int(input("Elija el tipo de usuario que es usted por favor: "))
-    
+    os.system('cls')
     
     if clase_user == 1:
         print("¡Bienvenido Administrador/a!")
@@ -501,6 +515,7 @@ Elija el tipo de usuario que es usted por favor: """))
     else: 
         print("¡Bienvenido Señor/a!")
 
+
 def logeo():
     global intentos
     if clase_user == 1:
@@ -509,7 +524,9 @@ def logeo():
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
             if login_user == "admin@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
+                os.system('cls')
                 print("Felicidades Administrador, has podido ingresar!")
+                
                 sep()
                 menuPrincipal()
                 
@@ -528,7 +545,7 @@ def logeo():
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
             if login_user == "localA@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
-                print("Felicidades DueñoA, has podido ingresar!")
+                print("Felicidades Dueño A, has podido ingresar!")
                 sep()
                 menuDueño()
             else: 
@@ -545,7 +562,7 @@ def logeo():
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
             if login_user == "localB@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
-                print("Felicidades DueñoB, has podido ingresar!")
+                print("Felicidades Dueño B, has podido ingresar!")
                 sep()
                 menuDueño()
             else: 
