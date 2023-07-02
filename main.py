@@ -2,8 +2,16 @@ import os
 #librería importada para la contraseña oculta
 import getpass
 
-locales = []  # Lista para almacenar los locales
-codLocal = 1  # Código inicial para el primer local
+#contador de filas
+i= 0
+
+F=50
+C=5
+# Lista para almacenar los locales
+locales=[[""]*C for i in range(F)]
+
+# Código inicial para el primer local
+codLocal = 1  
 
 #contadores de los rubros
 comida = 0
@@ -13,13 +21,13 @@ perfumería = 0
 
 
 
-#constantes
-usuarios = {
-    "admin@shopping.com": "12345",
-    "localA@shopping.com": "AAAA1111",
-    "localB@shopping.com": "BBBB2222",
-    "unCliente@shopping.com": "33xx33"
-}
+#Array de 4x2 con los usarios y contraseñas
+usuarios = [
+    ["admin@shopping.com", "12345"],
+    ["localA@shopping.com", "AAAA1111"],
+    ["localB@shopping.com", "BBBB2222"],
+    ["unCliente@shopping.com", "33xx33"]
+]
 #contador
 intentos = 0
 
@@ -193,17 +201,48 @@ def menuGestionNov():
 
 #MÓDULO para mostrar los locales cargados
 def mostrar_locales():
+    global i
     print("== Locales Cargados ==")
-    if locales:
-        for local in locales:
-            print(f"Código: {local['codigo']}, Local: {local['nombre']}, Rubro: {local['rubro']}, Estado: {local['estado']}")
+    if i > 0:
+        for p in range(i):
+            print(f"Nombre: {locales[p][0]}, Rubro: {locales[p][2]}, Ubicación: {locales[i][1]}, Código: {locales[i][3]}, Estado: {locales[i][4]}")
     else:
         print("No se han cargado locales aún.")
 
+#MÓDULO para ordernar los locales alfabéticamente
+def Ordenar():
+    for a in range(0,F-1):
+        for b in range(1,F):
+            primero = locales[a][0]
+            segundo = locales[b][0]
+            if primero[0] > segundo[0]:
+                for k in range(C):
+                    aux = locales[a][k]
+                    locales[a][k] = locales[b][k]
+                    locales[b][k] = aux
+
+#MÓDULO para buscar dicotómicamente
+def Repeticion(col,dato):
+    global usado
+    global mid
+    ini = 1
+    fin = 50
+    T
+    while (ini < fin) and T:
+        mid = (ini + fin) // 2
+        usado = locales[mid][col]
+        if  usado == dato:
+            T = False
+        elif usado[0] > dato[0]:
+            fin = mid-1
+        else: ini = mid+1
+
+
+
 #MÓDULO para cargar los locales
 def crear_local():
-    global codLocal, locales
-    global nombreLocal, ubicacionLocal, rubroLocal
+    global codLocal, locales, i
+    global nombreLocal
     global mostrar
     global comida, indumentaria, perfumería
     
@@ -211,71 +250,70 @@ def crear_local():
     if mostrar in ("sí","si"):
         mostrar_locales()
     
-    respuesta = input("¿Desea crear un local nuevo? (Si/No): ").lower()
+    sep()
+    nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
     os.system("cls")
     
-    while respuesta == "si" or respuesta == "sí":
+    while nombreLocal != '0':
         print("== Crear Local ==")
-        nombreLocal = input("Ingrese el nombre del local: ")
+        
         sep()
         
-        nombre_ocupado = set(local["nombre"] for local in locales)
-        while nombreLocal in nombre_ocupado:
-            nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+        #Se verifica que el nombre no se esté ya usado
+        find = True
+        while find:
+            Repeticion(0,nombreLocal)
+            if nombreLocal == usado:
+                nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+            else: find = False
         
-        ubicacionLocal = input("Ingrese la ubicación del local: ")
+        
+        locales[i][0] = nombreLocal
+        
+        locales[i][1] = input("Ingrese la ubicación del local: ")
         sep()
-        rubroLocal = input("Ingrese el rubro del local (indumentaria/perfumería/comida): ").lower()
+        locales[i][2] = input("Ingrese el rubro del local (indumentaria/perfumería/comida): ").lower()
         
         # Validación del rubro
-        while rubroLocal not in ['indumentaria', 'perfumería', 'comida']:
-            rubroLocal = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
+        while locales[i][2] not in ['indumentaria', 'perfumería', 'comida']:
+            locales[i][2] = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
         
         #se cuenta cuantas veces los rurbos fueron ingresados
-        if rubroLocal == "comida":
+        if locales[i][2] == "comida":
             comida += 1
-        elif rubroLocal == "indumentaria":
+        elif locales[i][2] == "indumentaria":
             indumentaria += 1
-        elif rubroLocal == "perfumería":
+        elif locales[i][2] == "perfumería":
             perfumería += 1
         
         sep()
-        codUsuario = int(input("Ingrese el código del usuario dueño del local: "))
+        codUsuario = input("Ingrese el código del usuario dueño del local: ")
         
         # Validación del código de usuario
         while codUsuario not in (4, 6):
             codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
         
-        
-        # Creación del nuevo local
-        local = {
-            "codigo": codLocal,
-            "nombre": nombreLocal,
-            "ubicacion": ubicacionLocal,
-            "rubro": rubroLocal,
-            "codUsuario": codUsuario,
-            "estado": "Activo"
-        }   
+        #Ultimos elementos a insertar
+        locales[i][3] = codLocal
+        locales[i][4] = "Activo"
         
         # Actualización del código de local para el siguiente local
         codLocal += 1
-        
-        # Agregar el nuevo local a la lista de locales
-        locales.append(local)
+        i+=1
         
         os.system("cls")
         print("Local creado exitosamente.")
         sep()
         
+        #Ordenamiento
+        Ordenar()
         
-        # Preguntar al usuario si desea crear otro local
-        respuesta = input("¿Desea crear otro local? (Si/No): ").lower()
+        nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
         os.system("cls")
 
 #MÓDULO para modificar un local
 def modificar_local():
     global locales, confirm, comida, perfumería, indumentaria, activar
-    local_encontrado = None
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar in ("sí","si"):
@@ -286,97 +324,97 @@ def modificar_local():
     
     if confirm in ("sí", "si"):
         sep()
-        codigo = int(input("Ingrese el código del local que desea modificar: "))
+        codigo = input("Ingrese el código del local que desea modificar: ")
         os.system("cls")
         
         # Buscar el local por su código
-        
-        while local_encontrado is None:
+        find = True
+        while find:
+            Repeticion(3,codigo)
             
-            for local in locales:
-                if local["codigo"] == codigo:
-                    local_encontrado = local
-            if local_encontrado is None:
+            if codigo != usado:
                 print("Lo lamentamos pero no se encontró ningún local con ese código.")
-                codigo = int(input("Ingrese el código del local que desea modificar de nuevo por favor: "))
+                codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
+            else: find = False
         
         os.system("cls")
-        if local_encontrado['estado'] == "Baja":
+        if locales[mid, 3] == "Baja":
             activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo para así modificarlo?: ")
             if activar in ("sí","si"):
-                print(f"Modificando local '{local_encontrado['nombre']}', (Código: {local_encontrado['codigo']})")
+                print(f"Modificando el local '{locales[mid,0]}', (Código: {locales[mid, 3]})")
                 sep()
                 
                 #Se resta 1 a la cantidad total de locales con el rubro a modificar
-                if local_encontrado['rubro'] == "comida":
+                if locales[mid, 2] == "comida":
                     comida -= 1
-                elif local_encontrado['rubro'] == "indumentaria":
+                elif locales[mid, 2] == "indumentaria":
                     indumentaria -= 1
-                elif local_encontrado['rubro'] == "perfumería":
+                elif locales[mid, 2] == "perfumería":
                     perfumería -= 1
                 
                 nombreLocal = input("Ingrese el nuevo nombre del local: ")
                 os.system("cls")
                 
-                nombre_ocupado = set(local["nombre"] for local in locales)
-                while nombreLocal in nombre_ocupado:
-                    nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+                #Se verifica que el nombre no se esté ya usado
+                find = True
+                while find:
+                    Repeticion(0,nombreLocal)
+                    if nombreLocal == usado:
+                        nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+                    else: find = False
                 
+                locales[mid, 0] = nombreLocal
                 
-                ubicacionLocal = input("Ingrese la nueva ubicación del local: ")
+                locales[mid, 1] = input("Ingrese la nueva ubicación del local: ")
                 os.system("cls")
-                rubroLocal = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
+                
+                locales[mid, 2] = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
                 
                 # Validación del rubro
-                while rubroLocal not in ['indumentaria', 'perfumería', 'comida']:
-                    rubroLocal = input("Rubro inválido, ingrese el nuevo rubro del local nuevamente por favor: ")
+                while locales[mid, 2] ['indumentaria', 'perfumería', 'comida']:
+                    locales[mid, 2] = input("Rubro inválido, ingrese el nuevo rubro del local nuevamente por favor: ")
                 
                 #Se suma 1 a la cantidad total de locales con el nuevo rubro
-                if rubroLocal == "comida":
+                if locales[mid, 2] == "comida":
                     comida += 1
-                elif rubroLocal == "indumentaria":
+                elif locales[mid, 2] == "indumentaria":
                     indumentaria += 1
-                elif rubroLocal == "perfumería":
+                elif locales[mid, 2] == "perfumería":
                     perfumería += 1
                 
-                codUsuario = int(input("Ingrese el nuevo código del usuario dueño del local: "))
+                locales[mid, 4] == "Activo"
                 
                 # Validación del código de usuario
-                
+                codUsuario = int(input("Ingrese el nuevo código del usuario dueño del local: "))
                 while codUsuario not in (4, 6):
                     codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
                 
-                # Actualizar los atributos del local
-                local_encontrado["nombre"] = nombreLocal
-                local_encontrado["ubicacion"] = ubicacionLocal
-                local_encontrado["rubro"] = rubroLocal
-                local_encontrado["codUsuario"] = codUsuario
-                local_encontrado["estado"] = "Activo"
+                
                 
                 print("Local modificado exitosamente.")
 
 #MÓDULO eliminar un local
 def eliminar_local():
     global locales
-    local_encontrado = None
     
-    codigo = int(input("Ingrese el código del local que desea eliminar: "))
+    codigo = input("Ingrese el código del local que desea eliminar: ")
+    
     # Buscar el local por su código
-    while local_encontrado is None:
+    find = True
+    while find:
+        Repeticion(3,codigo)
         
-        for local in locales:
-            if local["codigo"] == codigo:
-                local_encontrado = local
-        if local_encontrado is None:
+        if codigo != usado:
             print("Lo lamentamos pero no se encontró ningún local con ese código.")
-            codigo = int(input("Ingrese el código del local que desea modificar de nuevo por favor: "))
+            codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
+        else: find = False
     
-    if local_encontrado['estado'] == "Baja":
-        print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminador ")
+    if locales[mid, 4] == "Baja":
+        print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado ")
         sep()
     else:
         os.system("cls")
-        print(f"Eliminando local '{local_encontrado['nombre']}' (Código: {local_encontrado['codigo']})")
+        print(f"Eliminando local '{locales[mid, 0]}' (Código: {locales[mid, 3]})")
         
         sep()
         
@@ -384,7 +422,7 @@ def eliminar_local():
         
         if confirmacion in ("sí", "si"):
             # Cambiar el estado del local a "Baja"
-            local_encontrado["estado"] = "Baja"
+            locales[mid, 4] = "Baja"
             print("Local eliminado exitosamente.")
         else:
             print("Eliminación cancelada.")
@@ -462,7 +500,6 @@ def menuGestionLocales():
 
 #MÓDULO para calcular los locales de los rubros
 def calcLoc():
-    global rubroLocal
     global comida, indumentaria, perfumería
     
     if comida == indumentaria and comida == perfumería:
@@ -532,7 +569,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if login_user == "admin@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
+            if usuarios[0,0] == login_user   and usuarios[0,1] == login_pass: #se suman los intentos
                 os.system('cls')
                 print("Felicidades Administrador, has podido ingresar!")
                 
@@ -553,7 +590,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if login_user == "localA@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
+            if usuarios[1,0] == login_user   and usuarios[1,1] == login_pass: #se suman los intentos
                 print("Felicidades Dueño A, has podido ingresar!")
                 sep()
                 menuDueño()
@@ -570,7 +607,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if login_user == "localB@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
+            if usuarios[2,0] == login_user   and usuarios[2,1] == login_pass: #se suman los intentos
                 print("Felicidades Dueño B, has podido ingresar!")
                 sep()
                 menuDueño()
@@ -588,7 +625,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if login_user == "unCliente@shopping.com" and usuarios[login_user] == login_pass: #se suman los intentos
+            if usuarios[3,0] == login_user   and usuarios[3,1] == login_pass: #se suman los intentos
                 print("Felicidades Cliente, has podido ingresar!")
                 sep()
                 menuCliente()
