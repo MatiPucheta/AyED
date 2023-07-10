@@ -237,7 +237,7 @@ def Repeticion(col,dato):
         if usado == dato:
             return mid
         
-        elif usado[0] > dato[0]:
+        elif usado[0] < dato[0]:
             fin = mid-1
         
         else:
@@ -300,8 +300,8 @@ def crear_local():
         codUsuario = input("Ingrese el código del usuario dueño del local: ")
         
         #Validación del código de usuario
-        while codUsuario != 4 and codUsuario != 6:
-            codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
+        while (codUsuario != '4') and (codUsuario != '6'):
+            codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
         #Ultimos elementos a insertar
         locales[i][3] = str(codLocal)
