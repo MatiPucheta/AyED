@@ -99,7 +99,6 @@ def menuCliente():
     intentos = 3
     input("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-
 #MÓDULO del menú principal Dueño
 def menuDueño():
     global intentos
@@ -211,11 +210,11 @@ def mostrar_locales():
 
 #MÓDULO para ordernar los locales alfabéticamente
 def Ordenar():
-    for a in range(0,F-1):
-        for b in range(1,F):
+    for a in range(F-1):
+        for b in range(a+1,F):
             primero = locales[a][0]
             segundo = locales[b][0]
-            if primero[0] > segundo[0]:
+            if locales[a][0] > locales[b][0]:
                 for k in range(C):
                     aux = locales[a][k]
                     locales[a][k] = locales[b][k]
@@ -225,19 +224,19 @@ def Ordenar():
 def Repeticion(col,dato):
     global usado
     global mid
-    ini = 1
+    global T
+    inicio = 0
     fin = 50
-    T
-    while (ini < fin) and T:
-        mid = (ini + fin) // 2
-        usado = locales[mid][col]
-        if  usado == dato:
-            T = False
-        elif usado[0] > dato[0]:
-            fin = mid-1
-        else: ini = mid+1
-
-
+    T = False
+    while inicio <= fin and not T:
+        mid = (inicio + fin) // 2
+        if locales[mid][col] == dato:
+            T = True
+        else:
+            if locales[mid][col] < dato:
+                fin = mid - 1
+            else:
+                inicio = mid + 1
 
 #MÓDULO para cargar los locales
 def crear_local():
@@ -259,11 +258,11 @@ def crear_local():
         
         sep()
         
-        #Se verifica que el nombre no se esté ya usado
+        #Se verifica que el nombre no esté ya usado
         find = True
         while find:
             Repeticion(0,nombreLocal)
-            if nombreLocal == usado:
+            if T:
                 nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
             else: find = False
         
@@ -290,8 +289,8 @@ def crear_local():
         codUsuario = input("Ingrese el código del usuario dueño del local: ")
         
         # Validación del código de usuario
-        while codUsuario not in (4, 6):
-            codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
+        while codUsuario not in ("4", "6"):
+            codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
         #Ultimos elementos a insertar
         locales[i][3] = codLocal
@@ -561,7 +560,6 @@ Elija el tipo de usuario que es usted por favor: """))
     else: 
         print("¡Bienvenido Señor/a!")
 
-
 def logeo():
     global intentos
     if clase_user == 1:
@@ -569,7 +567,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if usuarios[0,0] == login_user   and usuarios[0,1] == login_pass: #se suman los intentos
+            if usuarios[0][0] == login_user   and usuarios[0][1] == login_pass: #se suman los intentos
                 os.system('cls')
                 print("Felicidades Administrador, has podido ingresar!")
                 
@@ -590,7 +588,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if usuarios[1,0] == login_user   and usuarios[1,1] == login_pass: #se suman los intentos
+            if usuarios[1][0] == login_user   and usuarios[1][1] == login_pass: #se suman los intentos
                 print("Felicidades Dueño A, has podido ingresar!")
                 sep()
                 menuDueño()
@@ -607,7 +605,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if usuarios[2,0] == login_user   and usuarios[2,1] == login_pass: #se suman los intentos
+            if usuarios[2][0] == login_user   and usuarios[2][1] == login_pass: #se suman los intentos
                 print("Felicidades Dueño B, has podido ingresar!")
                 sep()
                 menuDueño()
@@ -625,7 +623,7 @@ def logeo():
             login_user = input("Ingrese su nombre de usuario: ")
             login_pass = getpass.getpass("Ingrese su contraseña: ")
             
-            if usuarios[3,0] == login_user   and usuarios[3,1] == login_pass: #se suman los intentos
+            if usuarios[3][0] == login_user   and usuarios[3][1] == login_pass: #se suman los intentos
                 print("Felicidades Cliente, has podido ingresar!")
                 sep()
                 menuCliente()
