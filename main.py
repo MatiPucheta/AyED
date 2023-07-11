@@ -223,8 +223,6 @@ def Ordenar():
 
 #MÓDULO para buscar dicotómicamente
 def Repeticion(col,dato):
-    global usado
-    global mid
     fin=1
     for i in range(50):
         if locales[i][0] != " ":
@@ -232,7 +230,7 @@ def Repeticion(col,dato):
     ini=0
     
     while ini < fin:
-        mid = (ini + fin) // 2
+        mid = (ini + fin)//2
         usado = locales[mid][col]
         if usado == dato:
             return mid
@@ -300,7 +298,7 @@ def crear_local():
         codUsuario = input("Ingrese el código del usuario dueño del local: ")
         
         #Validación del código de usuario
-        while (codUsuario != '4') and (codUsuario != '6'):
+        while codUsuario not in ('4','6'):
             codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
         #Ultimos elementos a insertar
@@ -350,7 +348,7 @@ def modificar_local():
         
         os.system("cls")
         if locales[cod][4] == "Baja":
-            activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo para así modificarlo?: ")
+            activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo?: ")
             if activar in ("sí","si"):
                 print(f"Restaurando el local: '{locales[cod][0]}', (Código: {locales[cod][3]})")
                 sep()
@@ -401,9 +399,9 @@ def modificar_local():
         
         
         # Validación del código de usuario
-        codUsuario = int(input("Ingrese el nuevo código del usuario dueño del local: "))
-        while codUsuario != 4 and codUsuario != 6:
-            codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
+        codUsuario = input("Ingrese el nuevo código del usuario dueño del local: ")
+        while codUsuario not in ('4','6'):
+            codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
         #Ordenamiento
         Ordenar()
