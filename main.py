@@ -464,13 +464,13 @@ def mostrar_mapa_locales():
             c+=1
     
     # Mostrar el mapa de locales
-    print("+" + "-" * (3 * col + 1) + "+")
+    print("+" + "-" * 19 + "+")
     for fila in mapa_locales:
         print("|", end="")
         for codigo in fila:
             print(f" {codigo} ", end="|")
-        print("\n+" + "-" * (3 * col + 1) + "+")
-    print("\n")
+        print("\n+" + "-" * 19 + "+")
+
 
 #MÓDULO de la sección Gestión de Locales
 def menuGestionLocales():
