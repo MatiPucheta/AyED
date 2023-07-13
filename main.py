@@ -3,7 +3,7 @@ import os
 import getpass
 
 #contador de filas
-i = 1
+i = 0
 
 F=50
 C=5
@@ -23,7 +23,7 @@ perfumería = 0
 
 #Array de 4x2 con los usarios y contraseñas
 usuarios = [
-    ["admin@shopping.com", "12345"],
+    ["1", "1"],
     ["localA@shopping.com", "AAAA1111"],
     ["localB@shopping.com", "BBBB2222"],
     ["unCliente@shopping.com", "33xx33"]
@@ -203,8 +203,8 @@ def menuGestionNov():
 def mostrar_locales():
     global i
     print("== Locales Cargados ==")
-    if i > 1:
-        for p in range(1,i):
+    if i > 0:
+        for p in range(0,i):
             print(f"Nombre: {locales[p][0]} | Ubicación: {locales[p][1]} | Rubro: {locales[p][2]} | Código: {locales[p][3]} | Estado: {locales[p][4]}")
     else:
         print("No se han cargado locales aún.")
@@ -212,10 +212,8 @@ def mostrar_locales():
 #MÓDULO para ordernar los locales alfabéticamente
 def Ordenar():
     for a in range(0,F-1):
-        for b in range(1,F):
-            primero = locales[a][0]
-            segundo = locales[b][0]
-            if primero[0] > segundo[0]:
+        for b in range(a+1,F):
+            if locales[a][0] < locales[b][0]:
                 for k in range(C):
                     aux = locales[a][k]
                     locales[a][k] = locales[b][k]
@@ -231,11 +229,10 @@ def Repeticion(col,dato):
     
     while ini < fin:
         mid = (ini + fin)//2
-        usado = locales[mid][col]
-        if usado == dato:
+        if locales[mid][col] == dato:
             return mid
         
-        elif usado[0] < dato[0]:
+        elif locales[mid][col] < dato:
             fin = mid-1
         
         else:
@@ -263,6 +260,7 @@ def crear_local():
     os.system("cls")
     
     while nombreLocal != '0':
+        
         print("== Crear Local ==")
         
         sep()
