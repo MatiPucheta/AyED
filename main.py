@@ -221,13 +221,13 @@ def Ordenar():
 
 #MÓDULO para buscar dicotómicamente
 def Repeticion(col,dato):
-    fin=1
+    fin=0
     for i in range(50):
         if locales[i][0] != " ":
             fin += 1
     ini=0
     
-    while ini < fin:
+    while ini <= fin:
         mid = (ini + fin)//2
         if locales[mid][col] == dato:
             return mid
