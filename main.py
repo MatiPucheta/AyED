@@ -226,23 +226,32 @@ def Repeticion(col,dato):
         if locales[i][0] != " ":
             fin += 1
     ini=0
-    
-    while ini <= fin:
+    q = True
+    while ini <= fin and q:
         mid = (ini + fin)//2
         if locales[mid][col] == dato:
-            return mid
+            q = False
         
         elif locales[mid][col] < dato:
             fin = mid-1
         
         else:
             ini = mid+1
+    if not q:
+        return mid
+    else: return -1
 
 #MÓDULO para buscar secuencialmente
 def Busquedasec(col,num):
+    r = True
     for i in range(50):
         if locales[i][col] == num:
-            return i
+            pos = i
+            r = False
+    if not r:
+        return pos
+    else: return -1
+
 
 #MÓDULO para cargar los locales
 def crear_local():
@@ -266,15 +275,9 @@ def crear_local():
         sep()
         
         #Se verifica que el nombre no se esté ya usado
-        find = True
-        while find:
-            pos = Repeticion(0,nombreLocal)
-            if pos is None:
-                locales[i][0] = nombreLocal
-                find = False
-            else:
-                nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
-        
+        while Repeticion(0,nombreLocal) != -1:
+            nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+        locales[i][0] = nombreLocal
         
         locales[i][1] = input("Ingrese la ubicación del local: ")
         sep()
@@ -333,8 +336,13 @@ def modificar_local():
         codigo = input("Ingrese el código del local que desea modificar: ")
         os.system("cls")
         
+        cod = Repeticion(3,codigo)
+        while cod == -1:
+            codigo = input("No se encontró ningún local con ese código, ingrese uno nuevo: ")
+            cod = Repeticion(3,codigo)
+
         # Buscar el local por su código
-        find = True
+        """find = True
         while find:
             
             cod = Busquedasec(3,codigo)
@@ -342,7 +350,7 @@ def modificar_local():
             if cod is None:
                 print("Lo lamentamos pero no se encontró ningún local con ese código.")
                 codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
-            else: find = False
+            else: find = False"""
         
         os.system("cls")
         if locales[cod][4] == "Baja":
@@ -366,14 +374,8 @@ def modificar_local():
         os.system("cls")
         
         #Se verifica que el nombre no se esté ya usado
-        find = True
-        while find:
-            pos = Repeticion(0,nombreLocal)
-            if pos is None:
-                locales[i][0] = nombreLocal
-                find = False
-            else:
-                nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+        while Repeticion(0,nombreLocal) != -1:
+            nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
         
         locales[cod][0] = nombreLocal
         
@@ -412,16 +414,12 @@ def eliminar_local():
     
     codigo = input("Ingrese el código del local que desea eliminar: ")
     
-    # Buscar el local por su código
-    find = True
-    while find:
-        pos = Repeticion(3,codigo)
-        
-        if codigo != locales[pos][3]:
-            print("Lo lamentamos pero no se encontró ningún local con ese código.")
-            codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
-        else: find = False
-    
+    pos = Repeticion(3,codigo)
+    while pos == -1:
+            codigo = input("No se encontró ningún local con ese código, ingrese uno nuevo: ")
+            pos = Repeticion(3,codigo)
+
+            
     if locales[pos][4] == "Baja":
         print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado ")
         sep()
