@@ -221,11 +221,13 @@ def Ordenar():
 
 #MÓDULO para buscar dicotómicamente
 def Repeticion(col,dato):
+    #Se busca los locales que estén cargados y se le asignará a la variable fin un valor (la longuitud de los arreglos cargados)
     fin=0
     for i in range(50):
         if locales[i][0] != " ":
             fin += 1
     ini=0
+    
     q = True
     while ini <= fin and q:
         mid = (ini + fin)//2
@@ -237,20 +239,25 @@ def Repeticion(col,dato):
         
         else:
             ini = mid+1
+    #Devolución de valores
     if not q:
         return mid
-    else: return -1
+    else: 
+        return -1
 
 #MÓDULO para buscar secuencialmente
 def Busquedasec(col,num):
     r = True
     for i in range(50):
         if locales[i][col] == num:
-            pos = i
+            cod = i
             r = False
+    
+    #Devolución de valores
     if not r:
-        return pos
-    else: return -1
+        return cod
+    else: 
+        return -1
 
 
 #MÓDULO para cargar los locales
@@ -336,21 +343,19 @@ def modificar_local():
         codigo = input("Ingrese el código del local que desea modificar: ")
         os.system("cls")
         
-        cod = Repeticion(3,codigo)
+        """cod = Repeticion(3,codigo)
         while cod == -1:
             codigo = input("No se encontró ningún local con ese código, ingrese uno nuevo: ")
-            cod = Repeticion(3,codigo)
+            cod = Repeticion(3,codigo)"""
 
         # Buscar el local por su código
-        """find = True
-        while find:
-            
+        cod = Busquedasec(3,codigo)
+        
+        while cod == -1:
+            print("Lo lamentamos pero no se encontró ningún local con ese código.")
+            codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
             cod = Busquedasec(3,codigo)
-            
-            if cod is None:
-                print("Lo lamentamos pero no se encontró ningún local con ese código.")
-                codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
-            else: find = False"""
+        
         
         os.system("cls")
         if locales[cod][4] == "Baja":
@@ -412,20 +417,26 @@ def modificar_local():
 def eliminar_local():
     global locales
     
+    mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
+    if mostrar in ("sí","si"):
+        mostrar_locales()
+    
     codigo = input("Ingrese el código del local que desea eliminar: ")
     
-    pos = Repeticion(3,codigo)
-    while pos == -1:
-            codigo = input("No se encontró ningún local con ese código, ingrese uno nuevo: ")
-            pos = Repeticion(3,codigo)
+    cod = Busquedasec(3,codigo)
+    
+    while cod == -1:
+        print("Lo lamentamos pero no se encontró ningún local con ese código.")
+        codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
+        cod = Busquedasec(3,codigo)
 
-            
-    if locales[pos][4] == "Baja":
+    
+    if locales[cod][4] == "Baja":
         print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado ")
         sep()
     else:
         os.system("cls")
-        print(f"Eliminando local '{locales[pos][0]}' (Código: {locales[pos][3]})")
+        print(f"Eliminando local '{locales[cod][0]}' (Código: {locales[cod][3]})")
         
         sep()
         
@@ -433,7 +444,7 @@ def eliminar_local():
         
         if confirmacion in ("sí", "si"):
             # Cambiar el estado del local a "Baja"
-            locales[pos][4] = "Baja"
+            locales[cod][4] = "Baja"
             print("Local eliminado exitosamente.")
         else:
             print("Eliminación cancelada.")
