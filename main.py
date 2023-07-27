@@ -268,7 +268,7 @@ def crear_local():
     nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
     os.system("cls")
     
-    while nombreLocal != '0':
+    while nombreLocal != '0' and codLocal != 50:
         
         print("== Crear Local ==")
         
