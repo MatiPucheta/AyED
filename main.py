@@ -351,11 +351,12 @@ def modificar_local():
                 sep()
                 print(f"Restaurando el local: '{locales[cod][0]}', (Código: {locales[cod][3]})")
                 sep()
-                locales[cod][4] == "Activo"
+                locales[cod][4] = "Activo"
         else:
             print(f"Modificando el local '{locales[cod][0]}', (Código: {locales[cod][3]})")
             sep()
         #Se resta 1 a la cantidad total de locales con el rubro a modificar
+
         if locales[cod][2] == "comida":
             comida -= 1
         elif locales[cod][2] == "indumentaria":
