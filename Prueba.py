@@ -55,7 +55,7 @@ def busSec(Alogico, dato1: str, dato2: str) -> int: #Busco tanto el mail como la
 def busquedaDico(Afisico,Alogico, cod:int):# método de búsqueda dicotómica en base al código del local
     Alogico.seek (0, 0)
     aux =load(Alogico)
-    tamReg = Alogico.tel1()
+    tamReg = Alogico.tell()
     cantReg = int(getsize(Afisico)/tamReg)
     desde = 0
     hasta = cantReg-1
@@ -74,3 +74,10 @@ def busquedaDico(Afisico,Alogico, cod:int):# método de búsqueda dicotómica en
         return medio*tamReg
     else:
         return -1
+
+ad = [0,1,2,3,4,55,6,7,8,7,9,102,3143,5452]
+ap = [0,1,2,3,102,3143,5452]
+
+ac = {key: val for key,val in enumerate(ad) if val%2 == 0}
+
+print(ac)
