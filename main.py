@@ -62,7 +62,7 @@ class Promociones:
     def __init__(self) -> None:
         self.codPromo = 0
         self.textoPromo = ''.ljust(200,' ')
-        self.fechaDesdePromo = ' '
+        self.fechaDesdePromo = []*3
         self.rubroLocal = ''.ljust(50,' ')
         self.codUsuario = 0
         self.estado = ' '
@@ -71,15 +71,15 @@ class uso_Promociones:
     def __init__(self) -> None:
         self.codCliente = 0
         self.codPromo = 0
-        self.fechaUsoPromo = ' '
+        self.fechaUsoPromo = []*3
         
 
 class Novedades:
     def __init__(self) -> None:
         self.codNovedad = 0
         self.textoNovedad = ''.ljust(200,' ')
-        self.fechaDesdenovedad = ' '
-        self.fechaHastaNevedad = ' '
+        self.fechaDesdenovedad = []*3
+        self.fechaHastaNevedad = []*3
         self.tipoUsuario = ''.ljust(20,' ')
         self.estado = ' '
 
@@ -248,6 +248,59 @@ def mostrar_locales():
     else:
         print("No se han cargado locales aún.")
 
+#MÓDULO de la sección Gestión de Locales
+def menuGestionLocales():
+    print(gestión_menú)
+    
+    sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
+    os.system('cls')
+    while sub_menu_1 != "e": #menú gestion de locales
+        
+        sep()
+        
+        if sub_menu_1 == "a":
+            sep()
+            
+            crear_local()
+            #MODULO mostrar_rubros():
+                
+            calcLoc()
+            sep()
+        
+        elif sub_menu_1 == "b": #verificación
+            modificar_local()
+            sep()
+        
+        elif sub_menu_1 == "c": 
+            eliminar_local()
+            sep()    
+        
+        elif sub_menu_1 == "d": 
+            mostrar_mapa_locales()
+            sep()
+        
+        else:
+            print("Opción inválida. Eliga una de de las opciones disponibles por favor.")
+        
+        print(gestión_menú)
+        sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
+    
+    print("Volviendo...")
+    sep()
+    print(menú_Admin)
+    sep()
+
+#MÓDULO para calcular los locales de los rubros
+def calcLoc():
+    global comida, indumentaria, perfumería
+    
+    print(f"""===Cantidad de Locales por Rubro===
+        
+        Rubro comida: {comida}
+        Rubro indumentaria: {indumentaria}
+        Rubro perfumería: {perfumería}
+        """)
+
 #MÓDULO para ordernar los locales alfabéticamente
 def Ordenar():
     for a in range(0,F-1):
@@ -384,6 +437,18 @@ def OrdenarLoc() -> None: #falso burbuja
                 dump(auxj, ALL)
                 ALL.seek(j*tamR)
                 dump(auxi, ALL)
+
+#MÓDULO para validar fecha
+def validarFecha() -> str:
+    flag = True
+    while flag:
+        try:
+            fecha = input("Ingresa una fecha en el formato DD/MM/AAAA: ")
+            datetime.strptime(fecha, '%d/%m/%Y')
+            flag = False
+        except ValueError:
+            print("Fecha invalida")
+    return fecha
 
 #MÓDULO para cargar los locales
 def crear_local() -> None:
@@ -594,8 +659,6 @@ def eliminar_local():
             print("Local eliminado exitosamente.")
         else:
             print("Eliminación cancelada.")
-        
-        
 
 #MÓDULO para mostrar los locales cargados en un mapa
 def mostrar_mapa_locales():
@@ -626,59 +689,6 @@ def mostrar_mapa_locales():
             print(f" {codigo} ", end="|")
         print("\n+" + "-" * 19 + "+")
 
-
-#MÓDULO de la sección Gestión de Locales
-def menuGestionLocales():
-    print(gestión_menú)
-    
-    sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
-    os.system('cls')
-    while sub_menu_1 != "e": #menú gestion de locales
-        
-        sep()
-        
-        if sub_menu_1 == "a":
-            sep()
-            
-            crear_local()
-            #MODULO mostrar_rubros():
-                
-            calcLoc()
-            sep()
-        
-        elif sub_menu_1 == "b": #verificación
-            modificar_local()
-            sep()
-        
-        elif sub_menu_1 == "c": 
-            eliminar_local()
-            sep()    
-        
-        elif sub_menu_1 == "d": 
-            mostrar_mapa_locales()
-            sep()
-        
-        else:
-            print("Opción inválida. Eliga una de de las opciones disponibles por favor.")
-        
-        print(gestión_menú)
-        sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
-    
-    print("Volviendo...")
-    sep()
-    print(menú_Admin)
-    sep()
-
-#MÓDULO para calcular los locales de los rubros
-def calcLoc():
-    global comida, indumentaria, perfumería
-    
-    print(f"""===Cantidad de Locales por Rubro===
-        
-        Rubro comida: {comida}
-        Rubro indumentaria: {indumentaria}
-        Rubro perfumería: {perfumería}
-        """)
 
 #MÓDULO de logeo de los usuarios
 def Logeo() -> None:
