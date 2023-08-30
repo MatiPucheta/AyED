@@ -183,7 +183,7 @@ def menuCliente() -> None:
 
 
 #MÓDULO del menú principal Dueño
-def menuDueño():
+def menuDueño() -> None:
     global intentos
     print(menú_Dueño)
     sep()
@@ -210,7 +210,7 @@ def menuDueño():
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
 #MÓDULO del menú principal Admin
-def menuPrincipal():
+def menuPrincipal() -> None:
     global intentos
     
     print(menú_Admin)
@@ -240,7 +240,7 @@ def menuPrincipal():
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
 #MÓDULO para mostrar los locales cargados
-def mostrar_locales():
+def mostrar_locales() -> None:
     global i
     print("== Locales Cargados ==")
     if i > 0:
@@ -250,7 +250,7 @@ def mostrar_locales():
         print("No se han cargado locales aún.")
 
 #MÓDULO de la sección Gestión de Locales
-def menuGestionLocales():
+def menuGestionLocales() -> None:
     print(gestión_menú)
     
     sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
@@ -292,7 +292,7 @@ def menuGestionLocales():
     sep()
 
 #MÓDULO para calcular los locales de los rubros
-def calcLoc():
+def calcLoc() -> None:
     global comida, indumentaria, perfumería
     
     print(f"""===Cantidad de Locales por Rubro===
@@ -303,7 +303,7 @@ def calcLoc():
         """)
 
 #MÓDULO para ordernar los locales alfabéticamente
-def Ordenar():
+def Ordenar() -> None:
     for a in range(0,F-1):
         for b in range(a+1,F):
             if locales[a][0] < locales[b][0]:
@@ -313,7 +313,7 @@ def Ordenar():
                     locales[b][k] = aux
 
 #MÓDULO para buscar dicotómicamente
-def Repeticion(col,dato):
+def Repeticion(col,dato) -> None:
     fin=i
     ini=0
     
@@ -335,7 +335,7 @@ def Repeticion(col,dato):
         return -1
 
 #MÓDULO para buscar secuencialmente
-def Busquedasec(col,num):
+def Busquedasec(col,num) -> None:
     a = 0
     while locales[a][col] != num and a <= 49:
         a += 1
@@ -376,7 +376,7 @@ def buscSecUser(dato: int) -> int:
         return pos
     else:
         return -1
-        
+
 
 #MODULO para buscar secuencialmente en el archivo locales por código
 def buscSecCod(dato: int) -> int: 
@@ -531,7 +531,7 @@ def crear_local() -> None:
         os.system("cls")
 
 #MÓDULO para modificar un local
-def modificar_local():
+def modificar_local() -> None:
     global locales, confirm, comida, perfumería, indumentaria, activar
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
@@ -613,7 +613,7 @@ def modificar_local():
         print("Local modificado exitosamente.")
 
 #MÓDULO eliminar un local
-def eliminar_local():   
+def eliminar_local() -> None:   
     global comida, perfumería, indumentaria
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
@@ -662,7 +662,7 @@ def eliminar_local():
             print("Eliminación cancelada.")
 
 #MÓDULO para mostrar los locales cargados en un mapa
-def mostrar_mapa_locales():
+def mostrar_mapa_locales() -> None:
     global locales
     
     os.system('cls')
@@ -756,7 +756,7 @@ def Registro() -> None:
 
 #MÓDULO de verificación del tipo de usuario
 
-def Inicio():
+def Inicio() -> None:
     menu = """Eliga la opción que desee
 
     1. Ingresar con usuario registrado
