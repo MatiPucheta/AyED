@@ -63,6 +63,7 @@ class Promociones:
         self.codPromo = 0
         self.textoPromo = ''.ljust(200,' ')
         self.fechaDesdePromo = ' '
+        self.fechaHastaPromo = ' '
         self.rubroLocal = ''.ljust(50,' ')
         self.codUsuario = 0
         self.estado = ' '
