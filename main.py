@@ -62,12 +62,8 @@ class Promociones:
     def __init__(self) -> None:
         self.codPromo = 0
         self.textoPromo = ''.ljust(200,' ')
-<<<<<<< HEAD
         self.fechaDesdePromo = []*3
-=======
-        self.fechaDesdePromo = ' '
-        self.fechaHastaPromo = ' '
->>>>>>> 122c1ebe2856e0e4982d14909e9fdde50ed2ff0d
+        self.fechaHastaNevedad = []*3
         self.rubroLocal = ''.ljust(50,' ')
         self.codUsuario = 0
         self.estado = ' '
