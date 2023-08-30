@@ -1,3 +1,6 @@
+from os.path import getsize, exists
+from pickle import load,dump
+from datetime import datetime
 import os
 #librería importada para la contraseña oculta
 import getpass
@@ -10,6 +13,9 @@ C=5
 # Lista para almacenar los locales
 locales=[[" "]*C for i in range(F)]
 
+# Código inicial para el primer usuario
+codUsuario = 1
+
 # Código inicial para el primer local
 codLocal = 1  
 
@@ -18,6 +24,82 @@ comida = 0
 indumentaria = 0
 perfumería = 0
 
+#Declaraciones de los archivos
+AFU = 'Archivos\Usuarios.dat'
+AFL = 'Archivos\Locales.dat'
+AFP = 'Archivos\Promociones.dat'
+AFUP = 'Archivos\uso_Promociones.dat'
+AFN = 'Archivos\Novedades.dat'
+
+ALU = open(AFU, 'r+b')
+ALL = open(AFL, 'r+b')
+ALP = open(AFP, 'r+b')
+ALUP = open(AFUP, 'r+b')
+ALN = open(AFN, 'r+b')
+
+#codUsario del usuario activo
+usuarioActivo = 0
+
+#Declaración de registros
+
+class Usuarios:
+    def __init__(self) -> None:
+        self.codUsuario = 0,
+        self.nombreUsuario = ''.ljust(100,' '),
+        self.claveUsuario = ''.ljust(8, ' '),
+        self.tipoUsuario = ''.ljust(20,' ')
+
+class Locales:
+    def __init__(self) -> None:
+        self.codLocal = 0,
+        self.nombreLocal = ''.ljust(50,' '),
+        self.ubicacionLocal = ''.ljust(50, ' '),
+        self.rubroLocal = ''.ljust(50,' '),
+        self.codUsuario = 0,
+        self.estado = ' '
+
+class Promociones:
+    def __init__(self) -> None:
+        self.codPromo = 0,
+        self.textoPromo = ''.ljust(200,' '),
+        self.fechaDesdePromo = ' ',
+        self.rubroLocal = ''.ljust(50,' '),
+        self.codUsuario = 0,
+        self.estado = ' '
+
+class uso_Promociones:
+    def __init__(self) -> None:
+        self.codCliente = 0,
+        self.codPromo = 0,
+        self.fechaUsoPromo = ' '
+        
+
+class Novedades:
+    def __init__(self) -> None:
+        self.codNovedad = 0,
+        self.textoNovedad = ''.ljust(200,' '),
+        self.fechaDesdenovedad = ' ',
+        self.fechaHastaNevedad = ' ',
+        self.tipoUsuario = ''.ljust(20,' '),
+        self.estado = ' '
+
+#Variables de trabajo
+user = Usuarios
+loc = Locales
+prom = Promociones
+nov = Novedades
+u_prom = uso_Promociones
+
+#Carga del super usuario administrador
+if getsize(AFU) == 0:
+    ALU.seek(0)
+    user = load(ALU)
+    user.codUsuario = codUsuario,
+    user.nombreUsuario = 'admin@shopping.com'.ljust(100,' ')
+    user.claveUsuario = '12345'.ljust(8, ' ')
+    user.tipoUsuario = 'administrador'.ljust(20,' ')
+    dump(ALU)
+    ALU.flush()
 
 
 
@@ -58,93 +140,75 @@ novedades_menú = ("""-- Gestión de Novedades --
 
 #menú del Dueño
 menú_Dueño = ("""-- Menú Principal --
-    1: Gestión de descuento
-        a) Crear descuento para mi local
-        b) Modificar descuento de mi local
-        c) Eliminar descuento de mi local
-        d) Volver
-    2: Aceptar/Rechazar pedido de descuento
-    3: Reporte de uso de descuentos
+    1: Crear descuentos
+    2: Reporte de uso de descuentos
+    3: Ver novedades
     0: Salir""")
 
 #menú del cliente
 menú_Cliente = ("""-- Menú Principal --
-    1: Registrarme
-    2: Buscar descuento en locales
-    3: Solicitar descuento
-    4: Ver novedades
+    1: Buscar descuentos en local
+    2: Solicitar descuento
+    3: Ver novedades
     0: Salir""")
 
 #separador a fin de estética
-def sep():
+def sep() -> None:
     return print("-"*70)
 
 #MÓDULO del menú principal Cliente
-def menuCliente():
+def menuCliente() -> None:
     global intentos
     print(menú_Cliente)
     sep()
     
-    elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
-    while elección != 0:
-        
-        if elección == 1 or elección == 2 or elección == 3 or elección == 4:
-            sep()
-            print("Lo lamentamos pero esta sección está en construcción")
-        else:
-            print("Opción inválida. Eliga una de las opciones disponibles.")
-            sep()
-        
-        elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
+    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    while elección != '0':
+            
+        match elección:
+            case '1':
+                # HACER MODULO buscDescuentos()
+                pass
+            case '2':
+                # HACER MODULO solicDescuento()
+                pass
+            case '3':
+                print("Diagramado en Chapin.")
+                pass
+            case default:
+                print("Opción inválida, elija nuevamente.")
+                
+        elección = input("¿Qué parte del menú principal le gustaría ver?: ")
     intentos = 3
-    input("Que tenga un buen día, hasta luego") #mensaje de despedida
+    print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
 
 #MÓDULO del menú principal Dueño
 def menuDueño():
     global intentos
-    global operación
     print(menú_Dueño)
     sep()
     
-    elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
+    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
     
-    while elección != 0:
+    while elección != '0':
         
-        if elección not in (1,2,3):
-            sep()
-            print("Opción inválida. Eliga una de las opciones disponibles.")
-            sep()
-        else:
-            
-            if elección == 1:
-                sep()
-                operación = input("¿Que operación le gustaría realizar?: ").lower()
-                
-                while operación != "d":
-                    os.system('cls')
-                    while operación not in ("a", "b", "c","d"):
-                        operación = input("Opción inválida. Eliga una de las opciones disponibles: ")
-                    
-                    if operación in ("a", "b", "c"):
-                        print("Lo lamentamos pero esta sección está en construcción")
-                        sep()
-                        operación = input("¿Que operación le gustaría realizar?: ").lower()
-                        os.system('cls')
-                    
-                    elif operación == "d": 
-                        print("Volviendo...")
-                    sep()
-                    print(menú_Dueño)
-                    sep()
-            
-            else: 
-                print("Lo lamentamos pero esta sección está en construcción")
-                sep()
+        match elección:
+            case '1':
+                # HACER MODULO crearDescuentos()
+                pass
+            case '2':
+                # HACER MODULO reportDescuentos()
+                pass
+            case '3':
+                print("Diagramado en Chapin.")
+                pass
+            case default:
+                print("Opción inválida, elija nuevamente.")
         
-        elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
+        elección = input("¿Qué parte del menú principal le gustaría ver?: ")
     intentos = 3
-    input("Que tenga un buen día, hasta luego") #mensaje de despedida
+    print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
 #MÓDULO del menú principal Admin
 def menuPrincipal():
@@ -153,12 +217,11 @@ def menuPrincipal():
     print(menú_Admin)
     sep()
     
-    elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
+    elección = int(input("¿Qué parte del menú principal le gustaría ver?: "))
     while elección != 0:
         
         if elección == 4:
-            os.system('cls')
-            menuGestionNov()
+            print("Diagramado en Chapin.")
         
         elif elección == 2 or elección == 3 or elección == 5:
             print("Lo lamentamos pero esta sección está en construcción")
@@ -175,28 +238,7 @@ def menuPrincipal():
         sep()
         elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
     intentos = 3
-    input("Que tenga un buen día, hasta luego") #mensaje de despedida
-
-#MÓDULO de la sección Gestión de Novedades
-def menuGestionNov():
-    sep()
-    print(novedades_menú)
-    
-    sub_menu_4 = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()        
-    while sub_menu_4 != "e":
-        
-        sep()    
-        if sub_menu_4 == "a" or sub_menu_4 == "b" or sub_menu_4 == "c" or sub_menu_4 == "d":
-            print("Lo lamentamos pero esta sección está en construcción")
-        else:
-            print("Opción inválida. Elija una de las opciones disponibles.")
-        
-        sub_menu_4 = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
-        
-    print("Volviendo...")
-    sep()
-    print(menú_Admin)
-    sep()
+    print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
 #MÓDULO para mostrar los locales cargados
 def mostrar_locales():
@@ -252,9 +294,97 @@ def Busquedasec(col,num):
     else: 
         return -1
 
+#MODULO para buscar secuencialmente en el archivo usuarios
+def busSec(dato: str) -> int: 
+    tamaño = getsize(AFU)
+    ALU.seek(0)
+    encontrado = False
+    while ALU.tell() < tamaño and not encontrado:
+        pos = ALU.tell()
+        vrT = load(ALU)
+        if vrT.nombreUsuario.strip() == dato:
+            encontrado = True
+    if encontrado: 
+        return pos
+    else:
+        return -1
+    
+#MODULO para buscar secuencialmente en el archivo usuarios por código
+def buscSecUser(dato: int) -> int:
+    tamaño = getsize(AFU)
+    ALU.seek(0)
+    encontrado = False
+    while ALU.tell() < tamaño and not encontrado:
+        pos = ALU.tell()
+        vrT = load(ALU)
+        if vrT.codUsuario == dato:
+            encontrado = True
+    if encontrado: 
+        return pos
+    else:
+        return -1
+        
+
+#MODULO para buscar secuencialmente en el archivo locales por código
+def buscSecCod(dato: int) -> int: 
+    tamaño = getsize(AFL)
+    ALL.seek(0)
+    encontrado = False
+    while ALL.tell() < tamaño and not encontrado:
+        pos = ALL.tell()
+        vrT = load(ALL)
+        if vrT.codLocal == dato:
+            encontrado = True
+    if encontrado: 
+        return pos
+    else:
+        return -1
+
+#MÓDULO de busqueda dicotomica
+def busquedaDico(nom:str) -> int:# método de búsqueda dicotómica
+    ALL.seek (0, 0)
+    aux =load(ALL)
+    tamReg = ALL.tell()
+    cantReg = int(getsize(AFL)/tamReg)
+    desde = 0
+    hasta = cantReg-1
+    medio = (desde + hasta) // 2
+    ALL.seek(medio*tamReg, 0)
+    vrEmp=load(ALL)
+    while vrEmp.nombreLocal != nom and desde < hasta:
+        if nom < vrEmp.nombreLocal:
+            hasta = medio - 1
+        else:
+            desde = medio + 1
+        medio = (desde + hasta) // 2
+        ALL. seek(medio*tamReg, 0)
+        vrEmp=load(ALL)
+    if vrEmp.nombreLocal == nom:
+        return medio*tamReg
+    else:
+        return -1
+
+#MÓDULO de ordenamiento (falso burbuja)
+def OrdenarLoc() -> None: #falso burbuja
+    ALL.seek(0)
+    aux = load(ALL)
+    tamR = ALL.tell()
+    tamA = getsize(AFL)
+    cantR = int(tamA/tamR)
+    for i in range(cantR-1):
+        for j in range(i+1, cantR):
+            ALL.seek(i*tamR)
+            auxi = load(ALL)
+            ALL.seek(j*tamR)
+            auxj = load(ALL)
+            if (auxi.nombreLocal > auxj.nombreLocal):
+                ALL.seek(i*tamR)  
+                dump(auxj, ALL)
+                ALL.seek(j*tamR)
+                dump(auxi, ALL)
 
 #MÓDULO para cargar los locales
-def crear_local():
+def crear_local() -> None:
     global codLocal, locales, i
     global nombreLocal
     global mostrar
@@ -265,8 +395,10 @@ def crear_local():
         mostrar_locales()
     
     sep()
-    nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
+    nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
     os.system("cls")
+    while len(nombreLocal) < 1 and len(nombreLocal) > 50:
+        nombreLocal = input('El nombre ha excedido la cantidad maxima de caracteres, introduzca uno nuevamente por favor (un "0" indicará fin de la carga): ')
     
     while nombreLocal != '0' and codLocal != 50:
         
@@ -275,49 +407,67 @@ def crear_local():
         sep()
         
         #Se verifica que el nombre no se esté ya usado
-        while Repeticion(0,nombreLocal) != -1:
+        while busquedaDico(nombreLocal) != -1:
             nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
-        locales[i][0] = nombreLocal
         
-        locales[i][1] = input("Ingrese la ubicación del local: ")
-        sep()
-        locales[i][2] = input("Ingrese el rubro del local (indumentaria/perfumería/comida): ").lower()
+        ubicacion = input("Ingrese la ubicación del local: ")
+        
+        rubro = input("Ingrese el rubro del local (indumentaria/perfumería/comida): ").lower()
         
         # Validación del rubro
-        while locales[i][2] !='indumentaria' and locales[i][2] !='perfumería' and locales[i][2] !='comida':
-            locales[i][2] = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
+        while rubro !='indumentaria' and rubro != 'perfumería' and rubro !='comida':
+            rubro = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
         
         #se cuenta cuantas veces los rurbos fueron ingresados
-        if locales[i][2] == "comida":
-            comida += 1
-        elif locales[i][2] == "indumentaria":
-            indumentaria += 1
-        elif locales[i][2] == "perfumería":
-            perfumería += 1
+        match rubro:
+            case 'comida':
+                comida += 1
+            case 'indumentaria':
+                indumentaria += 1
+            case 'perfumería':
+                perfumería += 1
         
         sep()
         codUsuario = input("Ingrese el código del usuario dueño del local: ")
         
-        #Validación del código de usuario
-        while codUsuario !='4' and codUsuario !='6':
+        while buscSecUser(codUsuario) == -1:
             codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
-        #Ultimos elementos a insertar
-        locales[i][3] = str(codLocal)
-        locales[i][4] = "Activo"
+        #Se posiciona en el final del archivo
+        ALL.seek(0)
+        aux = load(ALL)
+        tamañoR = ALL.tell()
+        cantR = getsize(AFL)//tamañoR
+        ultimoR = cantR*tamañoR
+        ALL.seek(ultimoR)
         
-        # Actualización del código de local para el siguiente local
-        codLocal += 1
-        i +=1
+        #Asignación de los valores
+        loc = load(ALL)
+        loc.codLocal = codLocal,
+        loc.nombreLocal = nombreLocal.ljust(50, ' ')
+        loc.ubicacionLocal = ubicacion.ljust(50, ' ')
+        loc.rubroLocal = rubro.ljust(50, ' ')
+        loc.codUsuario = codUsuario,
+        loc.estado = 'A'
+        
+        #Actualización del codigo de los locales
+        codLocal+=1
+        
+        #Se guardan los cambios
+        dump(ALL)
+        ALL.flush()
         
         os.system("cls")
         print("Local creado exitosamente.")
         sep()
         
-        #Ordenamiento
-        Ordenar()
+        #Se ordenan los locales
+        OrdenarLoc()
         
-        nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
+        nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
+        
+        #Agregar local al arreglo de locales
+        
         os.system("cls")
 
 #MÓDULO para modificar un local
@@ -403,40 +553,53 @@ def modificar_local():
         print("Local modificado exitosamente.")
 
 #MÓDULO eliminar un local
-def eliminar_local():
-    global locales
-    
+def eliminar_local():    
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == "si" or mostrar == "sí":
         mostrar_locales()
     sep()
     codigo = input("Ingrese el código del local que desea eliminar: ")
     
-    cod = Busquedasec(3,codigo)
+    pos = buscSecCod(codigo)
     
-    while cod == -1:
+    while pos == -1:
         print("Lo lamentamos pero no se encontró ningún local con ese código.")
         codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
-        cod = Busquedasec(3,codigo)
+        pos = buscSecCod(codigo)
 
+    ALL.seek(pos)
+    loc = load(ALL)
     
-    if locales[cod][4] == "Baja":
-        print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado ")
+    if loc.estado == "B":
+        print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado.")
         sep()
     else:
         os.system("cls")
-        print(f"Eliminando local '{locales[cod][0]}' (Código: {locales[cod][3]})")
+        print(f"Eliminando local '{loc.nombreLocal}' (Código: {loc.codLocal})")
         
         sep()
         
         confirmacion = input("¿Está seguro/a de que desea eliminar este local? (Si/No): ").lower() 
         
         if confirmacion == 'sí' or confirmacion == 'si':
+            
+            match loc.rubroLocal:
+                case 'comida':
+                    comida -= 1
+                case 'indumentaria':
+                    indumentaria -= 1
+                case 'perfumería':
+                    perfumería -= 1
+                
             # Cambiar el estado del local a "Baja"
-            locales[cod][4] = "Baja"
+            loc.estado = "B"
+            dump(ALL)
+            ALL.flush()
             print("Local eliminado exitosamente.")
         else:
             print("Eliminación cancelada.")
+        
+        
 
 #MÓDULO para mostrar los locales cargados en un mapa
 def mostrar_mapa_locales():
@@ -482,7 +645,8 @@ def menuGestionLocales():
             sep()
             
             crear_local()
-            
+            #MODULO mostrar_rubros():
+                
             calcLoc()
             sep()
         
@@ -515,118 +679,101 @@ def calcLoc():
     
     print(f"""===Cantidad de Locales por Rubro===
         
-        Rurbro comida: {comida}
-        Rurbro indumentaria: {indumentaria}
-        Rurbro perfumería: {perfumería}
+        Rubro comida: {comida}
+        Rubro indumentaria: {indumentaria}
+        Rubro perfumería: {perfumería}
         """)
 
-#MÓDULO de verificación del tipo de usuario
-def usuario():
-    global clase_user
-    clase_user = int(input("""¿Quién es usted?
-    1. Administrador
-    2. Dueño de local A
-    3. Dueño de local B
-    4. Cliente
-Elija el tipo de usuario que es usted por favor: """))
-    while clase_user < 1 or clase_user > 4:
-        
-        print("Opción inválida.")
-        sep()
-        
-        clase_user = int(input("Elija el tipo de usuario que es usted por favor: "))
-    os.system('cls')
-    
-    if clase_user == 1:
-        print("¡Bienvenido Administrador/a!")
-        sep()
-    elif clase_user == 2:
-        print("¡Bienvenido Dueño/a!")
-        sep()
-    elif clase_user == 3:
-        print("¡Bienvenido Dueño/a!")
-        sep()
-    else: 
-        print("¡Bienvenido Señor/a!")
-
-
-def logeo():
+#MÓDULO de logeo de los usuarios
+def Logeo() -> None:
     global intentos
-    if clase_user == 1:
-        while intentos != 3:   #verificación del usuario y contraseña
-            login_user = input("Ingrese su nombre de usuario: ")
-            login_pass = getpass.getpass("Ingrese su contraseña: ")
-            
-            if usuarios[0][0] == login_user and usuarios[0][1] == login_pass: #se suman los intentos
-                os.system('cls')
-                print("Felicidades Administrador, has podido ingresar!")
-                
-                sep()
-                menuPrincipal()
-                
-            else: 
-                intentos += 1
-                
-                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
-                    input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
-                else:
-                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
-                    sep()
-    
-    elif clase_user == 2:
-        while intentos != 3:   #verificación del usuario y contraseña
-            login_user = input("Ingrese su nombre de usuario: ")
-            login_pass = getpass.getpass("Ingrese su contraseña: ")
-            
-            if usuarios[1][0] == login_user   and usuarios[1][1] == login_pass: #se suman los intentos
-                print("Felicidades Dueño A, has podido ingresar!")
-                sep()
-                menuDueño()
-            else: 
-                intentos += 1
-                
-                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
-                    input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
-                else:
-                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
-                    sep()
-    elif clase_user == 3:
-        while intentos != 3:   #verificación del usuario y contraseña
-            login_user = input("Ingrese su nombre de usuario: ")
-            login_pass = getpass.getpass("Ingrese su contraseña: ")
-            
-            if usuarios[2][0] == login_user and usuarios[2][1] == login_pass: #se suman los intentos
-                print("Felicidades Dueño B, has podido ingresar!")
-                sep()
-                menuDueño()
-            else: 
-                intentos += 1
-                
-                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
-                    input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
-                else:
-                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
-                    sep()
-    
-    else: 
-        while intentos != 3:   #verificación del usuario y contraseña
-            login_user = input("Ingrese su nombre de usuario: ")
-            login_pass = getpass.getpass("Ingrese su contraseña: ")
-            
-            if usuarios[3][0] == login_user   and usuarios[3][1] == login_pass: #se suman los intentos
-                print("Felicidades Cliente, has podido ingresar!")
-                sep()
-                menuCliente()
-            
-            else: 
-                intentos += 1
-                
-                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
-                    input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
-                else:
-                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
-                    sep()
+    global usuarioActivo
+    while intentos != 3:   #verificación del usuario y contraseña
+        nom = input("Ingrese su nombre de usuario: ")
+        
+        contra = getpass.getpass("Ingrese su contraseña: ")
+        
+        pos = busSec(nom)
+        if pos != -1:
+            ALU.seek(pos)
+            user = load(ALU)
+            if user.claveUsuario.strip() == contra:
+                usuarioActivo = user.codUsario
+                match (user.tipoUsuario.strip()):
+                    case 'cliente':
+                        menuCliente()
+                    case 'dueño':
+                        menuDueño()
+                    case 'administrador':
+                        menuPrincipal()
+            else:
+                print('Clave de usuario incorrecta')
+        else:
+            print('Usuario no existente')
+        intentos += 1
 
+#MÓDULO de registro de usuarios
+def Registro() -> None:
+    global codUsuario
+    ALU.seek(0)
+    aux = load(ALU)
+    tamañoR = ALU.tell()
+    cantR = getsize(AFU)//tamañoR
+    ultimoR = cantR*tamañoR
+    ALU.seek(ultimoR)
+    codUsuario+=1
+    nom = input("Bienvenido seas, ingrese su nombre de usuario para registrarse por favor (un '0' indica anulación del procedimiento y máximo 100 caracteres): ")
+    
+    while busSec(nom) != -1 and nom != '0':
+        nom = input('Lamentamos comunicarle el nombre ya esta siendo utilizado. Ingrese uno diferente por favor (máximo 100 caracteres): ')
+    
+    while len(nom) < 1 and len(nom) > 100:
+        nom = input('Longitud del nombre no válida, máximo 100 caracteres: ')
+    if nom != '0':
+        contra = getpass.getpass("Ingrese su contraseña por favor (máximo 8 caracteres): ")
+        
+        while len(contra) < 1 and len(contra) > 8:
+            nom = input('Longuitud del nombre no válida, máximo 8 caracteres: ')
+        
+        cliente = load(ALU)
+        cliente.codUsuario = codUsuario,
+        cliente.nombreUsuario = nom.ljust(100, ' '),
+        cliente.claveUsuario = contra.ljust(8, ' '),
+        cliente.tipoUsuario = 'cliente'.ljust(20, ' ')
+        dump(ALU)
+        ALU.flush()
+        os.system('cls')
+        print('¡¡Has podido registrarte exitosamente!!\n')
+
+#MÓDULO de verificación del tipo de usuario
+
+def Inicio():
+    menu = """Eliga la opción que desee
+
+    1. Ingresar con usuario registrado
+    
+    2. Registrarse como cliente
+    
+    3. Salir
+    
+    Elija una opción:
+"""
+
+    opcion = input(menu)
+    while opcion != '3':
+        sep()
+        
+        match opcion:
+            case '1':
+                Logeo()
+            case '2':
+                Registro()
+            case '3':
+                pass
+            case default:
+                print('Opción invalida, eliga nueva de nuevo')
+        sep()
+        opcion = input(menu)
 
 #PROGAMA PRINCIPAL
 
@@ -638,12 +785,16 @@ respuesta = inicio.lower()
 
 if respuesta == "si" or respuesta == "sí": #logeo
     
-    usuario()
-    
-    logeo()
+    Inicio()
     
 else: #mensaje de despedida en caso de no querer logear
-    input("Entonces que tenga un buen día, hasta luego")
+    print("Que tenga un buen día, hasta luego")
 
+#Cierre de archivos
+ALU.close()
+ALL.close()
+ALP.close()
+ALUP.close()
+ALN.close()
 
 

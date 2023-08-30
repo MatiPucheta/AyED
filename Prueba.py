@@ -1,83 +1,169 @@
-from os.path import getsize, exists
-from pickle import load,dump
-import os
-
-AFC = 'Archivos\Clientes.dat'
-AFD = 'Archivos\Dueños.dat'
-AFA = 'Archivos\Admin.dat'
-AFL = 'Archivos\Locales.dat'
-
-ALC = open(AFC, 'r+b')
-ALD = open(AFD, 'r+b')
-ALA = open(AFA, 'r+b')
-ALL = open(AFL, 'r+b')
-
-
-
-class Cliente:
-    def __init__(self, mail: str, contr: str) -> None:
-        self.mail = mail
-        self.contraseña = contr
-
-class Dueño:
-    def __init__(self, mail: str, contr: str) -> None:
-        self.mail = mail
-        self.contraseña = contr
-
-class Admin:
-    def __init__(self, mail: str, contr: str) -> None:
-        self.mail = mail
-        self.contraseña = contr
-
-class Locales:
-    def __init__(self, nom: str, ubi: str, rub: str,cod: int,est: str) -> None:
-        self.nombre = nom
-        self.ubicacion = ubi
-        self.rubro = rub
-        self.codigo = cod
-        self.estado = est
-
-def busSec(Alogico, dato1: str, dato2: str) -> int: #Busco tanto el mail como la contra en el archivo lógico
-    tamaño = getsize(Alogico)
-    Alogico.seek(0)
-    encontrado = False
-    while Alogico.tell() < tamaño and not encontrado:
-        pos = Alogico.tell()
-        vrT = load(Alogico)
-        if vrT.mail == dato1 and vrT.contraseña == dato2:
-            encontrado = True
-    if encontrado: 
-        return pos
-    else:
-        return -1
-
-
-def busquedaDico(Afisico,Alogico, cod:int):# método de búsqueda dicotómica en base al código del local
-    Alogico.seek (0, 0)
-    aux =load(Alogico)
-    tamReg = Alogico.tell()
-    cantReg = int(getsize(Afisico)/tamReg)
-    desde = 0
-    hasta = cantReg-1
-    medio = (desde + hasta) // 2
-    Alogico.seek(medio*tamReg, 0)
-    vrEmp=load(Alogico)
-    while vrEmp.codigo != cod and desde < hasta:
-        if cod < vrEmp.codigo:
-            hasta = medio - 1
+def logeo():
+    global intentos
+    if clase_user == 1:
+        while intentos != 3:   #verificación del usuario y contraseña
+            login_user = input("Ingrese su nombre de usuario: ")
+            login_pass = getpass.getpass("Ingrese su contraseña: ")
+            pos = busSec(login_user)
+            if pos != -1:
+                ALU.seek(pos)
+                user = load(ALU)
+                if user.claveUsuario == login_pass:
+                    
+            
+            if usuarios[0][0] == login_user and usuarios[0][1] == login_pass: #se suman los intentos
+                os.system('cls')
+                print("Felicidades Administrador, has podido ingresar!")
+                
+                sep()
+                menuPrincipal()
+                
+            else: 
+                intentos += 1
+                
+                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
+                    input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
+                else:
+                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
+                    sep()
+    
+    elif clase_user == 2:
+        while intentos != 3:   #verificación del usuario y contraseña
+            login_user = input("Ingrese su nombre de usuario: ")
+            login_pass = getpass.getpass("Ingrese su contraseña: ")
+            
+            if usuarios[1][0] == login_user   and usuarios[1][1] == login_pass: #se suman los intentos
+                print("Felicidades Dueño A, has podido ingresar!")
+                sep()
+                menuDueño()
+            else: 
+                intentos += 1
+                
+                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
+                    input("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
+                else:
+                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
+                    sep()
+    elif clase_user == 3:
+        while intentos != 3:   #verificación del usuario y contraseña
+            login_user = input("Ingrese su nombre de usuario: ")
+            login_pass = getpass.getpass("Ingrese su contraseña: ")
+            
+            if usuarios[2][0] == login_user and usuarios[2][1] == login_pass: #se suman los intentos
+                print("Felicidades Dueño B, has podido ingresar!")
+                sep()
+                menuDueño()
+            else: 
+                intentos += 1
+                
+                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
+                    print("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
+                else:
+                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
+                    sep()
+    
+    else: 
+        while intentos != 3:   #verificación del usuario y contraseña
+            login_user = input("Ingrese su nombre de usuario: ")
+            login_pass = getpass.getpass("Ingrese su contraseña: ")
+            
+            if usuarios[3][0] == login_user   and usuarios[3][1] == login_pass: #se suman los intentos
+                print("Felicidades Cliente, has podido ingresar!")
+                sep()
+                menuCliente()
+            
+            else: 
+                intentos += 1
+                
+                if intentos == 3: #si los intentos inválidos son 3, se cierra el programa
+                    print("Lo lamentamos pero has fallado 3 veces, y debido a medidas de seguridad el programa se cerrará.")
+                else:
+                    print("Usuario o contraseña incorrectos. Intenta nuevamente.")
+                    sep()
+                    
+                    
+def menuGestionNov():
+    sep()
+    print(novedades_menú)
+    
+    sub_menu_4 = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()        
+    while sub_menu_4 != "e":
+        
+        sep()    
+        if sub_menu_4 == "a" or sub_menu_4 == "b" or sub_menu_4 == "c" or sub_menu_4 == "d":
+            print("Lo lamentamos pero esta sección está en construcción")
         else:
-            desde = medio + 1
-        medio = (desde + hasta) // 2
-        Alogico.seek(medio*tamReg, 0)
-        vrEmp=load(Alogico)
-    if vrEmp.codigo == cod:
-        return medio*tamReg
-    else:
-        return -1
-
-ad = [0,1,2,3,4,55,6,7,8,7,9,102,3143,5452]
-ap = [0,1,2,3,102,3143,5452]
-
-ac = {key: val for key,val in enumerate(ad) if val%2 == 0}
-
-print(ac)
+            print("Opción inválida. Elija una de las opciones disponibles.")
+        
+        sub_menu_4 = input("¿Qué parte del menú de 'Gestión de novedades' le gustaría ver?: ").lower()
+        
+    print("Volviendo...")
+    sep()
+    print(menú_Admin)
+    sep()
+    
+def crear_local():
+    global codLocal, locales, i
+    global nombreLocal
+    global mostrar
+    global comida, indumentaria, perfumería
+    
+    mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
+    if mostrar == 'sí' or mostrar == 'si':
+        mostrar_locales()
+    
+    sep()
+    nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
+    os.system("cls")
+    
+    while nombreLocal != '0' and codLocal != 50:
+        
+        print("== Crear Local ==")
+        
+        sep()
+        
+        #Se verifica que el nombre no se esté ya usado
+        while Repeticion(0,nombreLocal) != -1:
+            nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+        locales[i][0] = nombreLocal
+        
+        locales[i][1] = input("Ingrese la ubicación del local: ")
+        sep()
+        locales[i][2] = input("Ingrese el rubro del local (indumentaria/perfumería/comida): ").lower()
+        
+        # Validación del rubro
+        while locales[i][2] !='indumentaria' and locales[i][2] !='perfumería' and locales[i][2] !='comida':
+            locales[i][2] = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
+        
+        #se cuenta cuantas veces los rurbos fueron ingresados
+        if locales[i][2] == "comida":
+            comida += 1
+        elif locales[i][2] == "indumentaria":
+            indumentaria += 1
+        elif locales[i][2] == "perfumería":
+            perfumería += 1
+        
+        sep()
+        codUsuario = input("Ingrese el código del usuario dueño del local: ")
+        
+        #Validación del código de usuario
+        while codUsuario !='4' and codUsuario !='6':
+            codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
+        
+        #Ultimos elementos a insertar
+        locales[i][3] = str(codLocal)
+        locales[i][4] = "Activo"
+        
+        # Actualización del código de local para el siguiente local
+        codLocal += 1
+        i +=1
+        
+        os.system("cls")
+        print("Local creado exitosamente.")
+        sep()
+        
+        #Ordenamiento
+        Ordenar()
+        
+        nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
+        os.system("cls")
