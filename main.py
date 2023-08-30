@@ -25,11 +25,11 @@ indumentaria = 0
 perfumería = 0
 
 #Declaraciones de los archivos
-AFU = 'Archivos\Usuarios.dat'
-AFL = 'Archivos\Locales.dat'
-AFP = 'Archivos\Promociones.dat'
-AFUP = 'Archivos\uso_Promociones.dat'
-AFN = 'Archivos\Novedades.dat'
+AFU = 'Archivos\\Usuarios.dat'
+AFL = 'Archivos\\Locales.dat'
+AFP = 'Archivos\\Promociones.dat'
+AFUP = 'Archivos\\uso_Promociones.dat'
+AFN = 'Archivos\\Novedades.dat'
 
 ALU = open(AFU, 'r+b')
 ALL = open(AFL, 'r+b')
@@ -44,61 +44,61 @@ usuarioActivo = 0
 
 class Usuarios:
     def __init__(self) -> None:
-        self.codUsuario = 0,
-        self.nombreUsuario = ''.ljust(100,' '),
-        self.claveUsuario = ''.ljust(8, ' '),
+        self.nombreUsuario = ' '.ljust(100,' ')
+        self.claveUsuario = ''.ljust(8, ' ')
         self.tipoUsuario = ''.ljust(20,' ')
+        self.codUsuario = 0
 
 class Locales:
     def __init__(self) -> None:
-        self.codLocal = 0,
-        self.nombreLocal = ''.ljust(50,' '),
-        self.ubicacionLocal = ''.ljust(50, ' '),
-        self.rubroLocal = ''.ljust(50,' '),
-        self.codUsuario = 0,
+        self.codLocal = 0
+        self.nombreLocal = ''.ljust(50,' ')
+        self.ubicacionLocal = ''.ljust(50, ' ')
+        self.rubroLocal = ''.ljust(50,' ')
+        self.codUsuario = 0
         self.estado = ' '
 
 class Promociones:
     def __init__(self) -> None:
-        self.codPromo = 0,
-        self.textoPromo = ''.ljust(200,' '),
-        self.fechaDesdePromo = ' ',
-        self.rubroLocal = ''.ljust(50,' '),
-        self.codUsuario = 0,
+        self.codPromo = 0
+        self.textoPromo = ''.ljust(200,' ')
+        self.fechaDesdePromo = ' '
+        self.rubroLocal = ''.ljust(50,' ')
+        self.codUsuario = 0
         self.estado = ' '
 
 class uso_Promociones:
     def __init__(self) -> None:
-        self.codCliente = 0,
-        self.codPromo = 0,
+        self.codCliente = 0
+        self.codPromo = 0
         self.fechaUsoPromo = ' '
         
 
 class Novedades:
     def __init__(self) -> None:
-        self.codNovedad = 0,
-        self.textoNovedad = ''.ljust(200,' '),
-        self.fechaDesdenovedad = ' ',
-        self.fechaHastaNevedad = ' ',
-        self.tipoUsuario = ''.ljust(20,' '),
+        self.codNovedad = 0
+        self.textoNovedad = ''.ljust(200,' ')
+        self.fechaDesdenovedad = ' '
+        self.fechaHastaNevedad = ' '
+        self.tipoUsuario = ''.ljust(20,' ')
         self.estado = ' '
 
 #Variables de trabajo
-user = Usuarios
-loc = Locales
-prom = Promociones
-nov = Novedades
-u_prom = uso_Promociones
+user = Usuarios()
+loc = Locales()
+prom = Promociones()
+nov = Novedades()
+u_prom = uso_Promociones()
 
 #Carga del super usuario administrador
 if getsize(AFU) == 0:
     ALU.seek(0)
     user = load(ALU)
-    user.codUsuario = codUsuario,
+    user.codUsuario = codUsuario
     user.nombreUsuario = 'admin@shopping.com'.ljust(100,' ')
     user.claveUsuario = '12345'.ljust(8, ' ')
     user.tipoUsuario = 'administrador'.ljust(20,' ')
-    dump(ALU)
+    dump(user, ALU)
     ALU.flush()
 
 
@@ -301,8 +301,9 @@ def busSec(dato: str) -> int:
     encontrado = False
     while ALU.tell() < tamaño and not encontrado:
         pos = ALU.tell()
-        vrT = load(ALU)
-        if vrT.nombreUsuario.strip() == dato:
+        user = load(ALU)
+        a = user.nombreUsuario.strip()
+        if user.nombreUsuario.strip() == dato:
             encontrado = True
     if encontrado: 
         return pos
@@ -447,7 +448,7 @@ def crear_local() -> None:
         loc.nombreLocal = nombreLocal.ljust(50, ' ')
         loc.ubicacionLocal = ubicacion.ljust(50, ' ')
         loc.rubroLocal = rubro.ljust(50, ' ')
-        loc.codUsuario = codUsuario,
+        loc.codUsuario = codUsuario
         loc.estado = 'A'
         
         #Actualización del codigo de los locales
@@ -553,7 +554,9 @@ def modificar_local():
         print("Local modificado exitosamente.")
 
 #MÓDULO eliminar un local
-def eliminar_local():    
+def eliminar_local():   
+    global comida, perfumería, indumentaria
+    
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == "si" or mostrar == "sí":
         mostrar_locales()
@@ -698,7 +701,7 @@ def Logeo() -> None:
             ALU.seek(pos)
             user = load(ALU)
             if user.claveUsuario.strip() == contra:
-                usuarioActivo = user.codUsario
+                usuarioActivo = user.codUsuario
                 match (user.tipoUsuario.strip()):
                     case 'cliente':
                         menuCliente()
@@ -707,8 +710,10 @@ def Logeo() -> None:
                     case 'administrador':
                         menuPrincipal()
             else:
+                os.system('cls')
                 print('Clave de usuario incorrecta')
         else:
+            os.system('cls')
             print('Usuario no existente')
         intentos += 1
 
