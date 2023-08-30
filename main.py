@@ -92,8 +92,6 @@ u_prom = uso_Promociones()
 
 #Carga del super usuario administrador
 if getsize(AFU) == 0:
-    ALU.seek(0)
-    user = load(ALU)
     user.codUsuario = codUsuario
     user.nombreUsuario = 'admin@shopping.com'.ljust(100,' ')
     user.claveUsuario = '12345'.ljust(8, ' ')
@@ -343,27 +341,30 @@ def buscSecCod(dato: int) -> int:
 
 #MÓDULO de busqueda dicotomica
 def busquedaDico(nom:str) -> int:# método de búsqueda dicotómica
-    ALL.seek (0, 0)
-    aux =load(ALL)
-    tamReg = ALL.tell()
-    cantReg = int(getsize(AFL)/tamReg)
-    desde = 0
-    hasta = cantReg-1
-    medio = (desde + hasta) // 2
-    ALL.seek(medio*tamReg, 0)
-    vrEmp=load(ALL)
-    while vrEmp.nombreLocal != nom and desde < hasta:
-        if nom < vrEmp.nombreLocal:
-            hasta = medio - 1
-        else:
-            desde = medio + 1
+    arch = getsize(AFL)
+    if arch != 0:
+        ALL.seek(0)
+        aux =load(ALL)
+        tamReg = ALL.tell()
+        cantReg = int(arch/tamReg)
+        desde = 0
+        hasta = cantReg-1
         medio = (desde + hasta) // 2
-        ALL. seek(medio*tamReg, 0)
+        ALL.seek(medio*tamReg, 0)
         vrEmp=load(ALL)
-    if vrEmp.nombreLocal == nom:
-        return medio*tamReg
-    else:
-        return -1
+        while vrEmp.nombreLocal != nom and desde < hasta:
+            if nom < vrEmp.nombreLocal:
+                hasta = medio - 1
+            else:
+                desde = medio + 1
+            medio = (desde + hasta) // 2
+            ALL. seek(medio*tamReg, 0)
+            vrEmp=load(ALL)
+        if vrEmp.nombreLocal == nom:
+            return medio*tamReg
+        else:
+            return -1
+    return -1
 
 #MÓDULO de ordenamiento (falso burbuja)
 def OrdenarLoc() -> None: #falso burbuja
@@ -398,8 +399,8 @@ def crear_local() -> None:
     sep()
     nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
     os.system("cls")
-    while len(nombreLocal) < 1 and len(nombreLocal) > 50:
-        nombreLocal = input('El nombre ha excedido la cantidad maxima de caracteres, introduzca uno nuevamente por favor (un "0" indicará fin de la carga): ')
+    while len(nombreLocal) < 1 or len(nombreLocal) > 50:
+        nombreLocal = input('El nombre no cumple con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor (un "0" indicará fin de la carga): ')
     
     while nombreLocal != '0' and codLocal != 50:
         
@@ -434,17 +435,9 @@ def crear_local() -> None:
         while buscSecUser(codUsuario) == -1:
             codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
-        #Se posiciona en el final del archivo
-        ALL.seek(0)
-        aux = load(ALL)
-        tamañoR = ALL.tell()
-        cantR = getsize(AFL)//tamañoR
-        ultimoR = cantR*tamañoR
-        ALL.seek(ultimoR)
-        
         #Asignación de los valores
-        loc = load(ALL)
-        loc.codLocal = codLocal,
+        
+        loc.codLocal = codLocal
         loc.nombreLocal = nombreLocal.ljust(50, ' ')
         loc.ubicacionLocal = ubicacion.ljust(50, ' ')
         loc.rubroLocal = rubro.ljust(50, ' ')
@@ -455,7 +448,7 @@ def crear_local() -> None:
         codLocal+=1
         
         #Se guardan los cambios
-        dump(ALL)
+        dump(loc,ALL)
         ALL.flush()
         
         os.system("cls")
@@ -596,7 +589,7 @@ def eliminar_local():
                 
             # Cambiar el estado del local a "Baja"
             loc.estado = "B"
-            dump(ALL)
+            dump(loc,ALL)
             ALL.flush()
             print("Local eliminado exitosamente.")
         else:
@@ -745,7 +738,7 @@ def Registro() -> None:
         cliente.nombreUsuario = nom.ljust(100, ' '),
         cliente.claveUsuario = contra.ljust(8, ' '),
         cliente.tipoUsuario = 'cliente'.ljust(20, ' ')
-        dump(ALU)
+        dump(cliente,ALU)
         ALU.flush()
         os.system('cls')
         print('¡¡Has podido registrarte exitosamente!!\n')
