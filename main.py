@@ -2,8 +2,13 @@ from os.path import getsize, exists
 from pickle import load,dump
 from datetime import datetime
 import os
+#Libreria escogida para mostrar codigo en rojo
+from colorama import init, Fore
 #librería importada para la contraseña oculta
 import getpass
+
+# Inicializa colorama
+init()
 
 #contador de filas
 i = 0
@@ -361,7 +366,7 @@ def busSec(dato: str) -> int:
         return pos
     else:
         return -1
-    
+
 #MODULO para buscar secuencialmente en el archivo usuarios por código
 def buscSecUser(dato: int) -> int:
     tamaño = getsize(AFU)
@@ -663,33 +668,60 @@ def eliminar_local() -> None:
 
 #MÓDULO para mostrar los locales cargados en un mapa
 def mostrar_mapa_locales() -> None:
-    global locales
-    
-    os.system('cls')
-    
-    print("Mapa de Locales:")
-    sep()
-    
-    # Crear array del mapa de locales
-    fil = 10
-    col = 5
-    mapa_locales = [[" "] * col for _ in range(fil)]
-    
-    # Asignar los códigos de los locales en el mapa
-    c=0
-    for a in range(fil):
-        for b in range(col):
-            mapa_locales[a][b] = locales[c][3]
-            c+=1
-    
-    # Mostrar el mapa de locales
-    print("+" + "-" * 19 + "+")
-    for fila in mapa_locales:
-        print("|", end="")
-        for codigo in fila:
-            print(f" {codigo} ", end="|")
-        print("\n+" + "-" * 19 + "+")
-
+    arch = getsize(AFL)
+    if arch != 0:
+        ALL.seek(0)
+        aux =load(ALL)
+        tamReg = ALL.tell()
+        cantReg = int(arch/tamReg)
+        os.system('cls')
+        
+        print("Mapa de Locales:")
+        sep()
+        
+        # Crear array del mapa de locales
+        fil = 10
+        col = 5
+        mapa_locales = [[" "] * col for _ in range(fil)]
+        
+        ALL.seek(0)
+        a = 0
+        while ALL.tell() < arch and a < fil:
+            b = 0
+            while ALL.tell < arch and b < col:
+                loc = load(ALL)
+                if loc.estado == 'B':
+                    mapa_locales[a][b] = -loc.codLocal
+                else:
+                    mapa_locales[a][b] = loc.codLocal
+                b+=1
+            a += 1
+        
+        # Mostrar el mapa de locales
+        print('+' + '-' * 29 + '+')
+        for fila in mapa_locales:
+            print('|', end='')
+            for codigo in fila:
+                if codigo < 0:
+                    
+                    if -codigo > 9:
+                        print(Fore.RED + f' {-codigo}  ' + Fore.RESET, end='|')
+                    else:
+                        print(Fore.RED + f'  {-codigo}  ' + Fore.RESET, end='|')
+                
+                elif codigo > 9:
+                    print(f' {codigo}  ', end='|')
+                
+                else:
+                    print(f'  {codigo}  ', end='|')
+            
+            
+            print('\n+' + '-' * 29 + '+')
+            
+            if mapa_locales[fil-1][col] != 0:
+                print('\nPróximamente se habilitará un mapa con los demás locales...')
+    else:
+        print('No hay locales cargados. Por ende no se encuetra habilitado el mapa de locales')
 
 #MÓDULO de logeo de los usuarios
 def Logeo() -> None:
