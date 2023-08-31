@@ -682,7 +682,7 @@ def mostrar_mapa_locales() -> None:
         # Crear array del mapa de locales
         fil = 10
         col = 5
-        mapa_locales = [[" "] * col for _ in range(fil)]
+        mapa_locales = [[0] * col for _ in range(fil)]
         
         ALL.seek(0)
         a = 0
