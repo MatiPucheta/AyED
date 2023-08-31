@@ -588,11 +588,11 @@ def modificar_local() -> None:
                 case 'a':
                     nomLocal = input("Ingrese el nuevo nombre del local (máximo 50 caracteres): ")
 
-                    while len(nombreLocal) < 1 or len(nombreLocal) > 50:
-                        nombreLocal = input('El nombre no cumple con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
+                    while len(nomLocal) < 1 or len(nomLocal) > 50:
+                        nomLocal = input('El nombre no cumple con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
 
-                    while busquedaDico(nombreLocal) != -1:
-                        nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+                    while busquedaDico(nomLocal) != -1:
+                        nomLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
                     loc.nombreLocal = nomLocal.ljust(50, ' ')
 
                     os.system('cls')
