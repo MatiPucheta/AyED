@@ -456,6 +456,13 @@ def validarFecha() -> str:
             print("Fecha invalida")
     return fecha
 
+
+def validarLong(dato: str) -> str:
+    while len(dato) < 1 or len(dato) > 50:
+        dato = input('No se ha cumplido con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
+    return dato
+
+
 #MÓDULO para cargar los locales
 def crear_local() -> None:
     global codLocal, locales, i
@@ -470,8 +477,9 @@ def crear_local() -> None:
     sep()
     nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
     os.system("cls")
-    while len(nombreLocal) < 1 or len(nombreLocal) > 50:
-        nombreLocal = input('El nombre no cumple con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor (un "0" indicará fin de la carga): ')
+    
+    #Se valida la longuitud del nombre
+    nombreLocal = validarLong(nombreLocal)
     
     while nombreLocal != '0' and codLocal != 50:
         
@@ -482,6 +490,7 @@ def crear_local() -> None:
         #Se verifica que el nombre no se esté ya usado
         while busquedaDico(nombreLocal) != -1:
             nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+            nombreLocal = validarLong(nombreLocal)
         
         ubicacion = input("Ingrese la ubicación del local: ")
         
@@ -537,7 +546,17 @@ def crear_local() -> None:
 
 #MÓDULO para modificar un local
 def modificar_local() -> None:
-    global locales, confirm, comida, perfumería, indumentaria, activar
+    global comida, perfumería, indumentaria
+    
+    opciones = """¿Qué atributo desea modificar?
+
+                    a. Nombre
+                    b. Ubicación
+                    c. Rubro
+                    d. Código de usuario
+                    e. Salir
+                    
+    Elija la opción deseada: """
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == "si" or mostrar == "sí":
@@ -548,16 +567,16 @@ def modificar_local() -> None:
     
     if confirm in ("sí", "si"):
         sep()
-        codigo = input("Ingrese el código del local que desea modificar: ")
+        codigo = int(input("Ingrese el código del local que desea modificar: "))
         os.system("cls")
         
         pos = buscSecCod(codigo)
-    
+        
         while pos == -1:
             print("Lo lamentamos pero no se encontró ningún local con ese código.")
-            codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
+            codigo = int(input("Ingrese el código del local que desea modificar de nuevo por favor: "))
             pos = buscSecCod(codigo)
-
+        
         ALL.seek(pos)
         loc = load(ALL)
         
@@ -566,62 +585,58 @@ def modificar_local() -> None:
             activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo?: ").lower
             if activar == "sí" or activar == "si":
                 sep()
-                print(f"Restaurando el local: '{loc.nombreLocal}', (Código: {loc.codLocal})")
+                print(f"Restaurando el local: '{loc.nombreLocal.strip()}', (Código: {loc.codLocal})")
                 sep()
                 loc.estado = "A"
         else:
-            print(f"Modificando el local '{loc.nombreLocal}', (Código: {loc.codLocal})")
+            print(f"Modificando el local '{loc.nombreLocal.strip()}', (Código: {loc.codLocal})")
             sep()
-        #Se resta 1 a la cantidad total de locales con el rubro a modificar
-
-        rta = input("""¿Qué atributo desea modificar?
-                    a. Nombre
-                    b. Ubicación
-                    c. Rubro
-                    d. Código de usuario
-                    e. Salir 
-                    Elija la opción deseada: """)
+        
+        rta = input(opciones)
         
         while rta != "e":
             os.system('cls')
             match rta:
+                
                 case 'a':
                     nomLocal = input("Ingrese el nuevo nombre del local (máximo 50 caracteres): ")
-
-                    while len(nomLocal) < 1 or len(nomLocal) > 50:
-                        nomLocal = input('El nombre no cumple con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
-
-                    while busquedaDico(nomLocal) != -1:
-                        nomLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
-                    loc.nombreLocal = nomLocal.ljust(50, ' ')
-
+                    
+                    #Se valida la longuitud del nombre
+                    nombreLocal = validarLong(nomLocal)
+                    
+                    while busquedaDico(nombreLocal) != -1:
+                        nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+                        nombreLocal = validarLong(nomLocal)
+                    
+                    loc.nombreLocal = nomLocal.ljust(50,' ')
+                    
                     os.system('cls')
+                    
                     print("Nombre modificado con éxito.")
-
+                
                 case 'b':   
                     ubi = input("Ingrese la nueva ubicación del local: ")
-
-                    loc.ubicacionLocal = ubi.ljust(50, ' ')
-
+                    
+                    loc.ubicacionLocal = ubi.ljust(50,' ')
+                    
                     os.system('cls')                
                     print("Ubicación modificada con éxito.")
-
+                
                 case 'c':
-                    match loc.rubroLocal:
+                    #Se resta 1 a la cantidad total de locales con el rubro a modificar
+                    match loc.rubroLocal.strip():
                         case 'comida':
                             comida -= 1
                         case 'indumentaria':
                             indumentaria -= 1
                         case 'perfumería':
                             perfumería -= 1        
-
+                    
                     rubro = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
-
+                    
                     while rubro !='indumentaria' and rubro != 'perfumería' and rubro !='comida':
                         rubro = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
-
-                    loc.rubroLocal = rubro.ljust(50, ' ')
-
+                    
                     match rubro:
                         case 'comida':
                             comida += 1
@@ -629,33 +644,35 @@ def modificar_local() -> None:
                             indumentaria += 1
                         case 'perfumería':
                             perfumería += 1
-
+                    
+                    
+                    loc.rubroLocal = rubro.ljust(50,' ')
+                    
                     os.system('cls')                
                     print("Rubro modificado con éxito.")
-
+                
                 case 'd':
-                    codUser = input("Ingrese el nuevo código del usuario dueño del local: ")
-
+                    codUser = int(input("Ingrese el nuevo código del usuario dueño del local: "))
+                    
                     while buscSecUser(codUser) == -1:
-                        codUser = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
-
+                        codUser = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
+                    
                     loc.codUsuario = codUser
-
+                    
                     os.system('cls')
                     print("Código de usuario modificado con éxito.")
-
-                case default:
+                
+                case 'e':
                     pass
+                
+                case default:
+                    print('Opción inválida')
+            
+            rta = input(opciones)
         
-        rta = input("""¿Qué atributo desea modificar?
-                    a. Nombre
-                    b. Ubicación
-                    c. Rubro
-                    d. Código de usuario
-                    e. Salir 
-                    Elija la opción deseada: """)
         os.system('cls')
         
+        ALL.seek(pos)
         dump(loc, ALL)
         ALL.flush()
         
@@ -791,10 +808,13 @@ def Logeo() -> None:
                 usuarioActivo = user.codUsuario
                 match (user.tipoUsuario.strip()):
                     case 'cliente':
+                        os.system('cls')
                         menuCliente()
                     case 'dueño':
+                        os.system('cls')
                         menuDueño()
                     case 'administrador':
+                        os.system('cls')
                         menuPrincipal()
             else:
                 os.system('cls')
