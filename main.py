@@ -158,7 +158,7 @@ menú_Cliente = ("""-- Menú Principal --
 
 #separador a fin de estética
 def sep() -> None:
-    return print("-"*70)
+    return print(Fore.YELLOW + "-"*70 + Fore.RESET)
 
 #MÓDULO del menú principal Cliente
 def menuCliente() -> None:
@@ -221,26 +221,30 @@ def menuPrincipal() -> None:
     print(menú_Admin)
     sep()
     
-    elección = int(input("¿Qué parte del menú principal le gustaría ver?: "))
-    while elección != 0:
+    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    while elección != '0':
         
-        if elección == 4:
-            print("Diagramado en Chapin.")
-        
-        elif elección == 2 or elección == 3 or elección == 5:
-            print("Lo lamentamos pero esta sección está en construcción")
-        
-        elif elección == 1:
-            os.system('cls')
-            sep()
-            menuGestionLocales()
-        
-        else:
-            sep()
-            print("Opción inválida. Eliga una de las opciones disponibles.")
+        match elección:
+            case '1':
+                os.system('cls')
+                sep()
+                menuGestionLocales()
+            case '2':
+                CrearDueño()
+            case '3':
+                pass
+            case '4':
+                print("Diagramado en Chapin.")
+            case '5':
+                pass
+            case default:
+                sep()
+                print("Opción inválida. Eliga una de las opciones disponibles.")
         
         sep()
-        elección = int(input("¿Que parte del menú principal le gustaría ver?: "))
+        
+        print(menú_Admin)
+        elección = input("¿Que parte del menú principal le gustaría ver?: ")
     intentos = 3
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
@@ -250,8 +254,8 @@ def mostrar_locales() -> None:
     arch = getsize(AFL)
     if arch != 0:
         os.system('cls')
-        print("== Locales Cargados ==")
-        ALL.seek(0,0)
+        print(Fore.GREEN + "== Locales Cargados ==" + Fore.RESET)
+        ALL.seek(0)
         loc = load(ALL)
         tamReg = ALL.tell()
         cantReg = int(arch/tamReg)
@@ -262,7 +266,6 @@ def mostrar_locales() -> None:
         sep()
     else:
         print("No se han cargado locales aún.")
-    print("== Locales Cargados ==")
 
 #MÓDULO de la sección Gestión de Locales
 def menuGestionLocales() -> None:
@@ -317,50 +320,6 @@ def calcLoc() -> None:
         Rubro perfumería: {perfumería}
         """)
 
-#MÓDULO para ordernar los locales alfabéticamente
-def Ordenar() -> None:
-    for a in range(0,F-1):
-        for b in range(a+1,F):
-            if locales[a][0] < locales[b][0]:
-                for k in range(C):
-                    aux = locales[a][k]
-                    locales[a][k] = locales[b][k]
-                    locales[b][k] = aux
-
-#MÓDULO para buscar dicotómicamente
-def Repeticion(col,dato) -> None:
-    fin=i
-    ini=0
-    
-    q = True
-    while ini <= fin and q:
-        mid = (ini + fin)//2
-        if locales[mid][col] == dato:
-            q = False
-        
-        elif locales[mid][col] < dato:
-            fin = mid-1
-        
-        else:
-            ini = mid+1
-    #Devolución de valores
-    if not q:
-        return mid
-    else: 
-        return -1
-
-#MÓDULO para buscar secuencialmente
-def Busquedasec(col,num) -> None:
-    a = 0
-    while locales[a][col] != num and a <= 49:
-        a += 1
-    
-    #Devolución de valores
-    if locales[a][col] == num:
-        return a
-    else: 
-        return -1
-
 #MODULO para buscar secuencialmente en el archivo usuarios
 def busSec(dato: str) -> int: 
     tamaño = getsize(AFU)
@@ -378,7 +337,7 @@ def busSec(dato: str) -> int:
         return -1
 
 #MODULO para buscar secuencialmente en el archivo usuarios por código
-def buscSecUser(dato: int) -> int:
+def buscSecUserCod(dato: int) -> int:
     tamaño = getsize(AFU)
     ALU.seek(0)
     encontrado = False
@@ -408,8 +367,8 @@ def buscSecCod(dato: int) -> int:
     else:
         return -1
 
-#MÓDULO de busqueda dicotomica
-def busquedaDico(nom:str) -> int:# método de búsqueda dicotómica
+#MÓDULO de busqueda dicotomica de nombre local
+def busDicoLoc(nom: str) -> int:
     arch = getsize(AFL)
     if arch != 0:
         ALL.seek(0)
@@ -419,7 +378,7 @@ def busquedaDico(nom:str) -> int:# método de búsqueda dicotómica
         desde = 0
         hasta = cantReg-1
         medio = (desde + hasta) // 2
-        ALL.seek(medio*tamReg, 0)
+        ALL.seek(medio*tamReg)
         vrEmp=load(ALL)
         while vrEmp.nombreLocal != nom and desde < hasta:
             if nom < vrEmp.nombreLocal:
@@ -427,13 +386,31 @@ def busquedaDico(nom:str) -> int:# método de búsqueda dicotómica
             else:
                 desde = medio + 1
             medio = (desde + hasta) // 2
-            ALL. seek(medio*tamReg, 0)
-            vrEmp=load(ALL)
+            
+            if medio >=0:
+                ALL.seek(medio*tamReg)
+                vrEmp=load(ALL)
+            
         if vrEmp.nombreLocal == nom:
             return medio*tamReg
         else:
             return -1
     return -1
+
+#MÓDULO de busqueda secuencial de nombre usuario
+def busSecUserNom(nom: str) -> int:
+    tamaño = getsize(AFU)
+    ALU.seek(0)
+    encontrado = False
+    while ALU.tell() < tamaño and not encontrado:
+        pos = ALU.tell()
+        vrT = load(ALU)
+        if vrT.nombreUsuario.strip() == nom:
+            encontrado = True
+    if encontrado: 
+        return pos
+    else:
+        return -1
 
 #MÓDULO de ordenamiento (falso burbuja)
 def OrdenarLoc() -> None: #falso burbuja
@@ -467,14 +444,14 @@ def validarFecha() -> str:
     return fecha
 
 
-def validarLong(dato: str) -> str:
-    while len(dato) < 1 or len(dato) > 50:
+def validarLong(dato: str, a: int, b: int) -> str:
+    while len(dato) < a or len(dato) > b:
         dato = input('No se ha cumplido con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
     return dato
 
 
 #MÓDULO para cargar los locales
-def crear_local() -> None:
+def crear_local() -> Locales():
     global codLocal, locales, i
     global nombreLocal
     global mostrar
@@ -489,16 +466,16 @@ def crear_local() -> None:
     os.system("cls")
     
     #Se valida la longuitud del nombre
-    nombreLocal = validarLong(nombreLocal)
+    nombreLocal = validarLong(nombreLocal, 1, 50)
     
-    while nombreLocal != '0' and codLocal != 50:
+    while nombreLocal != '0':
         
-        print("== Crear Local ==")
+        print(Fore.GREEN + "== Crear Local ==" + Fore.RESET)
         
         sep()
         
         #Se verifica que el nombre no se esté ya usado
-        while busquedaDico(nombreLocal) != -1:
+        while busDicoLoc(nombreLocal) != -1:
             nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
             nombreLocal = validarLong(nombreLocal)
         
@@ -520,13 +497,15 @@ def crear_local() -> None:
                 perfumería += 1
         
         sep()
-        codUsuario = input("Ingrese el código del usuario dueño del local: ")
+        codUsuario = int(input("Ingrese el código del usuario dueño del local: "))
         
-        #while buscSecUser(codUsuario) == -1:
-        #    codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
+        while buscSecUserCod(codUsuario) == -1:
+            codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
         
         #Asignación de los valores
-        
+        ALL.seek(0)
+        loc = load(ALL)
+        ALL.seek(0,2)
         loc.codLocal = codLocal
         loc.nombreLocal = nombreLocal.ljust(50, ' ')
         loc.ubicacionLocal = ubicacion.ljust(50, ' ')
@@ -542,7 +521,7 @@ def crear_local() -> None:
         ALL.flush()
         
         os.system("cls")
-        print("Local creado exitosamente.")
+        print(Fore.GREEN + "¡¡Local creado exitosamente!!" + Fore.RESET)
         sep()
         
         #Se ordenan los locales
@@ -595,11 +574,11 @@ def modificar_local() -> None:
             activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo?: ").lower
             if activar == "sí" or activar == "si":
                 sep()
-                print(f"Restaurando el local: '{loc.nombreLocal.strip()}', (Código: {loc.codLocal})")
+                print(Fore.LIGHTBLUE_EX + f"Restaurando el local: '{loc.nombreLocal.strip()}', (Código: {loc.codLocal})" + Fore.RESET)
                 sep()
                 loc.estado = "A"
         else:
-            print(f"Modificando el local '{loc.nombreLocal.strip()}', (Código: {loc.codLocal})")
+            print(Fore.LIGHTBLUE_EX + f"Modificando el local '{loc.nombreLocal.strip()}', (Código: {loc.codLocal})" + Fore.RESET)
             sep()
         
         rta = input(opciones)
@@ -614,7 +593,7 @@ def modificar_local() -> None:
                     #Se valida la longuitud del nombre
                     nombreLocal = validarLong(nomLocal)
                     
-                    while busquedaDico(nombreLocal) != -1:
+                    while busDicoLoc(nombreLocal) != -1:
                         nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
                         nombreLocal = validarLong(nomLocal)
                     
@@ -622,7 +601,7 @@ def modificar_local() -> None:
                     
                     os.system('cls')
                     
-                    print("Nombre modificado con éxito.")
+                    print(Fore.GREEN + "Nombre modificado con éxito."+ Fore.Reset)
                 
                 case 'b':   
                     ubi = input("Ingrese la nueva ubicación del local: ")
@@ -630,7 +609,7 @@ def modificar_local() -> None:
                     loc.ubicacionLocal = ubi.ljust(50,' ')
                     
                     os.system('cls')                
-                    print("Ubicación modificada con éxito.")
+                    print(Fore.GREEN + "Ubicación modificada con éxito."+ Fore.Reset)
                 
                 case 'c':
                     #Se resta 1 a la cantidad total de locales con el rubro a modificar
@@ -659,18 +638,18 @@ def modificar_local() -> None:
                     loc.rubroLocal = rubro.ljust(50,' ')
                     
                     os.system('cls')                
-                    print("Rubro modificado con éxito.")
+                    print(Fore.GREEN + "Rubro modificado con éxito."+ Fore.Reset)
                 
                 case 'd':
                     codUser = int(input("Ingrese el nuevo código del usuario dueño del local: "))
                     
-                    while buscSecUser(codUser) == -1:
+                    while buscSecUserCod(codUser) == -1:
                         codUser = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
                     
                     loc.codUsuario = codUser
                     
                     os.system('cls')
-                    print("Código de usuario modificado con éxito.")
+                    print(Fore.GREEN + "Código de usuario modificado con éxito."+ Fore.Reset)
                 
                 case 'e':
                     pass
@@ -720,7 +699,7 @@ def eliminar_local() -> None:
         sep()
     else:
         os.system("cls")
-        print(f"Eliminando local '{loc.nombreLocal}' (Código: {loc.codLocal})")
+        print(Fore.LIGHTRED_EX + f"Eliminando local '{loc.nombreLocal}' (Código: {loc.codLocal})" + Fore.RESET)
         
         sep()
         
@@ -740,9 +719,9 @@ def eliminar_local() -> None:
             loc.estado = "B"
             dump(loc,ALL)
             ALL.flush()
-            print("Local eliminado exitosamente.")
+            print(Fore.LIGHTRED_EX + "Local eliminado exitosamente." + Fore.RESET)
         else:
-            print("Eliminación cancelada.")
+            print(Fore.GREEN + "Eliminación cancelada." + Fore.RESET)
 
 #MÓDULO para mostrar los locales cargados en un mapa
 def mostrar_mapa_locales() -> None:
@@ -805,7 +784,7 @@ def mostrar_mapa_locales() -> None:
 def Logeo() -> None:
     global intentos
     global usuarioActivo
-    while intentos != 3:   #verificación del usuario y contraseña
+    while intentos < 3:   #verificación del usuario y contraseña
         nom = input("Ingrese su nombre de usuario: ")
         
         contra = getpass.getpass("Ingrese su contraseña: ")
@@ -820,7 +799,7 @@ def Logeo() -> None:
                     case 'cliente':
                         os.system('cls')
                         menuCliente()
-                    case 'dueño':
+                    case 'dueño de local':
                         os.system('cls')
                         menuDueño()
                     case 'administrador':
@@ -837,12 +816,12 @@ def Logeo() -> None:
 #MÓDULO de registro de usuarios
 def Registro() -> None:
     global codUsuario
-    ALU.seek(0)
-    aux = load(ALU)
-    tamañoR = ALU.tell()
-    cantR = getsize(AFU)//tamañoR
-    ultimoR = cantR*tamañoR
-    ALU.seek(ultimoR)
+    #ALU.seek(0)
+    #aux = load(ALU)
+    #tamañoR = ALU.tell()
+    #cantR = getsize(AFU)//tamañoR
+    #ultimoR = cantR*tamañoR
+    #ALU.seek(ultimoR)
     codUsuario+=1
     nom = input("Bienvenido seas, ingrese su nombre de usuario para registrarse por favor (un '0' indica anulación del procedimiento y máximo 100 caracteres): ")
     
@@ -852,23 +831,68 @@ def Registro() -> None:
     while len(nom) < 1 and len(nom) > 100:
         nom = input('Longitud del nombre no válida, máximo 100 caracteres: ')
     if nom != '0':
-        contra = getpass.getpass("Ingrese su contraseña por favor (máximo 8 caracteres): ")
+        contra = getpass.getpass("Ingrese su contraseña por favor : ")
         
         while len(contra) < 1 and len(contra) > 8:
             nom = input('Longuitud del nombre no válida, máximo 8 caracteres: ')
         
+        ALU.seek(0)
         cliente = load(ALU)
-        cliente.codUsuario = codUsuario,
-        cliente.nombreUsuario = nom.ljust(100, ' '),
-        cliente.claveUsuario = contra.ljust(8, ' '),
+        ALU.seek(0,2)
+        
+        cliente.codUsuario = codUsuario
+        cliente.nombreUsuario = nom.ljust(100, ' ')
+        cliente.claveUsuario = contra.ljust(8, ' ')
         cliente.tipoUsuario = 'cliente'.ljust(20, ' ')
         dump(cliente,ALU)
         ALU.flush()
         os.system('cls')
-        print('¡¡Has podido registrarte exitosamente!!\n')
+        print(Fore.GREEN + '¡¡Has podido registrarte exitosamente!!\n' + Fore.RESET)
+
+#MÓDULO de creación de cuenta para dueños de locales
+def CrearDueño() -> Usuarios():
+    global codUsuario
+    
+    nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
+    os.system("cls")
+    
+    codUsuario += 1
+    
+    #Se valida la longuitud del nombre
+    nombreUsuario = validarLong(nombreUsuario, 1, 50)
+    
+    while nombreUsuario != '0':
+        
+        print(Fore.GREEN + "== Crear cuenta de dueño ==" + Fore.RESET)
+        
+        sep()
+        
+        #Se verifica que el nombre no se esté ya usado
+        while busSecUserNom(nombreUsuario) != -1:
+            nombreUsuario = input("El nombre de usuario ya existe, introduzca uno no ocupado por favor: ")
+            nombreUsuario = validarLong(nombreUsuario, 1, 100)
+        
+        claveUsuario = input("Ingrese la clave del dueño (8 caracteres): ")
+        claveUsuario = validarLong(claveUsuario, 8, 8)
+        
+        #Asignación de los valores
+        user.codUsuario = codUsuario
+        user.nombreUsuario = nombreUsuario.ljust(100,' ')
+        user.claveUsuario = claveUsuario.ljust(8,' ')
+        user.tipoUsuario = 'dueño de local'.ljust(20,' ')
+        
+        dump(user, ALU)
+        ALU.flush()
+        
+        os.system('cls')
+        print(Fore.GREEN + "¡¡Cuenta de dueño creada exitosamente!!" + Fore.RESET)
+        
+        sep()
+        
+        nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
+        nombreUsuario = validarLong(nombreUsuario, 1, 50)
 
 #MÓDULO de verificación del tipo de usuario
-
 def Inicio() -> None:
     menu = """Eliga la opción que desee
 
@@ -882,12 +906,14 @@ def Inicio() -> None:
 """
 
     opcion = input(menu)
+    global intentos
     while opcion != '3':
         sep()
         
         match opcion:
             case '1':
                 Logeo()
+                intentos = 0
             case '2':
                 Registro()
             case '3':

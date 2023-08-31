@@ -167,3 +167,51 @@ def crear_local():
         
         nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga): ")
         os.system("cls")
+        
+
+
+#MÓDULO para ordernar los locales alfabéticamente
+def Ordenar() -> None:
+    for a in range(0,F-1):
+        for b in range(a+1,F):
+            if locales[a][0] < locales[b][0]:
+                for k in range(C):
+                    aux = locales[a][k]
+                    locales[a][k] = locales[b][k]
+                    locales[b][k] = aux
+
+
+#MÓDULO para buscar dicotómicamente
+def Repeticion(col,dato) -> None:
+    fin=i
+    ini=0
+    
+    q = True
+    while ini <= fin and q:
+        mid = (ini + fin)//2
+        if locales[mid][col] == dato:
+            q = False
+        
+        elif locales[mid][col] < dato:
+            fin = mid-1
+        
+        else:
+            ini = mid+1
+    #Devolución de valores
+    if not q:
+        return mid
+    else: 
+        return -1
+
+
+#MÓDULO para buscar secuencialmente
+def Busquedasec(col,num) -> None:
+    a = 0
+    while locales[a][col] != num and a <= 49:
+        a += 1
+    
+    #Devolución de valores
+    if locales[a][col] == num:
+        return a
+    else: 
+        return -1
