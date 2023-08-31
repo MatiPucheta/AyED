@@ -251,11 +251,11 @@ def mostrar_locales() -> None:
     if arch != 0:
         os.system('cls')
         print("== Locales Cargados ==")
-        ALL.seek(0)
+        ALL.seek(0,0)
         loc = load(ALL)
         tamReg = ALL.tell()
         cantReg = int(arch/tamReg)
-        for i in range(cantReg-1):
+        for i in range(cantReg):
             ALL.seek(i*tamReg)
             loc = load(ALL)
             print(f"Nombre: {loc.nombreLocal.strip()} | Ubicación: {loc.ubicacionLocal.strip()} | Rubro: {loc.rubroLocal.strip()} | Código: {loc.codLocal} | Estado: {loc.estado}")
@@ -263,11 +263,6 @@ def mostrar_locales() -> None:
     else:
         print("No se han cargado locales aún.")
     print("== Locales Cargados ==")
-    if i > 0:
-        for p in range(0,i):
-            print(f"Nombre: {locales[p][0]} | Ubicación: {locales[p][1]} | Rubro: {locales[p][2]} | Código: {locales[p][3]} | Estado: {locales[p][4]}")
-    else:
-        print("No se han cargado locales aún.")
 
 #MÓDULO de la sección Gestión de Locales
 def menuGestionLocales() -> None:
@@ -527,8 +522,8 @@ def crear_local() -> None:
         sep()
         codUsuario = input("Ingrese el código del usuario dueño del local: ")
         
-        while buscSecUser(codUsuario) == -1:
-            codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
+        #while buscSecUser(codUsuario) == -1:
+        #    codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
         
         #Asignación de los valores
         
