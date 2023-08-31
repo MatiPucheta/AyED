@@ -247,6 +247,21 @@ def menuPrincipal() -> None:
 #MÓDULO para mostrar los locales cargados
 def mostrar_locales() -> None:
     global i
+    arch = getsize(AFL)
+    if arch != 0:
+        os.system('cls')
+        print("== Locales Cargados ==")
+        ALL.seek(0)
+        loc = load(ALL)
+        tamReg = ALL.tell()
+        cantReg = int(arch/tamReg)
+        for i in range(cantReg-1):
+            ALL.seek(i*tamReg)
+            loc = load(ALL)
+            print(f"Nombre: {loc.nombreLocal.strip()} | Ubicación: {loc.ubicacionLocal.strip()} | Rubro: {loc.rubroLocal.strip()} | Código: {loc.codLocal} | Estado: {loc.estado}")
+        sep()
+    else:
+        print("No se han cargado locales aún.")
     print("== Locales Cargados ==")
     if i > 0:
         for p in range(0,i):
