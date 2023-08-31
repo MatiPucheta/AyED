@@ -277,29 +277,27 @@ def menuGestionLocales() -> None:
         
         sep()
         
-        if sub_menu_1 == "a":
-            sep()
-            
-            crear_local()
-            #MODULO mostrar_rubros():
+        match sub_menu_1:
+            case 'a':
+                sep()
+                crear_local()
+                #MODULO mostrar_rubros():
                 
-            calcLoc()
-            sep()
-        
-        elif sub_menu_1 == "b": #verificación
-            modificar_local()
-            sep()
-        
-        elif sub_menu_1 == "c": 
-            eliminar_local()
-            sep()    
-        
-        elif sub_menu_1 == "d": 
-            mostrar_mapa_locales()
-            sep()
-        
-        else:
-            print("Opción inválida. Eliga una de de las opciones disponibles por favor.")
+                calcLoc()
+                sep()
+            case 'b':
+                modificar_local()
+                sep()
+            case 'c':
+                eliminar_local()
+                sep()    
+            case 'd':
+                mostrar_mapa_locales()
+                sep()
+            case 'e':
+                pass
+            case default:
+                print("Opción inválida. Eliga una de de las opciones disponibles por favor.")
         
         print(gestión_menú)
         sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
