@@ -551,72 +551,123 @@ def modificar_local() -> None:
         codigo = input("Ingrese el código del local que desea modificar: ")
         os.system("cls")
         
-        cod = Busquedasec(3,codigo)
-        
-        while cod == -1:
+        pos = buscSecCod(codigo)
+    
+        while pos == -1:
             print("Lo lamentamos pero no se encontró ningún local con ese código.")
             codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
-            cod = Busquedasec(3,codigo)
-        
+            pos = buscSecCod(codigo)
+
+        ALL.seek(pos)
+        loc = load(ALL)
         
         os.system("cls")
-        if locales[cod][4] == "Baja":
-            activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo?: ")
-            if activar in ("sí","si"):
+        if loc.estado == "B":
+            activar = input("El local que desea modificar está eliminado, le gustaría restaurarlo?: ").lower
+            if activar == "sí" or activar == "si":
                 sep()
-                print(f"Restaurando el local: '{locales[cod][0]}', (Código: {locales[cod][3]})")
+                print(f"Restaurando el local: '{loc.nombreLocal}', (Código: {loc.codLocal})")
                 sep()
-                locales[cod][4] = "Activo"
+                loc.estado = "A"
         else:
-            print(f"Modificando el local '{locales[cod][0]}', (Código: {locales[cod][3]})")
+            print(f"Modificando el local '{loc.nombreLocal}', (Código: {loc.codLocal})")
             sep()
         #Se resta 1 a la cantidad total de locales con el rubro a modificar
 
-        if locales[cod][2] == "comida":
-            comida -= 1
-        elif locales[cod][2] == "indumentaria":
-            indumentaria -= 1
-        elif locales[cod][2] == "perfumería":
-            perfumería -= 1
+        rta = input("""¿Qué atributo desea modificar?
+                    a. Nombre
+                    b. Ubicación
+                    c. Rubro
+                    d. Código de usuario
+                    e. Salir 
+                    Elija la opción deseada: """)
         
-        nombreLocal = input("Ingrese el nuevo nombre del local: ")
-        os.system("cls")
+        while rta != "e":
+            os.system('cls')
+            match rta:
+                case 'a':
+                    nomLocal = input("Ingrese el nuevo nombre del local (máximo 50 caracteres): ")
+
+                    while len(nombreLocal) < 1 or len(nombreLocal) > 50:
+                        nombreLocal = input('El nombre no cumple con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
+
+                    while busquedaDico(nombreLocal) != -1:
+                        nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+                    loc.nombreLocal = nomLocal.ljust(50, ' ')
+
+                    os.system('cls')
+                    print("Nombre modificado con éxito.")
+
+                case 'b':   
+                    ubi = input("Ingrese la nueva ubicación del local: ")
+
+                    loc.ubicacionLocal = ubi.ljust(50, ' ')
+
+                    os.system('cls')                
+                    print("Ubicación modificada con éxito.")
+
+                case 'c':
+                    match loc.rubroLocal:
+                        case 'comida':
+                            comida -= 1
+                        case 'indumentaria':
+                            indumentaria -= 1
+                        case 'perfumería':
+                            perfumería -= 1        
+
+                    rubro = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
+
+                    while rubro !='indumentaria' and rubro != 'perfumería' and rubro !='comida':
+                        rubro = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
+
+                    loc.rubroLocal = rubro.ljust(50, ' ')
+
+                    match rubro:
+                        case 'comida':
+                            comida += 1
+                        case 'indumentaria':
+                            indumentaria += 1
+                        case 'perfumería':
+                            perfumería += 1
+
+                    os.system('cls')                
+                    print("Rubro modificado con éxito.")
+
+                case 'd':
+                    codUser = input("Ingrese el nuevo código del usuario dueño del local: ")
+
+                    while buscSecUser(codUser) == -1:
+                        codUser = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
+
+                    loc.codUsuario = codUser
+
+                    os.system('cls')
+                    print("Código de usuario modificado con éxito.")
+
+                case default:
+                    pass
         
-        #Se verifica que el nombre no se esté ya usado
-        while Repeticion(0,nombreLocal) != -1:
-            nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
+        rta = input("""¿Qué atributo desea modificar?
+                    a. Nombre
+                    b. Ubicación
+                    c. Rubro
+                    d. Código de usuario
+                    e. Salir 
+                    Elija la opción deseada: """)
+        os.system('cls')
         
-        locales[cod][0] = nombreLocal
+        dump(loc, ALL)
+        ALL.flush()
         
-        locales[cod][1] = input("Ingrese la nueva ubicación del local: ")
-        os.system("cls")
-        
-        locales[cod][2] = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
-        
-        # Validación del rubro
-        while locales[cod][2] !='indumentaria' and locales[cod][2] !='perfumería' and locales[cod][2] !='comida':
-            locales[cod][2] = input("Rubro inválido, ingrese el nuevo rubro del local nuevamente por favor: ")
-        
-        #Se suma 1 a la cantidad total de locales con el nuevo rubro
-        if locales[cod][2] == "comida":
-            comida += 1
-        elif locales[cod][2] == "indumentaria":
-            indumentaria += 1
-        elif locales[cod][2] == "perfumería":
-            perfumería += 1
-        
-        
-        
-        # Validación del código de usuario
-        codUsuario = input("Ingrese el nuevo código del usuario dueño del local: ")
-        while codUsuario not in ('4','6'):
-            codUsuario = input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: ")
-        
-        #Ordenamiento
-        Ordenar()
+        os.system('cls')
         
         print("Local modificado exitosamente.")
-
+        
+        #Ordenamiento
+        OrdenarLoc()
+        
+        os.system('cls')
+        
 #MÓDULO eliminar un local
 def eliminar_local() -> None:   
     global comida, perfumería, indumentaria
