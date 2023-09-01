@@ -18,6 +18,8 @@ C=5
 # Lista para almacenar los locales
 locales=[[" "]*C for i in range(F)]
 
+session = 0
+
 # Código inicial para el primer usuario
 codUsuario = 1
 
@@ -72,7 +74,7 @@ class Promociones:
         self.textoPromo = ''.ljust(200,' ')
         self.fechaDesdePromo = ''.ljust(10,' ')
         self.fechaHastaPromo = ''.ljust(10,' ')
-        self.diasSemana = []*6
+        self.diasSemana = [0]*6
         self.codLocal = 0
         self.estado = ''.ljust(10,' ')
 
@@ -253,7 +255,6 @@ def menuPrincipal() -> None:
 
 #MÓDULO para mostrar los locales cargados
 def mostrar_locales() -> None:
-    global i
     arch = getsize(AFL)
     if arch != 0:
         os.system('cls')
@@ -337,19 +338,43 @@ def busSecPromo(codL: int, tamp: int) -> int:
 #MÓDULO para mostrar las promos de una local de un dueño
 def mostrar_promos() -> None:
     tamp = getsize(AFP)
-    if tamp > 0:
+    if tamp != 0:
+        os.system('cls')
+        print(Fore.GREEN + "== Promociones Cargadas ==" + Fore.RESET)
+        
         ALP.seek(0)
-        taml = getsize(AFL)
+        prom = load(ALP)
+        tamRegLoc = ALP.tell()
+        cantRegLoc = int(tamp/tamRegLoc)
+        
         ALL.seek(0)
-        while ALL.tell() < taml:
-            loc = load(ALL)
-            if loc.codUsuario == user.codUsuario:
-                posP = busSecPromo(loc.codLocal, tamp)
-                if posP != -1:
-                    prom = load(posP)
-                    if (prom.fechaHastaPromo[0]-datetime.now().day) > 0:
+        taml = getsize(AFL)
+        tamRegPro = ALP.tell()
+        cantRegPro = int(tamp/tamRegPro)
+        
+        for i in range(cantRegLoc):
+            ALP.seek(i*tamRegLoc)
+            prom = load(ALP)
+            for j in range(cantRegPro):
+                ALL.seek(j*cantRegPro)
+                loc = load(ALL)
+                if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
+                    if prom.fechaHastaPromo < datetime.strftime(datetime.now(), '%d/%m/%Y'):
                         valid = 'Promo vigente'
                     print(f"Descripción: {prom.textoPromo.strip()}, Estado: {prom.estado.strip()}, Código: {prom.codPromo}, Vigencia: {valid}")
+        #    
+        #    
+        #    
+        #    
+        #while ALL.tell() < taml:
+        #    loc = load(ALL)
+        #    if loc.codUsuario == user.codUsuario:
+        #        posP = busSecPromo(loc.codLocal, tamp)
+        #        if posP != -1:
+        #            prom = load(posP)
+        #            if (prom.fechaHastaPromo[0]-datetime.now().day) > 0:
+        #                valid = 'Promo vigente'
+        #            print(f"Descripción: {prom.textoPromo.strip()}, Estado: {prom.estado.strip()}, Código: {prom.codPromo}, Vigencia: {valid}")
     else:
         print('No se ha creado todavía ninguna promoción')
 
@@ -366,9 +391,6 @@ def crearDescuentos() -> Promociones():
     os.system("cls")
     
     while codigo != 0:
-        ALP.seek(0)
-        prom = load(ALP)
-        ALL.seek(0,2)
         
         pos = buscSecCod(codigo)
         
@@ -386,7 +408,7 @@ def crearDescuentos() -> Promociones():
         #Fechas de la promo
         print('Introduzca la fecha de inicio de la promoción:')
         fecha_desde = validarFecha()
-        while fecha_desde > datetime.strftime(datetime.now(), '%d/%m/%Y'):
+        while fecha_desde < datetime.strftime(datetime.now(), '%d/%m/%Y'):
             print('La fecha de inicio no puede ser menor que la de hoy. Introduzca una nuevamente por favor')
             fecha_hasta = validarFecha()
         sep()
@@ -403,9 +425,9 @@ def crearDescuentos() -> Promociones():
         
         #Ingreso de la disponibilidad de la promo
         for i in range(6):
-            prom.diasSemana[i] = input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: ')
+            prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
             while prom.diasSemana[i] != 1 and prom.diasSemana[i] != 0:
-                prom.diasSemana[i] = input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: ')
+                prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
         
         #Asignación de valores
         prom.codPromo = codPromo
@@ -419,8 +441,9 @@ def crearDescuentos() -> Promociones():
         codPromo+=1
         
         #Se guardan los cambios
-        dump(loc,ALL)
-        ALL.flush()
+        ALP.seek(0,2)
+        dump(loc,ALP)
+        ALP.flush()
         
         os.system("cls")
         print(Fore.GREEN + "¡¡Promoción creada exitosamente!!" + Fore.RESET)
@@ -610,8 +633,6 @@ def crear_local() -> Locales():
             codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
         
         #Asignación de los valores
-        ALL.seek(0)
-        loc = load(ALL)
         ALL.seek(0,2)
         loc.codLocal = codLocal
         loc.nombreLocal = nombreLocal.ljust(50, ' ')
@@ -696,7 +717,7 @@ def modificar_local() -> None:
                     nomLocal = input("Ingrese el nuevo nombre del local (máximo 50 caracteres): ")
                     
                     #Se valida la longuitud del nombre
-                    nombreLocal = validarLong(nomLocal)
+                    nombreLocal = validarLong(nomLocal,1,50)
                     
                     while busDicoLoc(nombreLocal) != -1:
                         nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
@@ -706,7 +727,7 @@ def modificar_local() -> None:
                     
                     os.system('cls')
                     
-                    print(Fore.GREEN + "Nombre modificado con éxito."+ Fore.Reset)
+                    print(Fore.GREEN + "Nombre modificado con éxito."+ Fore.RESET)
                 
                 case 'b':   
                     ubi = input("Ingrese la nueva ubicación del local: ")
@@ -778,7 +799,7 @@ def modificar_local() -> None:
         OrdenarLoc()
         
         os.system('cls')
-        
+
 #MÓDULO eliminar un local
 def eliminar_local() -> None:   
     global comida, perfumería, indumentaria
@@ -887,7 +908,7 @@ def mostrar_mapa_locales() -> None:
 
 #MÓDULO de logeo de los usuarios
 def Logeo() -> None:
-    global intentos
+    global intentos, session
     global usuarioActivo
     while intentos < 3:   #verificación del usuario y contraseña
         nom = input("Ingrese su nombre de usuario: ")
@@ -906,6 +927,7 @@ def Logeo() -> None:
                         menuCliente()
                     case 'dueño de local':
                         os.system('cls')
+                        session = user.codUsuario
                         menuDueño()
                     case 'administrador':
                         os.system('cls')
@@ -981,6 +1003,8 @@ def CrearDueño() -> Usuarios():
         claveUsuario = validarLong(claveUsuario, 8, 8)
         
         #Asignación de los valores
+        ALU.seek(0)
+        user = load(ALU)
         user.codUsuario = codUsuario
         user.nombreUsuario = nombreUsuario.ljust(100,' ')
         user.claveUsuario = claveUsuario.ljust(8,' ')
