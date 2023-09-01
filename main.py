@@ -353,6 +353,7 @@ def mostrar_promos() -> None:
     else:
         print('No se ha creado todavía ninguna promoción')
 
+#MÓDULO para crear descuentos
 def crearDescuentos() -> Promociones():
     global codPromo
     mostrar_promos()
@@ -428,8 +429,6 @@ def crearDescuentos() -> Promociones():
         codigo = int(input("Ingrese el código del local al cual darle una promoción: ('0' indica fin de carga)"))
         os.system("cls")
 
-
-
 #MODULO para buscar secuencialmente en el archivo usuarios
 def busSec(dato: str) -> int: 
     tamaño = getsize(AFU)
@@ -460,7 +459,6 @@ def buscSecUserCod(dato: int) -> int:
         return pos
     else:
         return -1
-
 
 #MODULO para buscar secuencialmente en el archivo locales por código
 def buscSecCod(dato: int) -> int: 
@@ -553,12 +551,11 @@ def validarFecha() -> str:
             continue
     return fecha
 
-
+#MÓDULO para valir longuitud
 def validarLong(dato: str, a: int, b: int) -> str:
     while len(dato) < a or len(dato) > b:
         dato = input('No se ha cumplido con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
     return dato
-
 
 #MÓDULO para cargar los locales
 def crear_local() -> Locales():
