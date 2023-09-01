@@ -24,6 +24,9 @@ codUsuario = 1
 # Código inicial para el primer local
 codLocal = 1  
 
+# Código inicial para la primera promoción
+codPromo = 1
+
 #contadores de los rubros
 comida = 0
 indumentaria = 0
@@ -67,25 +70,25 @@ class Promociones:
     def __init__(self) -> None:
         self.codPromo = 0
         self.textoPromo = ''.ljust(200,' ')
-        self.fechaDesdePromo = []*3
-        self.fechaHastaNevedad = []*3
-        self.rubroLocal = ''.ljust(50,' ')
-        self.codUsuario = 0
-        self.estado = ' '
+        self.fechaDesdePromo = ''.ljust(10,' ')
+        self.fechaHastaPromo = ''.ljust(10,' ')
+        self.diasSemana = []*6
+        self.codLocal = 0
+        self.estado = ''.ljust(10,' ')
 
 class uso_Promociones:
     def __init__(self) -> None:
         self.codCliente = 0
         self.codPromo = 0
-        self.fechaUsoPromo = []*3
+        self.fechaUsoPromo = ''.ljust(10,' ')
         
 
 class Novedades:
     def __init__(self) -> None:
         self.codNovedad = 0
         self.textoNovedad = ''.ljust(200,' ')
-        self.fechaDesdenovedad = []*3
-        self.fechaHastaNevedad = []*3
+        self.fechaDesdenovedad = ''.ljust(10,' ')
+        self.fechaHastaNevedad = ''.ljust(10,' ')
         self.tipoUsuario = ''.ljust(20,' ')
         self.estado = ' '
 
@@ -200,7 +203,7 @@ def menuDueño() -> None:
         match elección:
             case '1':
                 # HACER MODULO crearDescuentos()
-                pass
+                crearDescuentos()
             case '2':
                 # HACER MODULO reportDescuentos()
                 pass
@@ -318,6 +321,115 @@ def calcLoc() -> None:
         Rubro perfumería: {perfumería}
         """)
 
+#MÓDULO para buscar secuencialmente una promo por codigo de local
+def busSecPromo(codL: int, tamp: int) -> int:
+    encontrado = False
+    while ALP.tell() < tamp and not encontrado:
+        pos = ALP.tell()
+        prom = load(ALP)
+        if prom.codLocal == codL:
+            encontrado = True
+    if encontrado:
+        return pos
+    else:
+        return -1
+
+#MÓDULO para mostrar las promos de una local de un dueño
+def mostrar_promos() -> None:
+    tamp = getsize(AFP)
+    if tamp > 0:
+        ALP.seek(0)
+        taml = getsize(AFL)
+        ALL.seek(0)
+        while ALL.tell() < taml:
+            loc = load(ALL)
+            if loc.codUsuario == user.codUsuario:
+                posP = busSecPromo(loc.codLocal, tamp)
+                if posP != -1:
+                    prom = load(posP)
+                    if (prom.fechaHastaPromo[0]-datetime.now().day) > 0:
+                        valid = 'Promo vigente'
+                    print(f"Descripción: {prom.textoPromo.strip()}, Estado: {prom.estado.strip()}, Código: {prom.codPromo}, Vigencia: {valid}")
+    else:
+        print('No se ha creado todavía ninguna promoción')
+
+def crearDescuentos() -> Promociones():
+    global codPromo
+    mostrar_promos()
+    sep()
+    
+    
+    print(Fore.GREEN + '==Creación de descuentos==' + Fore.RESET)
+    
+    codigo = int(input("Ingrese el código del local al cual darle una promoción: ('0' indica fin de carga)"))
+    os.system("cls")
+    
+    while codigo != 0:
+        ALP.seek(0)
+        prom = load(ALP)
+        ALL.seek(0,2)
+        
+        pos = buscSecCod(codigo)
+        
+        while pos == -1:
+            print("Lo lamentamos pero no se encontró ningún local con ese código.")
+            codigo = int(input("Ingrese el código del local que desea darle una promoción de nuevo por favor: "))
+            pos = buscSecCod(codigo)
+            os.system('cls')
+        
+        texto = input('Introduzca la descripción que quiera darle a su promoción: (máximo 200 caracteres)')
+        
+        texto = validarLong(texto, 1, 200)
+        sep()
+        
+        #Fechas de la promo
+        print('Introduzca la fecha de inicio de la promoción:')
+        fecha_desde = validarFecha()
+        while fecha_desde > datetime.strftime(datetime.now(), '%d/%m/%Y'):
+            print('La fecha de inicio no puede ser menor que la de hoy. Introduzca una nuevamente por favor')
+            fecha_hasta = validarFecha()
+        sep()
+        
+        print('Y ahora introduzca la fecha de finalización de la promoción:')
+        fecha_hasta = validarFecha()
+        os.system('cls')
+        while fecha_desde > fecha_hasta:
+            print('La fecha de finalización no puede ser menor que la de inicio. Introduzca una nuevamente por favor')
+            fecha_hasta = validarFecha()
+        
+        #Días de la semana
+        dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        
+        #Ingreso de la disponibilidad de la promo
+        for i in range(6):
+            prom.diasSemana[i] = input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: ')
+            while prom.diasSemana[i] != 1 and prom.diasSemana[i] != 0:
+                prom.diasSemana[i] = input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: ')
+        
+        #Asignación de valores
+        prom.codPromo = codPromo
+        prom.textoPromo = texto
+        prom.fechaDesdePromo = fecha_desde
+        prom.fechaHastaPromo = fecha_hasta
+        prom.codLocal = codigo
+        prom.estado = 'pendiente'
+        
+        #Actualización del codigo de las promociones
+        codPromo+=1
+        
+        #Se guardan los cambios
+        dump(loc,ALL)
+        ALL.flush()
+        
+        os.system("cls")
+        print(Fore.GREEN + "¡¡Promoción creada exitosamente!!" + Fore.RESET)
+        sep()
+        
+        codigo = int(input("Ingrese el código del local al cual darle una promoción: ('0' indica fin de carga)"))
+        os.system("cls")
+
+
+
 #MODULO para buscar secuencialmente en el archivo usuarios
 def busSec(dato: str) -> int: 
     tamaño = getsize(AFU)
@@ -429,16 +541,16 @@ def OrdenarLoc() -> None: #falso burbuja
                 ALL.seek(j*tamR)
                 dump(auxi, ALL)
 
-#MÓDULO para validar fecha
+#MÓDULO para validar fecha ingresada
 def validarFecha() -> str:
     flag = True
     while flag:
         try:
-            fecha = input("Ingresa una fecha en el formato DD/MM/AAAA: ")
+            fecha = input("Ingrese la fecha en el formato DD/MM/AAAA: ")
             datetime.strptime(fecha, '%d/%m/%Y')
             flag = False
         except ValueError:
-            print("Fecha invalida")
+            continue
     return fecha
 
 
@@ -526,8 +638,6 @@ def crear_local() -> Locales():
         OrdenarLoc()
         
         nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
-        
-        #Agregar local al arreglo de locales
         
         os.system("cls")
 
