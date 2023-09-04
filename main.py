@@ -14,9 +14,11 @@ init()
 i = 0
 
 F=50
+F2=3
 C=5
 # Lista para almacenar los locales
 locales=[[" "]*C for i in range(F)]
+rubros = [[" "]*2 for k in range(F2)]
 
 session = 0
 
@@ -110,7 +112,10 @@ if getsize(AFU) == 0:
     dump(user, ALU)
     ALU.flush()
 
-
+#Carga de los nombres de cada rubro
+rubros[0][0] = "Comida"
+rubros[1][0] = "Indumentaria"
+rubros[2][0] = "Perfumería"
 
 #Array de 4x2 con los usarios y contraseñas
 usuarios = [
@@ -191,7 +196,6 @@ def menuCliente() -> None:
     intentos = 3
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-
 #MÓDULO del menú principal Dueño
 def menuDueño() -> None:
     global intentos
@@ -246,6 +250,7 @@ def menuPrincipal() -> None:
                 sep()
                 print("Opción inválida. Eliga una de las opciones disponibles.")
         
+        os.system('cls')
         sep()
         
         print(menú_Admin)
@@ -285,8 +290,6 @@ def menuGestionLocales() -> None:
             case 'a':
                 sep()
                 crear_local()
-                #MODULO mostrar_rubros():
-                
                 calcLoc()
                 sep()
             case 'b':
@@ -308,19 +311,40 @@ def menuGestionLocales() -> None:
     
     print("Volviendo...")
     sep()
-    print(menú_Admin)
-    sep()
 
 #MÓDULO para calcular los locales de los rubros
 def calcLoc() -> None:
     global comida, indumentaria, perfumería
+    ALL.seek(0)
+    lim = getsize(AFL)
+    while ALL.tell() < lim:
+        loc = load(ALL)
+        match loc.rubroLocal.strip():
+            case 'comida':
+                comida += 1
+            case 'indumentaria':
+                indumentaria += 1
+            case 'perfumería':
+                perfumería += 1
     
-    print(f"""===Cantidad de Locales por Rubro===
+    rubros[0][1] = str(comida)
+    rubros[1][1] = str(indumentaria)
+    rubros[2][1] = str(perfumería)
+    OrdenarRubros()
+    
+    print(f"===Cantidad de Locales por Rubro===")
+    for i in range(F2):
+        print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
         
-        Rubro comida: {comida}
-        Rubro indumentaria: {indumentaria}
-        Rubro perfumería: {perfumería}
-        """)
+#MÓDULO para ordenar el array de rubros de manera descendente
+def OrdenarRubros() -> None:
+    for i in range(F2-1):
+        for k in range(i+1,F2):
+            if rubros[i][1] < rubros[k][1]:
+                for j in range(2):
+                    aux = rubros[i][j]
+                    rubros[i][j] = rubros[k][j]
+                    rubros[k][j] = aux
 
 #MÓDULO para buscar secuencialmente una promo por codigo de local
 def busSecPromo(codL: int, tamp: int) -> int:
@@ -585,7 +609,6 @@ def crear_local() -> Locales():
     global codLocal, locales, i
     global nombreLocal
     global mostrar
-    global comida, indumentaria, perfumería
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == 'sí' or mostrar == 'si':
@@ -616,15 +639,6 @@ def crear_local() -> Locales():
         # Validación del rubro
         while rubro !='indumentaria' and rubro != 'perfumería' and rubro !='comida':
             rubro = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
-        
-        #se cuenta cuantas veces los rurbos fueron ingresados
-        match rubro:
-            case 'comida':
-                comida += 1
-            case 'indumentaria':
-                indumentaria += 1
-            case 'perfumería':
-                perfumería += 1
         
         sep()
         codUsuario = int(input("Ingrese el código del usuario dueño del local: "))
@@ -660,9 +674,7 @@ def crear_local() -> Locales():
         os.system("cls")
 
 #MÓDULO para modificar un local
-def modificar_local() -> None:
-    global comida, perfumería, indumentaria
-    
+def modificar_local() -> None:    
     opciones = """¿Qué atributo desea modificar?
 
                     a. Nombre
@@ -738,28 +750,10 @@ def modificar_local() -> None:
                     print(Fore.GREEN + "Ubicación modificada con éxito."+ Fore.Reset)
                 
                 case 'c':
-                    #Se resta 1 a la cantidad total de locales con el rubro a modificar
-                    match loc.rubroLocal.strip():
-                        case 'comida':
-                            comida -= 1
-                        case 'indumentaria':
-                            indumentaria -= 1
-                        case 'perfumería':
-                            perfumería -= 1        
-                    
                     rubro = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
                     
                     while rubro !='indumentaria' and rubro != 'perfumería' and rubro !='comida':
                         rubro = input("Rubro inválido, ingrese el rubro del local nuevamente por favor: ")
-                    
-                    match rubro:
-                        case 'comida':
-                            comida += 1
-                        case 'indumentaria':
-                            indumentaria += 1
-                        case 'perfumería':
-                            perfumería += 1
-                    
                     
                     loc.rubroLocal = rubro.ljust(50,' ')
                     
@@ -802,8 +796,6 @@ def modificar_local() -> None:
 
 #MÓDULO eliminar un local
 def eliminar_local() -> None:   
-    global comida, perfumería, indumentaria
-    
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == "si" or mostrar == "sí":
         mostrar_locales()
@@ -833,14 +825,6 @@ def eliminar_local() -> None:
         
         if confirmacion == 'sí' or confirmacion == 'si':
             
-            match loc.rubroLocal:
-                case 'comida':
-                    comida -= 1
-                case 'indumentaria':
-                    indumentaria -= 1
-                case 'perfumería':
-                    perfumería -= 1
-                
             # Cambiar el estado del local a "Baja"
             loc.estado = "B"
             dump(loc,ALL)
@@ -1049,6 +1033,7 @@ def Inicio() -> None:
                 pass
             case default:
                 print('Opción invalida, eliga nueva de nuevo')
+        os.system('cls')
         sep()
         opcion = input(menu)
 
