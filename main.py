@@ -430,6 +430,7 @@ def crearDescuentos() -> Promociones():
                 prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
         
         #Asignación de valores
+        ALL.seek(0,2)
         prom.codPromo = codPromo
         prom.textoPromo = texto
         prom.fechaDesdePromo = fecha_desde
@@ -441,7 +442,6 @@ def crearDescuentos() -> Promociones():
         codPromo+=1
         
         #Se guardan los cambios
-        ALP.seek(0,2)
         dump(loc,ALP)
         ALP.flush()
         
