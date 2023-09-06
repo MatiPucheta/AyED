@@ -245,28 +245,38 @@ def mostrar_promos() -> int:
         os.system('cls')
         print(Fore.GREEN + "== Promociones Cargadas ==" + Fore.RESET)
         
-        ALP.seek(0)
-        prom = load(ALP)
-        tamRegLoc = ALP.tell()
-        cantRegLoc = int(tamp/tamRegLoc)
-        
         ALL.seek(0)
-        taml = getsize(AFL)
+        aux1 = load(ALL)
+        tamRegLoc = ALL.tell()
+        cantRegLoc = int(getsize(AFL)/tamRegLoc)
+        
+        ALP.seek(0)
+        aux2 = load(ALP)
         tamRegPro = ALP.tell()
         cantRegPro = int(tamp/tamRegPro)
         
-        for i in range(cantRegLoc):
-            ALP.seek(i*tamRegLoc)
+        for i in range(cantRegPro):
+            ALP.seek(i*tamRegPro)
             prom = load(ALP)
-            for j in range(cantRegPro):
-                ALL.seek(j*cantRegPro)
+            for j in range(cantRegLoc):
+                ALL.seek(j*cantRegLoc)
                 loc = load(ALL)
-                if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
-                    if prom.fechaHastaPromo < datetime.strftime(datetime.now(), '%d/%m/%Y'):
-                        valid = 'Promo vigente'
-                    else:
-                        valid = 'Promo no vigente'
-                    print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
+                
+                if session != 1:
+                    if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
+                        if prom.fechaHastaPromo < datetime.strftime(datetime.now(), '%d/%m/%Y'):
+                            valid = 'Promo vigente'
+                        else:
+                            valid = 'Promo no vigente'
+                        print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
+                else:
+                    if (loc.codLocal == prom.codLocal):
+                        if prom.fechaHastaPromo > datetime.strftime(datetime.now(), '%d/%m/%Y'):
+                            valid = 'Promo vigente'
+                        else:
+                            valid = 'Promo no vigente'
+                        print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
+        
         return cantRegPro
     else:
         print('No se ha creado todavía ninguna promoción')
@@ -396,13 +406,15 @@ def busSecUserNom(nom: str) -> int:
     else:
         return -1
 
-#MÓDULO para buscar secuencialmente una promo por codigo de local
-def busSecPromo(codL: int, tamp: int) -> int:
+#MÓDULO para buscar secuencialmente una promo por codigo de promo
+def busSecPromo(codP: int) -> int:
+    tamp = getsize(AFP)
     encontrado = False
+    
     while ALP.tell() < tamp and not encontrado:
         pos = ALP.tell()
         prom = load(ALP)
-        if prom.codLocal == codL:
+        if prom.codLocal == codP:
             encontrado = True
     if encontrado:
         return pos
@@ -548,7 +560,7 @@ def menuPrincipal() -> None:
             case '2':
                 CrearDueño()
             case '3':
-                pass
+                solicitud_Dueño()
             case '4':
                 print("Diagramado en Chapin.")
             case '5':
@@ -672,6 +684,33 @@ def crear_local() -> Locales():
         nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
         
         os.system("cls")
+
+#MÓDULO para calcular los locales de los rubros
+def calcLoc() -> None:
+    comida = 0
+    indumentaria = 0
+    perfumería = 0
+    
+    ALL.seek(0)
+    lim = getsize(AFL)
+    while ALL.tell() < lim:
+        loc = load(ALL)
+        match loc.rubroLocal.strip():
+            case 'comida':
+                comida += 1
+            case 'indumentaria':
+                indumentaria += 1
+            case 'perfumería':
+                perfumería += 1
+    
+    rubros[0][1] = str(comida)
+    rubros[1][1] = str(indumentaria)
+    rubros[2][1] = str(perfumería)
+    OrdenarRubros()
+    
+    print(f"===Cantidad de Locales por Rubro===")
+    for i in range(F2):
+        print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
 
 #MÓDULO para modificar un local
 def modificar_local() -> None:    
@@ -940,32 +979,68 @@ def CrearDueño() -> Usuarios():
         nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
         nombreUsuario = validarLong(nombreUsuario, 1, 50)
 
-#MÓDULO para calcular los locales de los rubros
-def calcLoc() -> None:
-    comida = 0
-    indumentaria = 0
-    perfumería = 0
+#MÓDULO para la aprobación/denegación de las promos
+def solicitud_Dueño() -> None:
     
-    ALL.seek(0)
-    lim = getsize(AFL)
-    while ALL.tell() < lim:
-        loc = load(ALL)
-        match loc.rubroLocal.strip():
-            case 'comida':
-                comida += 1
-            case 'indumentaria':
-                indumentaria += 1
-            case 'perfumería':
-                perfumería += 1
+    opcion = input('¿Desea ver las promociones cargadas?: ').lower()
+    if opcion == 'si' or opcion == 'sí':
+        mostrar_promos()
+        sep()
     
-    rubros[0][1] = str(comida)
-    rubros[1][1] = str(indumentaria)
-    rubros[2][1] = str(perfumería)
-    OrdenarRubros()
+    codP = int(input('Introduzca el código de la promoción que quiera modificarle su estado (un "0" indica fin de carga): '))
+    pos = busSecPromo(codP)
     
-    print(f"===Cantidad de Locales por Rubro===")
-    for i in range(F2):
-        print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
+    while pos == -1 and codP != 0:
+        codP = int(input('El código que introduzco no existe, hagalo nuevamente por favor: '))
+        
+    while codP != 0:
+        
+        os.system('cls')
+        ALP.seek(pos)
+        prom = load(ALP)
+        vigente: bool = prom.fechaHastaPromo > datetime.strftime(datetime.now(), '%d/%m/%Y')
+        if vigente:
+            match prom.estado.strip():
+                
+                case 'pendiente':
+                    print(Fore.LIGHTBLUE_EX + f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo}" + Fore.RESET)
+                    
+                    opcion = input('¿Desea Aprobar o Denegar la promoción? (conteste con "A" o "D"): ')
+                    while opcion != 'A' and opcion != 'D':
+                        opcion = input('Opción inválida, eliga una nuevamente por favor: ')
+                    
+                    if opcion == 'A':
+                        prom.estado == 'aceptada'.ljust(10,' ')
+                        print(Fore.GREEN + '¡Promoción aceptada exitosamente!' + Fore.RESET)
+                        sep()
+                    else:
+                        prom.estado == 'rechazada'.ljust(10,' ')
+                        print(Fore.GREEN + '¡Promoción rechazada exitosamente!' + Fore.RESET)
+                        sep()
+                    
+                
+                case 'aceptada':
+                    print('La promoción ya ha sido aceptada')
+                    sep()
+                
+                case 'rechazada':
+                    print('La promoción ya ha sido aceptada')
+                    sep()
+            
+        else:
+            print('La promoción no se encuentra más vigente')
+            sep()
+        
+        opcion = input('¿Desea ver las promociones cargadas nuevamente?: ').lower()
+        if opcion == 'si' or opcion == 'sí':
+            mostrar_promos()
+            sep()
+        
+        codP = int(input('Introduzca el código de la promoción que quiera modificarle su estado (un "0" indica fin de carga): '))
+        pos = busSecPromo(codP)
+        
+        while pos == -1 and codP != 0:
+            codP = int(input('El código que introduzco no existe, hagalo nuevamente por favor: '))
 
 
 
