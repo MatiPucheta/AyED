@@ -20,18 +20,9 @@ C=5
 locales=[[" "]*C for i in range(F)]
 rubros = [[" "]*2 for k in range(F2)]
 
+#codUsario del usuario activo
 session = 0
 
-# Código inicial para el primer usuario
-codUsuario = 1
-
-# Código inicial para el primer local
-codLocal = 1  
-
-#contadores de los rubros
-comida = 0
-indumentaria = 0
-perfumería = 0
 
 #Declaraciones de los archivos
 AFU = 'Archivos\\Usuarios.dat'
@@ -46,8 +37,6 @@ ALP = open(AFP, 'r+b')
 ALUP = open(AFUP, 'r+b')
 ALN = open(AFN, 'r+b')
 
-#codUsario del usuario activo
-usuarioActivo = 0
 
 #Declaración de registros
 
@@ -102,7 +91,7 @@ u_prom = uso_Promociones()
 
 #Carga del super usuario administrador
 if getsize(AFU) == 0:
-    user.codUsuario = codUsuario
+    user.codUsuario = 1
     user.nombreUsuario = 'admin@shopping.com'.ljust(100,' ')
     user.claveUsuario = '12345'.ljust(8, ' ')
     user.tipoUsuario = 'administrador'.ljust(20,' ')
@@ -114,13 +103,6 @@ rubros[0][0] = "Comida"
 rubros[1][0] = "Indumentaria"
 rubros[2][0] = "Perfumería"
 
-#Array de 4x2 con los usarios y contraseñas
-usuarios = [
-    ["admin@shopping.com", "12345"],
-    ["localA@shopping.com", "AAAA1111"],
-    ["localB@shopping.com", "BBBB2222"],
-    ["unCliente@shopping.com", "33xx33"]
-]
 #contador
 intentos = 0
 
@@ -258,7 +240,7 @@ def menuPrincipal() -> None:
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
 #MÓDULO para mostrar los locales cargados
-def mostrar_locales() -> None:
+def mostrar_locales() -> int:
     arch = getsize(AFL)
     if arch != 0:
         os.system('cls')
@@ -272,8 +254,10 @@ def mostrar_locales() -> None:
             loc = load(ALL)
             print(f"Nombre: {loc.nombreLocal.strip()} | Ubicación: {loc.ubicacionLocal.strip()} | Rubro: {loc.rubroLocal.strip()} | Código: {loc.codLocal} | Estado: {loc.estado}")
         sep()
+        return cantReg
     else:
         print("No se han cargado locales aún.")
+        return 0
 
 #MÓDULO de la sección Gestión de Locales
 def menuGestionLocales() -> None:
@@ -313,7 +297,10 @@ def menuGestionLocales() -> None:
 
 #MÓDULO para calcular los locales de los rubros
 def calcLoc() -> None:
-    global comida, indumentaria, perfumería
+    comida = 0
+    indumentaria = 0
+    perfumería = 0
+    
     ALL.seek(0)
     lim = getsize(AFL)
     while ALL.tell() < lim:
@@ -604,13 +591,13 @@ def validarLong(dato: str, a: int, b: int) -> str:
 
 #MÓDULO para cargar los locales
 def crear_local() -> Locales():
-    global codLocal, locales, i
+    global locales, i
     global nombreLocal
     global mostrar
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == 'sí' or mostrar == 'si':
-        mostrar_locales()
+        codLocal = mostrar_locales()
     
     sep()
     nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
@@ -924,14 +911,13 @@ def Logeo() -> None:
 
 #MÓDULO de registro de usuarios
 def Registro() -> None:
-    global codUsuario
-    #ALU.seek(0)
-    #aux = load(ALU)
-    #tamañoR = ALU.tell()
-    #cantR = getsize(AFU)//tamañoR
-    #ultimoR = cantR*tamañoR
-    #ALU.seek(ultimoR)
-    codUsuario+=1
+    ALU.seek(0)
+    aux = load(ALU)
+    tamañoR = ALU.tell()
+    cantR = getsize(AFU)//tamañoR
+    
+    codUsuario = cantR + 1
+    
     nom = input("Bienvenido seas, ingrese su nombre de usuario para registrarse por favor (un '0' indica anulación del procedimiento y máximo 100 caracteres): ")
     
     while busSec(nom) != -1 and nom != '0':
@@ -960,7 +946,13 @@ def Registro() -> None:
 
 #MÓDULO de creación de cuenta para dueños de locales
 def CrearDueño() -> Usuarios():
-    global codUsuario
+    
+    ALU.seek(0)
+    aux = load(ALU)
+    tamañoR = ALU.tell()
+    cantR = getsize(AFU)//tamañoR
+    
+    codUsuario = cantR + 1
     
     nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
     os.system("cls")
