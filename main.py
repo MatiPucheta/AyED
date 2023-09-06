@@ -149,6 +149,10 @@ menú_Cliente = ("""-- Menú Principal --
 def sep() -> None:
     return print(Fore.YELLOW + "-"*70 + Fore.RESET)
 
+
+
+#             ________________SECCIÓN CLIENTE_________________
+
 #MÓDULO del menú principal Cliente
 def menuCliente() -> None:
     global intentos
@@ -175,153 +179,31 @@ def menuCliente() -> None:
     intentos = 3
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-#MÓDULO del menú principal Dueño
-def menuDueño() -> None:
-    global intentos
-    print(menú_Dueño)
-    sep()
-    
-    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
-    
-    while elección != '0':
-        
-        match elección:
-            case '1':
-                # HACER MODULO crearDescuentos()
-                crearDescuentos()
-            case '2':
-                # HACER MODULO reportDescuentos()
-                pass
-            case '3':
-                print("Diagramado en Chapin.")
-                pass
-            case default:
-                print("Opción inválida, elija nuevamente.")
-        os.system('cls')
-        
-        print(menú_Dueño)
-        elección = input("¿Qué parte del menú principal le gustaría ver?: ")
-    intentos = 3
-    print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-#MÓDULO del menú principal Admin
-def menuPrincipal() -> None:
-    global intentos
-    
-    print(menú_Admin)
-    sep()
-    
-    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
-    while elección != '0':
-        
-        match elección:
-            case '1':
-                os.system('cls')
-                sep()
-                menuGestionLocales()
-            case '2':
-                CrearDueño()
-            case '3':
-                pass
-            case '4':
-                print("Diagramado en Chapin.")
-            case '5':
-                pass
-            case default:
-                sep()
-                print("Opción inválida. Eliga una de las opciones disponibles.")
-        
-        os.system('cls')
-        sep()
-        
-        print(menú_Admin)
-        elección = input("¿Que parte del menú principal le gustaría ver?: ")
-    intentos = 3
-    print("Que tenga un buen día, hasta luego") #mensaje de despedida
 
-#MÓDULO para mostrar los locales cargados
-def mostrar_locales() -> int:
-    arch = getsize(AFL)
-    if arch != 0:
-        os.system('cls')
-        print(Fore.GREEN + "== Locales Cargados ==" + Fore.RESET)
-        ALL.seek(0)
-        loc = load(ALL)
-        tamReg = ALL.tell()
-        cantReg = int(arch/tamReg)
-        for i in range(cantReg):
-            ALL.seek(i*tamReg)
-            loc = load(ALL)
-            print(f"Nombre: {loc.nombreLocal.strip()} | Ubicación: {loc.ubicacionLocal.strip()} | Rubro: {loc.rubroLocal.strip()} | Código: {loc.codLocal} | Estado: {loc.estado}")
-        sep()
-        return cantReg
-    else:
-        print("No se han cargado locales aún.")
-        return 0
+#             ________________SECCIÓN VALIDAR_________________
 
-#MÓDULO de la sección Gestión de Locales
-def menuGestionLocales() -> None:
-    print(gestión_menú)
-    
-    sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
-    os.system('cls')
-    while sub_menu_1 != "e": #menú gestion de locales
-        
-        sep()
-        
-        match sub_menu_1:
-            case 'a':
-                sep()
-                crear_local()
-                calcLoc()
-                sep()
-            case 'b':
-                modificar_local()
-                sep()
-            case 'c':
-                eliminar_local()
-                sep()    
-            case 'd':
-                mostrar_mapa_locales()
-                sep()
-            case 'e':
-                pass
-            case default:
-                print("Opción inválida. Eliga una de de las opciones disponibles por favor.")
-        
-        print(gestión_menú)
-        sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
-    
-    print("Volviendo...")
-    sep()
+#MÓDULO para validar fecha ingresada
+def validarFecha() -> str:
+    flag = True
+    while flag:
+        try:
+            fecha = input("Ingrese la fecha en el formato DD/MM/AAAA: ")
+            datetime.strptime(fecha, '%d/%m/%Y')
+            flag = False
+        except ValueError:
+            continue
+    return fecha
 
-#MÓDULO para calcular los locales de los rubros
-def calcLoc() -> None:
-    comida = 0
-    indumentaria = 0
-    perfumería = 0
-    
-    ALL.seek(0)
-    lim = getsize(AFL)
-    while ALL.tell() < lim:
-        loc = load(ALL)
-        match loc.rubroLocal.strip():
-            case 'comida':
-                comida += 1
-            case 'indumentaria':
-                indumentaria += 1
-            case 'perfumería':
-                perfumería += 1
-    
-    rubros[0][1] = str(comida)
-    rubros[1][1] = str(indumentaria)
-    rubros[2][1] = str(perfumería)
-    OrdenarRubros()
-    
-    print(f"===Cantidad de Locales por Rubro===")
-    for i in range(F2):
-        print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
+#MÓDULO para valir longuitud
+def validarLong(dato: str, a: int, b: int) -> str:
+    while len(dato) < a or len(dato) > b:
+        dato = input('No se ha cumplido con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
+    return dato
 
+
+
+#             ________________SECCIÓN ORDENAR_________________
 
 #MÓDULO para ordenar el array de rubros de manera descendente
 def OrdenarRubros() -> None:
@@ -333,18 +215,28 @@ def OrdenarRubros() -> None:
                     rubros[i][j] = rubros[k][j]
                     rubros[k][j] = aux
 
-#MÓDULO para buscar secuencialmente una promo por codigo de local
-def busSecPromo(codL: int, tamp: int) -> int:
-    encontrado = False
-    while ALP.tell() < tamp and not encontrado:
-        pos = ALP.tell()
-        prom = load(ALP)
-        if prom.codLocal == codL:
-            encontrado = True
-    if encontrado:
-        return pos
-    else:
-        return -1
+#MÓDULO de ordenamiento (falso burbuja)
+def OrdenarLoc() -> None: #falso burbuja
+    ALL.seek(0)
+    aux = load(ALL)
+    tamR = ALL.tell()
+    tamA = getsize(AFL)
+    cantR = int(tamA/tamR)
+    for i in range(cantR-1):
+        for j in range(i+1, cantR):
+            ALL.seek(i*tamR)
+            auxi = load(ALL)
+            ALL.seek(j*tamR)
+            auxj = load(ALL)
+            if (auxi.nombreLocal > auxj.nombreLocal):
+                ALL.seek(i*tamR)  
+                dump(auxj, ALL)
+                ALL.seek(j*tamR)
+                dump(auxi, ALL)
+
+
+
+#             ________________SECCIÓN MUESTRAS_________________
 
 #MÓDULO para mostrar las promos de una local de un dueño
 def mostrar_promos() -> int:
@@ -380,86 +272,38 @@ def mostrar_promos() -> int:
         print('No se ha creado todavía ninguna promoción')
         return 0
 
-#MÓDULO para crear descuentos
-def crearDescuentos() -> Promociones():
-    
-    codPromo = mostrar_promos()
-    
-    sep()
-    
-    
-    print(Fore.GREEN + '==Creación de descuentos==' + Fore.RESET)
-    
-    codigo = int(input("Ingrese el código del local al cual darle una promoción: ('0' indica fin de carga): "))
-    os.system("cls")
-    
-    while codigo != 0:
-        
-        #Actualización del codigo de las promociones
-        codPromo += 1
-        
-        pos = buscSecCod(codigo)
-        
-        while pos == -1:
-            print("Lo lamentamos pero no se encontró ningún local con ese código.")
-            codigo = int(input("Ingrese el código del local que desea darle una promoción de nuevo por favor: "))
-            pos = buscSecCod(codigo)
-            os.system('cls')
-        
-        ALL.seek(pos)
-        loc = load(ALL)
-        
-        while loc.codUsuario != session:
-            codigo = int(input("Ingrese el código de un local del cual sea dueño por favor: "))
-        
-        texto = input('Introduzca la descripción que quiera darle a su promoción: (máximo 200 caracteres): ')
-        
-        texto = validarLong(texto, 1, 200)
-        sep()
-        
-        #Fechas de la promo
-        print('Introduzca la fecha de inicio de la promoción:')
-        fecha_desde = validarFecha()
-        while fecha_desde < datetime.strftime(datetime.now(), '%d/%m/%Y'):
-            print('La fecha de inicio no puede ser menor que la de hoy. Introduzca una nuevamente por favor: ')
-            fecha_desde = validarFecha()
-        sep()
-        
-        print('Y ahora introduzca la fecha de finalización de la promoción:')
-        fecha_hasta = validarFecha()
+#MÓDULO para mostrar los locales cargados
+def mostrar_locales() -> int:
+    arch = getsize(AFL)
+    if arch != 0:
         os.system('cls')
-        while fecha_hasta < fecha_desde:
-            print('La fecha de finalización no puede ser menor que la de inicio. Introduzca una nuevamente por favor: ')
-            fecha_hasta = validarFecha()
+        print(Fore.GREEN + "== Locales Cargados ==" + Fore.RESET)
+        ALL.seek(0)
+        loc = load(ALL)
+        tamReg = ALL.tell()
+        cantReg = int(arch/tamReg)
+        if session == 1:
+            for i in range(cantReg):
+                ALL.seek(i*tamReg)
+                loc = load(ALL)
+                print(f"Nombre: {loc.nombreLocal.strip()} | Ubicación: {loc.ubicacionLocal.strip()} | Rubro: {loc.rubroLocal.strip()} | Código: {loc.codLocal} | Estado: {loc.estado}")
+            sep()
+        else:
+            for i in range(cantReg):
+                ALL.seek(i*tamReg)
+                loc = load(ALL)
+                if loc.codUsuario == session:
+                    print(f"Nombre: {loc.nombreLocal.strip()} | Ubicación: {loc.ubicacionLocal.strip()} | Rubro: {loc.rubroLocal.strip()} | Código: {loc.codLocal} | Estado: {loc.estado}")
+            sep()
         
-        #Días de la semana
-        dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-        
-        #Ingreso de la disponibilidad de la promo
-        for i in range(6):
-            prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
-            while prom.diasSemana[i] != 1 and prom.diasSemana[i] != 0:
-                prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
-        
-        #Asignación de valores
-        ALP.seek(0,2)
-        prom.codPromo = codPromo
-        prom.textoPromo = texto
-        prom.fechaDesdePromo = fecha_desde
-        prom.fechaHastaPromo = fecha_hasta
-        prom.codLocal = codigo
-        prom.estado = 'pendiente'
-        
-        #Se guardan los cambios
-        dump(prom,ALP)
-        ALP.flush()
-        
-        os.system("cls")
-        print(Fore.GREEN + "¡¡Promoción creada exitosamente!!" + Fore.RESET)
-        sep()
-        
-        codigo = int(input("Ingrese el código del local al cual darle una promoción ('0' indica fin de carga): "))
-        os.system("cls")
+        return cantReg
+    else:
+        print("No se han cargado locales aún.")
+        return 0
+
+
+
+#             ________________SECCIÓN BÚSQUEDAS_________________
 
 #MODULO para buscar secuencialmente en el archivo usuarios
 def busSec(dato: str) -> int: 
@@ -552,42 +396,210 @@ def busSecUserNom(nom: str) -> int:
     else:
         return -1
 
-#MÓDULO de ordenamiento (falso burbuja)
-def OrdenarLoc() -> None: #falso burbuja
-    ALL.seek(0)
-    aux = load(ALL)
-    tamR = ALL.tell()
-    tamA = getsize(AFL)
-    cantR = int(tamA/tamR)
-    for i in range(cantR-1):
-        for j in range(i+1, cantR):
-            ALL.seek(i*tamR)
-            auxi = load(ALL)
-            ALL.seek(j*tamR)
-            auxj = load(ALL)
-            if (auxi.nombreLocal > auxj.nombreLocal):
-                ALL.seek(i*tamR)  
-                dump(auxj, ALL)
-                ALL.seek(j*tamR)
-                dump(auxi, ALL)
+#MÓDULO para buscar secuencialmente una promo por codigo de local
+def busSecPromo(codL: int, tamp: int) -> int:
+    encontrado = False
+    while ALP.tell() < tamp and not encontrado:
+        pos = ALP.tell()
+        prom = load(ALP)
+        if prom.codLocal == codL:
+            encontrado = True
+    if encontrado:
+        return pos
+    else:
+        return -1
 
-#MÓDULO para validar fecha ingresada
-def validarFecha() -> str:
-    flag = True
-    while flag:
-        try:
-            fecha = input("Ingrese la fecha en el formato DD/MM/AAAA: ")
-            datetime.strptime(fecha, '%d/%m/%Y')
-            flag = False
-        except ValueError:
-            continue
-    return fecha
 
-#MÓDULO para valir longuitud
-def validarLong(dato: str, a: int, b: int) -> str:
-    while len(dato) < a or len(dato) > b:
-        dato = input('No se ha cumplido con la cantidad maxima o mínima de caracteres, introduzca uno nuevamente por favor: ')
-    return dato
+
+#            ________________SECCIÓN DUEÑO_________________
+
+#MÓDULO del menú principal Dueño
+def menuDueño() -> None:
+    global intentos
+    print(menú_Dueño)
+    sep()
+    
+    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    
+    while elección != '0':
+        
+        match elección:
+            case '1':
+                # HACER MODULO crearDescuentos()
+                crearDescuentos()
+            case '2':
+                # HACER MODULO reportDescuentos()
+                pass
+            case '3':
+                print("Diagramado en Chapin.")
+                pass
+            case default:
+                print("Opción inválida, elija nuevamente.")
+        os.system('cls')
+        
+        print(menú_Dueño)
+        elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    intentos = 3
+    print("Que tenga un buen día, hasta luego") #mensaje de despedida
+
+#MÓDULO para crear descuentos
+def crearDescuentos() -> Promociones():
+    
+    codPromo = mostrar_promos()
+    
+    sep()
+    
+    mostrar = input("¿Le gustaría ver sus locales?: ").lower()
+    if mostrar == 'sí' or mostrar == 'si':
+        mostrar_locales()
+    
+    print(Fore.GREEN + '==Creación de descuentos==' + Fore.RESET)
+    
+    codigo = int(input("Ingrese el código del local al cual darle una promoción: ('0' indica fin de carga): "))
+    os.system("cls")
+    
+    while codigo != 0:
+        
+        #Actualización del codigo de las promociones
+        codPromo += 1
+        
+        pos = buscSecCod(codigo)
+        
+        while pos == -1:
+            print("Lo lamentamos pero no se encontró ningún local con ese código.")
+            codigo = int(input("Ingrese el código del local que desea darle una promoción de nuevo por favor: "))
+            pos = buscSecCod(codigo)
+            os.system('cls')
+        
+        ALL.seek(pos)
+        loc = load(ALL)
+        
+        while loc.codUsuario != session:
+            codigo = int(input("Ingrese el código de un local del cual sea dueño por favor: "))
+        
+        texto = input('Introduzca la descripción que quiera darle a su promoción: (máximo 200 caracteres): ')
+        
+        texto = validarLong(texto, 1, 200)
+        sep()
+        
+        #Fechas de la promo
+        print('Introduzca la fecha de inicio de la promoción:')
+        fecha_desde = validarFecha()
+        while fecha_desde < datetime.strftime(datetime.now(), '%d/%m/%Y'):
+            print('La fecha de inicio no puede ser menor que la de hoy. Introduzca una nuevamente por favor: ')
+            fecha_desde = validarFecha()
+        sep()
+        
+        print('Y ahora introduzca la fecha de finalización de la promoción:')
+        fecha_hasta = validarFecha()
+        os.system('cls')
+        while fecha_hasta < fecha_desde:
+            print('La fecha de finalización no puede ser menor que la de inicio. Introduzca una nuevamente por favor: ')
+            fecha_hasta = validarFecha()
+        
+        #Días de la semana
+        dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        
+        #Ingreso de la disponibilidad de la promo
+        for i in range(6):
+            prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
+            while prom.diasSemana[i] != 1 and prom.diasSemana[i] != 0:
+                prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
+        
+        #Asignación de valores
+        ALP.seek(0,2)
+        prom.codPromo = codPromo
+        prom.textoPromo = texto
+        prom.fechaDesdePromo = fecha_desde
+        prom.fechaHastaPromo = fecha_hasta
+        prom.codLocal = codigo
+        prom.estado = 'pendiente'
+        
+        #Se guardan los cambios
+        dump(prom,ALP)
+        ALP.flush()
+        
+        os.system("cls")
+        print(Fore.GREEN + "¡¡Promoción creada exitosamente!!" + Fore.RESET)
+        sep()
+        
+        codigo = int(input("Ingrese el código del local al cual darle una promoción ('0' indica fin de carga): "))
+        os.system("cls")
+
+
+
+#             ________________SECCIÓN ADMINISTRADOR_________________
+
+#MÓDULO del menú principal Admin
+def menuPrincipal() -> None:
+    global intentos
+    
+    print(menú_Admin)
+    sep()
+    
+    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    while elección != '0':
+        
+        match elección:
+            case '1':
+                os.system('cls')
+                sep()
+                menuGestionLocales()
+            case '2':
+                CrearDueño()
+            case '3':
+                pass
+            case '4':
+                print("Diagramado en Chapin.")
+            case '5':
+                pass
+            case default:
+                sep()
+                print("Opción inválida. Eliga una de las opciones disponibles.")
+        
+        os.system('cls')
+        sep()
+        
+        print(menú_Admin)
+        elección = input("¿Que parte del menú principal le gustaría ver?: ")
+    intentos = 3
+    print("Que tenga un buen día, hasta luego") #mensaje de despedida
+
+#MÓDULO de la sección Gestión de Locales
+def menuGestionLocales() -> None:
+    print(gestión_menú)
+    
+    sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
+    os.system('cls')
+    while sub_menu_1 != "e": #menú gestion de locales
+        
+        sep()
+        
+        match sub_menu_1:
+            case 'a':
+                sep()
+                crear_local()
+                calcLoc()
+                sep()
+            case 'b':
+                modificar_local()
+                sep()
+            case 'c':
+                eliminar_local()
+                sep()    
+            case 'd':
+                mostrar_mapa_locales()
+                sep()
+            case 'e':
+                pass
+            case default:
+                print("Opción inválida. Eliga una de de las opciones disponibles por favor.")
+        
+        print(gestión_menú)
+        sub_menu_1 = input("¿Que parte del menú de 'Gestión de Locales' le gustaría ver?: ").lower()
+    
+    print("Volviendo...")
+    sep()
 
 #MÓDULO para cargar los locales
 def crear_local() -> Locales():
@@ -631,6 +643,10 @@ def crear_local() -> Locales():
         while buscSecUserCod(codUsuario) == -1:
             codUsuario = int(input("El código de usuario no pertenece a ningún dueño, ingrese el código de nuevo por favor: "))
         
+        
+        #Actualización del codigo de los locales
+        codLocal+=1
+        
         #Asignación de los valores
         ALL.seek(0,2)
         loc.codLocal = codLocal
@@ -640,8 +656,7 @@ def crear_local() -> Locales():
         loc.codUsuario = codUsuario
         loc.estado = 'A'
         
-        #Actualización del codigo de los locales
-        codLocal+=1
+        
         
         #Se guardan los cambios
         dump(loc,ALL)
@@ -875,6 +890,87 @@ def mostrar_mapa_locales() -> None:
     else:
         print('No hay locales cargados. Por ende no se encuetra habilitado el mapa de locales')
 
+#MÓDULO de creación de cuenta para dueños de locales
+def CrearDueño() -> Usuarios():
+    
+    ALU.seek(0)
+    aux = load(ALU)
+    tamañoR = ALU.tell()
+    cantR = getsize(AFU)//tamañoR
+    
+    codUsuario = cantR + 1
+    
+    nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
+    os.system("cls")
+    
+    codUsuario += 1
+    
+    #Se valida la longuitud del nombre
+    nombreUsuario = validarLong(nombreUsuario, 1, 50)
+    
+    while nombreUsuario != '0':
+        
+        print(Fore.GREEN + "== Crear cuenta de dueño ==" + Fore.RESET)
+        
+        sep()
+        
+        #Se verifica que el nombre no se esté ya usado
+        while busSecUserNom(nombreUsuario) != -1:
+            nombreUsuario = input("El nombre de usuario ya existe, introduzca uno no ocupado por favor: ")
+            nombreUsuario = validarLong(nombreUsuario, 1, 100)
+        
+        claveUsuario = input("Ingrese la clave del dueño (8 caracteres): ")
+        claveUsuario = validarLong(claveUsuario, 8, 8)
+        
+        #Asignación de los valores
+        ALU.seek(0,2)
+        user.codUsuario = codUsuario
+        user.nombreUsuario = nombreUsuario.ljust(100,' ')
+        user.claveUsuario = claveUsuario.ljust(8,' ')
+        user.tipoUsuario = 'dueño de local'.ljust(20,' ')
+        
+        dump(user, ALU)
+        ALU.flush()
+        
+        os.system('cls')
+        print(Fore.GREEN + "¡¡Cuenta de dueño creada exitosamente!!" + Fore.RESET)
+        
+        sep()
+        
+        nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
+        nombreUsuario = validarLong(nombreUsuario, 1, 50)
+
+#MÓDULO para calcular los locales de los rubros
+def calcLoc() -> None:
+    comida = 0
+    indumentaria = 0
+    perfumería = 0
+    
+    ALL.seek(0)
+    lim = getsize(AFL)
+    while ALL.tell() < lim:
+        loc = load(ALL)
+        match loc.rubroLocal.strip():
+            case 'comida':
+                comida += 1
+            case 'indumentaria':
+                indumentaria += 1
+            case 'perfumería':
+                perfumería += 1
+    
+    rubros[0][1] = str(comida)
+    rubros[1][1] = str(indumentaria)
+    rubros[2][1] = str(perfumería)
+    OrdenarRubros()
+    
+    print(f"===Cantidad de Locales por Rubro===")
+    for i in range(F2):
+        print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
+
+
+
+#             ________________SECCIÓN PÚBLICA_________________
+
 #MÓDULO de logeo de los usuarios
 def Logeo() -> None:
     global intentos, session
@@ -900,6 +996,7 @@ def Logeo() -> None:
                         menuDueño()
                     case 'administrador':
                         os.system('cls')
+                        session = user.codUsuario
                         menuPrincipal()
             else:
                 os.system('cls')
@@ -944,57 +1041,6 @@ def Registro() -> None:
         os.system('cls')
         print(Fore.GREEN + '¡¡Has podido registrarte exitosamente!!\n' + Fore.RESET)
 
-#MÓDULO de creación de cuenta para dueños de locales
-def CrearDueño() -> Usuarios():
-    
-    ALU.seek(0)
-    aux = load(ALU)
-    tamañoR = ALU.tell()
-    cantR = getsize(AFU)//tamañoR
-    
-    codUsuario = cantR + 1
-    
-    nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
-    os.system("cls")
-    
-    codUsuario += 1
-    
-    #Se valida la longuitud del nombre
-    nombreUsuario = validarLong(nombreUsuario, 1, 50)
-    
-    while nombreUsuario != '0':
-        
-        print(Fore.GREEN + "== Crear cuenta de dueño ==" + Fore.RESET)
-        
-        sep()
-        
-        #Se verifica que el nombre no se esté ya usado
-        while busSecUserNom(nombreUsuario) != -1:
-            nombreUsuario = input("El nombre de usuario ya existe, introduzca uno no ocupado por favor: ")
-            nombreUsuario = validarLong(nombreUsuario, 1, 100)
-        
-        claveUsuario = input("Ingrese la clave del dueño (8 caracteres): ")
-        claveUsuario = validarLong(claveUsuario, 8, 8)
-        
-        #Asignación de los valores
-        ALU.seek(0)
-        user = load(ALU)
-        user.codUsuario = codUsuario
-        user.nombreUsuario = nombreUsuario.ljust(100,' ')
-        user.claveUsuario = claveUsuario.ljust(8,' ')
-        user.tipoUsuario = 'dueño de local'.ljust(20,' ')
-        
-        dump(user, ALU)
-        ALU.flush()
-        
-        os.system('cls')
-        print(Fore.GREEN + "¡¡Cuenta de dueño creada exitosamente!!" + Fore.RESET)
-        
-        sep()
-        
-        nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
-        nombreUsuario = validarLong(nombreUsuario, 1, 50)
-
 #MÓDULO de verificación del tipo de usuario
 def Inicio() -> None:
     menu = """Eliga la opción que desee
@@ -1026,6 +1072,8 @@ def Inicio() -> None:
         os.system('cls')
         sep()
         opcion = input(menu)
+
+
 
 #PROGAMA PRINCIPAL
 
