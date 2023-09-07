@@ -72,7 +72,6 @@ class uso_Promociones:
         self.codPromo = 0
         self.fechaUsoPromo = ''.ljust(10,' ')
         
-
 class Novedades:
     def __init__(self) -> None:
         self.codNovedad = 0
@@ -164,21 +163,56 @@ def menuCliente() -> None:
             
         match elección:
             case '1':
-                # HACER MODULO buscDescuentos()
-                pass
+                bus_desc_Cliente()
             case '2':
-                # HACER MODULO solicDescuento()
-                pass
+                solicitud_Cliente()
             case '3':
                 print("Diagramado en Chapin.")
-                pass
             case default:
                 print("Opción inválida, elija nuevamente.")
                 
         elección = input("¿Qué parte del menú principal le gustaría ver?: ")
     intentos = 3
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
-
+    
+#MÓDULO para buscar descuentos como cliente
+def bus_desc_Cliente():
+    codLocal = int(input("Ingrese el código del local: "))
+    
+    pos = buscSecCod(codLocal)
+    
+    while pos == -1:
+        print("Lo lamentamos pero no se encontró ningún local con ese código.")
+        codLocal = int(input("Ingrese el código del local que desea modificar de nuevo por favor: "))
+        pos = buscSecCod(codLocal)
+    
+    os.system('cls')
+    
+    fecha = validarFecha()    
+    while fecha < datetime.strftime(datetime.now(), '%d/%m/%Y'):
+            print('La fecha no puede ser menor a la del día de hoy. Introduzcala nuevamente: ')
+            fecha = validarFecha()
+    
+    os.system('cls')
+    
+    print("Promociones disponibles:")
+    descuentos = True
+    ALP.seek(0)
+    lim = getsize(AFP)
+    while ALP.tell() < lim:
+        prom = load(ALP)
+        if prom.codLocal == codLocal:
+            if prom.fechaDesdePromo < fecha and prom.fechaHastaPromo > fecha:
+                i = fecha.weekday()
+                if prom.diasSemana[i] == 1:
+                    print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
+                    descuentos = False
+    if not descuentos:
+        print("El local ingresado todavía no tiene ninguna promoción.")
+               
+#MÓDULO para usar un descuento como cliente
+def solicitud_Cliente():
+    print("HACER")
 
 
 #             ________________SECCIÓN VALIDAR_________________
@@ -238,7 +272,7 @@ def OrdenarLoc() -> None: #falso burbuja
 
 #             ________________SECCIÓN MUESTRAS_________________
 
-#MÓDULO para mostrar las promos de una local de un dueño
+#MÓDULO para mostrar las promos de un local de un dueño
 def mostrar_promos() -> int:
     tamp = getsize(AFP)
     if tamp != 0:
@@ -708,7 +742,7 @@ def calcLoc() -> None:
     rubros[2][1] = str(perfumería)
     OrdenarRubros()
     
-    print(f"===Cantidad de Locales por Rubro===")
+    print(f"=== Cantidad de Locales por Rubro ===")
     for i in range(F2):
         print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
 
