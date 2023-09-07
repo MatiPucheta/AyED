@@ -174,16 +174,16 @@ def menuCliente() -> None:
         elección = input("¿Qué parte del menú principal le gustaría ver?: ")
     intentos = 3
     print("Que tenga un buen día, hasta luego") #mensaje de despedida
-    
+
 #MÓDULO para buscar descuentos como cliente
 def bus_desc_Cliente():
-    codLocal = int(input("Ingrese el código del local: "))
+    codLocal = int(input("Ingrese el código del local para ver sus descuentos: "))
     
     pos = buscSecCod(codLocal)
     
     while pos == -1:
         print("Lo lamentamos pero no se encontró ningún local con ese código.")
-        codLocal = int(input("Ingrese el código del local que desea modificar de nuevo por favor: "))
+        codLocal = int(input("Ingrese el código del local nuevamente por favor: "))
         pos = buscSecCod(codLocal)
     
     os.system('cls')
@@ -195,20 +195,21 @@ def bus_desc_Cliente():
     
     os.system('cls')
     
-    print("===== Promociones disponibles =====")
+    print(Fore.GREEN + "===== Promociones disponibles =====" + Fore.RESET)
     descuentos = True
     ALP.seek(0)
     lim = getsize(AFP)
-    while ALP.tell() < lim:
+    while ALP.tell() < lim and descuentos:
         prom = load(ALP)
         if prom.codLocal == codLocal:
-            if prom.fechaDesdePromo < fecha and prom.fechaHastaPromo > fecha:
+            
+            if (prom.fechaDesdePromo < fecha) and (prom.fechaHastaPromo > fecha) and (prom.estado.strip() == 'aceptada'):
                 if prom.diasSemana[fecha.weekday()] == 1:
-                    print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
-                    descuentos = False
-    if not descuentos:
+                    print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo.strip()}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
+            descuentos = False
+    if descuentos:
         print("El local ingresado todavía no tiene ninguna promoción.")
-               
+
 #MÓDULO para usar un descuento como cliente
 def solicitud_Cliente():
     print("HACER")
