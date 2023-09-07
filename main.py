@@ -199,10 +199,9 @@ def bus_desc_Cliente():
     descuentos = True
     ALP.seek(0)
     lim = getsize(AFP)
-    while ALP.tell() < lim and descuentos:
+    while ALP.tell() < lim:
         prom = load(ALP)
-        if prom.codLocal == codLocal:
-            
+        if prom.codLocal == codLocal:            
             if (prom.fechaDesdePromo < fecha) and (prom.fechaHastaPromo > fecha) and (prom.estado.strip() == 'aceptada'):
                 if prom.diasSemana[fecha.weekday()] == 1:
                     print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo.strip()}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
