@@ -195,7 +195,7 @@ def bus_desc_Cliente():
     
     os.system('cls')
     
-    print("Promociones disponibles:")
+    print("===== Promociones disponibles =====")
     descuentos = True
     ALP.seek(0)
     lim = getsize(AFP)
@@ -203,8 +203,7 @@ def bus_desc_Cliente():
         prom = load(ALP)
         if prom.codLocal == codLocal:
             if prom.fechaDesdePromo < fecha and prom.fechaHastaPromo > fecha:
-                i = fecha.weekday()
-                if prom.diasSemana[i] == 1:
+                if prom.diasSemana[fecha.weekday()] == 1:
                     print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
                     descuentos = False
     if not descuentos:
