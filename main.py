@@ -267,6 +267,7 @@ def OrdenarLoc() -> None: #falso burbuja
                 dump(auxj, ALL)
                 ALL.seek(j*tamR)
                 dump(auxi, ALL)
+    ALL.flush()
 
 
 
@@ -584,7 +585,7 @@ def crearDescuentos() -> Promociones():
             while prom.diasSemana[i] != 1 and prom.diasSemana[i] != 0:
                 prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
         
-        #Asignación de valores
+        #Asignación de valores archivo 'Promociones'
         ALP.seek(0,2)
         prom.codPromo = codPromo
         prom.textoPromo = texto
@@ -593,9 +594,20 @@ def crearDescuentos() -> Promociones():
         prom.codLocal = codigo
         prom.estado = 'pendiente'
         
+        #Asignación de valores archivo 'Uso_Promociones'
+        ALUP.seek(0,2)
+        u_prom = load(ALUP)
+        u_prom.codCliente = session
+        u_prom.codPromo = codPromo
+        u_prom.fechaUsoPromo = datetime.strftime(datetime.now(), '%d/%m/%Y')
+        u_prom.usos = 0
+        
         #Se guardan los cambios
         dump(prom,ALP)
         ALP.flush()
+        
+        dump(u_prom,ALUP)
+        ALUP.flush()
         
         os.system("cls")
         print(Fore.GREEN + "¡¡Promoción creada exitosamente!!" + Fore.RESET)
