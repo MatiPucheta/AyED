@@ -274,7 +274,7 @@ def OrdenarLoc() -> None: #falso burbuja
 #             ________________SECCIÓN MUESTRAS_________________
 
 #MÓDULO para mostrar las promos de un local de un dueño
-def mostrar_promos(desde = 0, hasta = 0) -> int:
+def mostrar_promos(desde:str = '', hasta:str = '') -> int:
     """El valor que devuelve es la cantidad de registros que hay"""
     tamp = getsize(AFP)
     if tamp != 0:
@@ -303,22 +303,37 @@ def mostrar_promos(desde = 0, hasta = 0) -> int:
                 ALP.seek(i*tamRegPro)
                 prom = load(ALP)
                 
-                if session != 1 and desde == 0:
+                #Dueño
+                if session != 1 and desde == '':
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
                         if prom.fechaHastaPromo < datetime.strftime(datetime.now(), '%d/%m/%Y'):
                             valid = 'Promo vigente'
                         else:
                             valid = 'Promo no vigente'
                         print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
-                elif session == 1 and desde == 0:
+                #Admin
+                elif session == 1 and desde == '':
                     if (loc.codLocal == prom.codLocal):
                         if prom.fechaHastaPromo > datetime.strftime(datetime.now(), '%d/%m/%Y'):
                             valid = 'Promo vigente'
                         else:
                             valid = 'Promo no vigente'
                         print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
-                else:
+                #Dueño
+                elif session != 1 and desde != '':
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
+                        
+                        if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
+                            pos = busSecUsoPromo(prom.codPromo)
+                            ALUP.seek(pos)
+                            u_prom = load(ALUP)
+                            print(f"""
+                                Local: {loc.nombreLocal}
+                                
+                                Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {u_prom.usos}""")
+                #Admin
+                else:
+                    if (loc.codLocal == prom.codLocal):
                         
                         if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
                             pos = busSecUsoPromo(prom.codPromo)
