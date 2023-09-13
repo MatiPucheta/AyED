@@ -151,70 +151,6 @@ def sep() -> None:
 
 
 
-#             ________________SECCIÓN CLIENTE_________________
-
-#MÓDULO del menú principal Cliente
-def menuCliente() -> None:
-    global intentos 
-    print(menú_Cliente)
-    sep()
-    
-    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
-    while elección != '0':
-            
-        match elección:
-            case '1':
-                bus_desc_Cliente()
-            case '2':
-                solicitud_Cliente()
-            case '3':
-                print("Diagramado en Chapin.")
-            case default:
-                print("Opción inválida, elija nuevamente.")
-                
-        elección = input("¿Qué parte del menú principal le gustaría ver?: ")
-    intentos = 3
-    print("Que tenga un buen día, hasta luego") #mensaje de despedida
-
-#MÓDULO para buscar descuentos como cliente
-def bus_desc_Cliente():
-    codLocal = int(input("Ingrese el código del local para ver sus descuentos: "))
-    
-    pos = buscSecCod(codLocal)
-    
-    while pos == -1:
-        print("Lo lamentamos pero no se encontró ningún local con ese código.")
-        codLocal = int(input("Ingrese el código del local nuevamente por favor: "))
-        pos = buscSecCod(codLocal)
-    
-    os.system('cls')
-    
-    fecha = validarFecha()    
-    while fecha < datetime.strftime(datetime.now(), '%d/%m/%Y'):
-            print('La fecha no puede ser menor a la del día de hoy. Introduzcala nuevamente: ')
-            fecha = validarFecha()
-    
-    os.system('cls')
-    
-    print(Fore.GREEN + "===== Promociones disponibles =====" + Fore.RESET)
-    descuentos = True
-    ALP.seek(0)
-    lim = getsize(AFP)
-    while ALP.tell() < lim:
-        prom = load(ALP)
-        if prom.codLocal == codLocal:            
-            if (prom.fechaDesdePromo < fecha) and (prom.fechaHastaPromo > fecha) and (prom.estado.strip() == 'aceptada'):
-                if prom.diasSemana[fecha.weekday()] == 1:
-                    print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo.strip()}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
-            descuentos = False
-    if descuentos:
-        print("El local ingresado todavía no tiene ninguna promoción.")
-
-#MÓDULO para usar un descuento como cliente
-def solicitud_Cliente():
-    print("HACER")
-
-
 #             ________________SECCIÓN VALIDAR_________________
 
 #MÓDULO para validar fecha ingresada
@@ -505,6 +441,102 @@ def busSecUsoPromo(codP: int) -> int:
 
 
 
+#             ________________SECCIÓN CLIENTE_________________
+
+#MÓDULO del menú principal Cliente
+def menuCliente() -> None:
+    global intentos 
+    print(menú_Cliente)
+    sep()
+    
+    elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    while elección != '0':
+            
+        match elección:
+            case '1':
+                os.system('cls')
+                sep()
+                bus_desc_Cliente()
+            case '2':
+                os.system('cls')
+                sep()
+                uso_Cliente()
+            case '3':
+                print("Diagramado en Chapin.")
+            case default:
+                print("Opción inválida, elija nuevamente.")
+        
+        os.system('cls')
+        print(menú_Cliente)
+        elección = input("¿Qué parte del menú principal le gustaría ver?: ")
+    intentos = 3
+    print("Que tenga un buen día, hasta luego") #mensaje de despedida
+
+#MÓDULO para buscar descuentos como cliente
+def bus_desc_Cliente():
+    codLocal = int(input("Ingrese el código del local para ver sus descuentos: "))
+    
+    pos = buscSecCod(codLocal)
+    
+    while pos == -1:
+        print("Lo lamentamos pero no se encontró ningún local con ese código.")
+        codLocal = int(input("Ingrese el código del local nuevamente por favor: "))
+        pos = buscSecCod(codLocal)
+    
+    os.system('cls')
+    
+    fecha = validarFecha()    
+    while fecha < datetime.strftime(datetime.now(), '%d/%m/%Y'):
+            print('La fecha no puede ser menor a la del día de hoy. Introduzcala nuevamente: ')
+            fecha = validarFecha()
+    
+    os.system('cls')
+    
+    print(Fore.GREEN + "===== Promociones disponibles =====" + Fore.RESET)
+    descuentos = True
+    ALP.seek(0)
+    lim = getsize(AFP)
+    while ALP.tell() < lim:
+        prom = load(ALP)
+        if prom.codLocal == codLocal:            
+            if (prom.fechaDesdePromo < fecha) and (prom.fechaHastaPromo > fecha) and (prom.estado.strip() == 'aceptada'):
+                if prom.diasSemana[fecha.weekday()] == 1:
+                    print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo.strip()}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
+            descuentos = False
+    if descuentos:
+        print("El local ingresado todavía no tiene ninguna promoción.")
+
+#MÓDULO para usar un descuento como cliente
+def uso_Cliente():
+    codProm = int(input("Ingrese el código de la promoción que desea utilizar: "))
+    
+    pos = busSecPromo(codProm)
+    
+    while pos == -1:
+        print("Lo lamentamos pero no se encontró ninguna promoción con ese código.")
+        codProm = int(input("Ingrese el código de la promoción nuevamente por favor: "))
+        pos = busSecPromo(codProm)
+    
+    fecha = datetime.strftime(datetime.now(), '%d/%m/%Y')
+    
+    if (prom.estado.strip() == "aceptada") and (fecha > prom.fechaDesdePromo) and (fecha < prom.fechaHastaPromo) and (prom.diasSemana[fecha.weekday()] == 1):
+        pos = busSecUsoPromo(codProm)
+        ALUP.seek(pos)
+        u_prom = load(ALUP)
+        u_prom.codCliente = session
+        u_prom.codPromo = codProm
+        u_prom = fecha.ljust(10,' ')
+        u_prom += 1
+        ALUP.seek(pos)
+        dump(u_prom, ALUP)
+        ALUP.flush()
+        
+    else:
+        os.system('cls') 
+        print("La promoción no está disponible en este momento.")
+    
+    
+    
 #            ________________SECCIÓN DUEÑO_________________
 
 #MÓDULO del menú principal Dueño
@@ -522,7 +554,7 @@ def menuDueño() -> None:
                 # HACER MODULO crearDescuentos()
                 crearDescuentos()
             case '2':
-                # HACER MODULO reportDescuentos()
+                uso_Promocion()
                 pass
             case '3':
                 print("Diagramado en Chapin.")
@@ -669,13 +701,21 @@ def menuPrincipal() -> None:
                 sep()
                 menuGestionLocales()
             case '2':
+                os.system('cls')
+                sep()
                 CrearDueño()
             case '3':
+                os.system('cls')
+                sep()
                 solicitud_Dueño()
             case '4':
+                os.system('cls')
+                sep()
                 print("Diagramado en Chapin.")
             case '5':
-                pass
+                os.system('cls')
+                sep()
+                uso_Promocion()
             case default:
                 sep()
                 print("Opción inválida. Eliga una de las opciones disponibles.")
@@ -1175,6 +1215,7 @@ def Logeo() -> None:
                 match (user.tipoUsuario.strip()):
                     case 'cliente':
                         os.system('cls')
+                        session = user.codUsuario
                         menuCliente()
                     case 'dueño de local':
                         os.system('cls')
