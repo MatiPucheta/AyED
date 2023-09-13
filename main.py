@@ -71,7 +71,8 @@ class uso_Promociones:
         self.codCliente = 0
         self.codPromo = 0
         self.fechaUsoPromo = ''.ljust(10,' ')
-        
+        self.usos = 0
+
 class Novedades:
     def __init__(self) -> None:
         self.codNovedad = 0
@@ -154,7 +155,7 @@ def sep() -> None:
 
 #MÓDULO del menú principal Cliente
 def menuCliente() -> None:
-    global intentos
+    global intentos 
     print(menú_Cliente)
     sep()
     
@@ -272,7 +273,8 @@ def OrdenarLoc() -> None: #falso burbuja
 #             ________________SECCIÓN MUESTRAS_________________
 
 #MÓDULO para mostrar las promos de un local de un dueño
-def mostrar_promos() -> int:
+def mostrar_promos(desde = 0, hasta = 0) -> int:
+    """El valor que devuelve es la cantidad de registros que hay"""
     tamp = getsize(AFP)
     if tamp != 0:
         os.system('cls')
@@ -288,27 +290,43 @@ def mostrar_promos() -> int:
         tamRegPro = ALP.tell()
         cantRegPro = int(tamp/tamRegPro)
         
-        for i in range(cantRegPro):
-            ALP.seek(i*tamRegPro)
-            prom = load(ALP)
-            for j in range(cantRegLoc):
-                ALL.seek(j*cantRegLoc)
-                loc = load(ALL)
+        if desde != 0:
+            sep()
+            print(f"Fecha desde: {desde} Fecha hasta: {hasta}")
+            sep()
+        
+        for j in range(cantRegLoc):
+            ALL.seek(j*cantRegLoc)
+            loc = load(ALL)
+            for i in range(cantRegPro):
+                ALP.seek(i*tamRegPro)
+                prom = load(ALP)
                 
-                if session != 1:
+                if session != 1 and desde == 0:
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
                         if prom.fechaHastaPromo < datetime.strftime(datetime.now(), '%d/%m/%Y'):
                             valid = 'Promo vigente'
                         else:
                             valid = 'Promo no vigente'
                         print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
-                else:
+                elif session == 1 and desde == 0:
                     if (loc.codLocal == prom.codLocal):
                         if prom.fechaHastaPromo > datetime.strftime(datetime.now(), '%d/%m/%Y'):
                             valid = 'Promo vigente'
                         else:
                             valid = 'Promo no vigente'
                         print(f"Descripción: {prom.textoPromo.strip()} | Estado: {prom.estado.strip()} | Código: {prom.codPromo} | Vigencia: {valid}")
+                else:
+                    if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
+                        
+                        if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
+                            pos = busSecUsoPromo(prom.codPromo)
+                            ALUP.seek(pos)
+                            u_prom = load(ALUP)
+                            print(f"""
+                                Local: {loc.nombreLocal}
+                                
+                                Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {u_prom.usos}""")
         
         return cantRegPro
     else:
@@ -454,6 +472,21 @@ def busSecPromo(codP: int) -> int:
     else:
         return -1
 
+#MÓDULO para buscar secuencialmente en archivos 'uso_promos' por codigo de promo
+def busSecUsoPromo(codP: int) -> int:
+    tamp = getsize(AFUP)
+    encontrado = False
+    
+    while ALUP.tell() < tamp and not encontrado:
+        pos = ALUP.tell()
+        u_prom = load(ALUP)
+        if u_prom.codPromo == codP:
+            encontrado = True
+    if encontrado:
+        return pos
+    else:
+        return -1
+
 
 
 #            ________________SECCIÓN DUEÑO_________________
@@ -570,6 +603,24 @@ def crearDescuentos() -> Promociones():
         
         codigo = int(input("Ingrese el código del local al cual darle una promoción ('0' indica fin de carga): "))
         os.system("cls")
+
+#MÓDULO para ver usos de las promos
+def uso_Promocion() -> None:
+    os.system('cls')
+    print(Fore.GREEN + 'Reporte de uso de descuentos' + Fore.RESET)
+    print(Fore.LIGHTBLUE_EX + 'Por favor eliga la fecha de comienzo: ' + Fore.RESET)
+    desde = validarFecha()
+    os.system('cls')
+    print(Fore.LIGHTBLUE_EX + 'Ahora eliga la fecha de fin: ' + Fore.RESET)
+    hasta = validarFecha()
+    while desde > hasta:
+        os.system('cls')
+        print(Fore.LIGHTRED_EX + 'Error: La fecha de fin ha de ser mayor o igual que la de inicio' + Fore.RESET)
+        hasta = validarFecha()
+    
+    os.system('cls')
+    mostrar_promos(desde, hasta)
+    
 
 
 
