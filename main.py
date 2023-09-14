@@ -71,7 +71,6 @@ class uso_Promociones:
         self.codCliente = 0
         self.codPromo = 0
         self.fechaUsoPromo = ''.ljust(10,' ')
-        self.usos = 0
 
 class Novedades:
     def __init__(self) -> None:
@@ -260,21 +259,19 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
                         
                         if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
-                            pos = busSecUsoPromo(prom.codPromo)
-                            ALUP.seek(pos)
-                            u_prom = load(ALUP)
+                            usos = busSecUsoPromo(prom.codPromo)
+                            
                             print(f"""
                                 Local: {loc.nombreLocal}
                                 
-                                Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {u_prom.usos}""")
+                                Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {usos}""")
                 #Admin
                 else:
                     if (loc.codLocal == prom.codLocal):
                         
                         if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
-                            pos = busSecUsoPromo(prom.codPromo)
-                            ALUP.seek(pos)
-                            u_prom = load(ALUP)
+                            usos = busSecUsoPromo(prom.codPromo)
+                            
                             print(f"""
                                 Local: {loc.nombreLocal}
                                 
@@ -424,20 +421,18 @@ def busSecPromo(codP: int) -> int:
     else:
         return -1
 
-#MÓDULO para buscar secuencialmente en archivos 'uso_promos' por codigo de promo
+#MÓDULO para buscar y contar secuencialmente en archivo 'uso_promos' por codigo de promo
 def busSecUsoPromo(codP: int) -> int:
+    """Devuelve la cantidad de veces que se uso una promoción"""
     tamp = getsize(AFUP)
-    encontrado = False
-    
-    while ALUP.tell() < tamp and not encontrado:
-        pos = ALUP.tell()
+    cantidad = 0
+    ALUP.seek(0)
+    while ALUP.tell() < tamp:
         u_prom = load(ALUP)
         if u_prom.codPromo == codP:
-            encontrado = True
-    if encontrado:
-        return pos
-    else:
-        return -1
+            cantidad += 1
+    
+    return cantidad
 
 
 
@@ -520,23 +515,20 @@ def uso_Cliente():
     fecha = datetime.strftime(datetime.now(), '%d/%m/%Y')
     
     if (prom.estado.strip() == "aceptada") and (fecha > prom.fechaDesdePromo) and (fecha < prom.fechaHastaPromo) and (prom.diasSemana[fecha.weekday()] == 1):
-        pos = busSecUsoPromo(codProm)
-        ALUP.seek(pos)
-        u_prom = load(ALUP)
+        ALUP.seek(0,2)
         u_prom.codCliente = session
         u_prom.codPromo = codProm
-        u_prom = fecha.ljust(10,' ')
-        u_prom += 1
-        ALUP.seek(pos)
+        u_prom.fechaUsoPromo = fecha.ljust(10,' ')
+        
         dump(u_prom, ALUP)
         ALUP.flush()
         
     else:
         os.system('cls') 
         print("La promoción no está disponible en este momento.")
-    
-    
-    
+
+
+
 #            ________________SECCIÓN DUEÑO_________________
 
 #MÓDULO del menú principal Dueño
@@ -641,20 +633,9 @@ def crearDescuentos() -> Promociones():
         prom.codLocal = codigo
         prom.estado = 'pendiente'
         
-        #Asignación de valores archivo 'Uso_Promociones'
-        ALUP.seek(0,2)
-        u_prom = load(ALUP)
-        u_prom.codCliente = session
-        u_prom.codPromo = codPromo
-        u_prom.fechaUsoPromo = datetime.strftime(datetime.now(), '%d/%m/%Y')
-        u_prom.usos = 0
-        
         #Se guardan los cambios
         dump(prom,ALP)
         ALP.flush()
-        
-        dump(u_prom,ALUP)
-        ALUP.flush()
         
         os.system("cls")
         print(Fore.GREEN + "¡¡Promoción creada exitosamente!!" + Fore.RESET)
