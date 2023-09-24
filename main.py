@@ -62,7 +62,7 @@ class Promociones:
         self.textoPromo = ''.ljust(200,' ')
         self.fechaDesdePromo = ''.ljust(10,' ')
         self.fechaHastaPromo = ''.ljust(10,' ')
-        self.diasSemana = [0]*6
+        self.diasSemana = [0]*7
         self.codLocal = 0
         self.estado = ''.ljust(10,' ')
 
@@ -616,10 +616,10 @@ def crearDescuentos() -> Promociones():
             fecha_hasta = validarFecha()
         
         #Días de la semana
-        dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+        dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
         
         #Ingreso de la disponibilidad de la promo
-        for i in range(6):
+        for i in range(7):
             prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
             while prom.diasSemana[i] != 1 and prom.diasSemana[i] != 0:
                 prom.diasSemana[i] = int(input(f'Día de la semana: {dias_semana[i]}, Disponibilidad: '))
