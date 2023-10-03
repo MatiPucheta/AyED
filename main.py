@@ -743,9 +743,7 @@ def menuGestionLocales() -> None:
 #MÓDULO para cargar los locales
 def crear_local() -> Locales():
     
-    mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
-    if mostrar == 'sí' or mostrar == 'si':
-        codLocal = mostrar_locales()
+    codLocal = mostrar_locales()
     
     sep()
     nombreLocal = input("Ingrese el nombre del local (un '0' indicará fin de la carga y máximo 50 caracteres): ")
@@ -861,7 +859,7 @@ def modificar_local() -> None:
     sep()
     confirm = input("¿Está seguro de querer modificar la información de algún local?: ").lower()
     
-    if confirm == "sí" and confirm == "si":
+    if confirm == "sí" or confirm == "si":
         sep()
         codigo = int(input("Ingrese el código del local que desea modificar: "))
         os.system("cls")
@@ -1061,14 +1059,11 @@ def mostrar_mapa_locales() -> None:
         print('No hay locales cargados. Por ende no se encuetra habilitado el mapa de locales')
 
 #MÓDULO de creación de cuenta para dueños de locales
-def CrearDueño() -> Usuarios():
+def CrearDueño() -> Usuarios():   
     
     ALU.seek(0)
     aux = load(ALU)
     tamañoR = ALU.tell()
-    cantR = getsize(AFU)//tamañoR
-    
-    codUsuario = cantR + 1
     
     nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
     os.system("cls")
@@ -1089,6 +1084,9 @@ def CrearDueño() -> Usuarios():
         
         claveUsuario = input("Ingrese la clave del dueño (8 caracteres): ")
         claveUsuario = validarLong(claveUsuario, 8, 8)
+        
+        cantR = getsize(AFU)//tamañoR
+        codUsuario = cantR + 1
         
         #Asignación de los valores
         ALU.seek(0,2)
@@ -1216,10 +1214,7 @@ def Registro() -> None:
     ALU.seek(0)
     aux = load(ALU)
     tamañoR = ALU.tell()
-    cantR = getsize(AFU)//tamañoR
-    
-    codUsuario = cantR + 1
-    
+      
     nom = input("Bienvenido seas, ingrese su nombre de usuario para registrarse por favor (un '0' indica anulación del procedimiento y máximo 100 caracteres): ")
     
     while busSec(nom) != -1 and nom != '0':
@@ -1229,6 +1224,9 @@ def Registro() -> None:
         nom = input('Longitud del nombre no válida, máximo 100 caracteres: ')
     if nom != '0':
         contra = getpass.getpass("Ingrese su contraseña por favor : ")
+        
+        cantR = getsize(AFU)//tamañoR
+        codUsuario = cantR + 1
         
         while len(contra) < 1 and len(contra) > 8:
             nom = input('Longuitud del nombre no válida, máximo 8 caracteres: ')
@@ -1274,7 +1272,6 @@ def Inicio() -> None:
                 pass
             case default:
                 print('Opción invalida, eliga nueva de nuevo')
-        os.system('cls')
         sep()
         opcion = input(menu)
 
