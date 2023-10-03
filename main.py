@@ -97,10 +97,6 @@ if getsize(AFU) == 0:
     dump(user, ALU)
     ALU.flush()
 
-#Carga de los nombres de cada rubro
-rubros[0][0] = "Comida"
-rubros[1][0] = "Indumentaria"
-rubros[2][0] = "Perfumería"
 
 #contador
 intentos = 0
