@@ -10,15 +10,9 @@ import getpass
 # Inicializa colorama
 init()
 
-#contador de filas
-i = 0
 
-F=50
-F2=3
-C=5
-# Lista para almacenar los locales
-locales=[[" "]*C for i in range(F)]
-rubros = [[" "]*2 for k in range(F2)]
+# Lista para almacenar los rurbos
+rubros = [""]*3
 
 #codUsario del usuario activo
 session = 0
@@ -80,6 +74,12 @@ class Novedades:
         self.fechaHastaNevedad = ''.ljust(10,' ')
         self.tipoUsuario = ''.ljust(20,' ')
         self.estado = ' '
+
+class Rubros:
+    def __init__(self) -> None:
+        self.rubro = ""
+        self.cant = 0
+
 
 #Variables de trabajo
 user = Usuarios()
@@ -176,13 +176,12 @@ def validarLong(dato: str, a: int, b: int) -> str:
 
 #MÓDULO para ordenar el array de rubros de manera descendente
 def OrdenarRubros() -> None:
-    for i in range(F2-1):
-        for k in range(i+1,F2):
-            if rubros[i][1] < rubros[k][1]:
-                for j in range(2):
-                    aux = rubros[i][j]
-                    rubros[i][j] = rubros[k][j]
-                    rubros[k][j] = aux
+    for i in range(2):
+        for k in range(i+1,3):
+            if rubros[i].cant < rubros[k].cant:
+                aux = rubros[i]
+                rubros[i] = rubros[k]
+                rubros[k] = aux
 
 #MÓDULO de ordenamiento (falso burbuja)
 def OrdenarLoc() -> None: #falso burbuja
@@ -747,9 +746,6 @@ def menuGestionLocales() -> None:
 
 #MÓDULO para cargar los locales
 def crear_local() -> Locales():
-    global locales, i
-    global nombreLocal
-    global mostrar
     
     mostrar = input("¿Le gustaría ver los locales cargados?: ").lower()
     if mostrar == 'sí' or mostrar == 'si':
@@ -819,30 +815,36 @@ def crear_local() -> Locales():
 
 #MÓDULO para calcular los locales de los rubros
 def calcLoc() -> None:
-    comida = 0
-    indumentaria = 0
-    perfumería = 0
+    comida = Rubros()
+    indumentaria = Rubros()
+    perfumería = Rubros()
+    
+    comida.rubro = 'comida'
+    indumentaria.rubro = 'indumentaria'
+    perfumería.rubro = 'perfumería'
     
     ALL.seek(0)
     lim = getsize(AFL)
+    
     while ALL.tell() < lim:
         loc = load(ALL)
         match loc.rubroLocal.strip():
             case 'comida':
-                comida += 1
+                comida.cant += 1
             case 'indumentaria':
-                indumentaria += 1
+                indumentaria.cant += 1
             case 'perfumería':
-                perfumería += 1
+                perfumería.cant += 1
     
-    rubros[0][1] = str(comida)
-    rubros[1][1] = str(indumentaria)
-    rubros[2][1] = str(perfumería)
+    
+    rubros[0] = comida
+    rubros[1] = indumentaria
+    rubros[2] = perfumería
     OrdenarRubros()
     
     print(f"=== Cantidad de Locales por Rubro ===")
-    for i in range(F2):
-        print(f"Rubro {rubros[i][0]}: {rubros[i][1]}")
+    for i in range(3):
+        print(f"Rubro {rubros[i].rubro}: {rubros[i].cant}")
 
 #MÓDULO para modificar un local
 def modificar_local() -> None:    
