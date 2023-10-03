@@ -97,6 +97,10 @@ if getsize(AFU) == 0:
     dump(user, ALU)
     ALU.flush()
 
+#Carga de los nombres de cada rubro
+rubros[0][0] = "Comida"
+rubros[1][0] = "Indumentaria"
+rubros[2][0] = "Perfumería"
 
 #contador
 intentos = 0
@@ -369,8 +373,8 @@ def busDicoLoc(nom: str) -> int:
         medio = (desde + hasta) // 2
         ALL.seek(medio*tamReg)
         vrEmp=load(ALL)
-        while vrEmp.nombreLocal.strip() != nom and desde < hasta:
-            if nom < vrEmp.nombreLocal.strip():
+        while vrEmp.nombreLocal != nom and desde < hasta:
+            if nom < vrEmp.nombreLocal:
                 hasta = medio - 1
             else:
                 desde = medio + 1
@@ -380,7 +384,7 @@ def busDicoLoc(nom: str) -> int:
                 ALL.seek(medio*tamReg)
                 vrEmp=load(ALL)
             
-        if vrEmp.nombreLocal.strip() == nom:
+        if vrEmp.nombreLocal == nom:
             return medio*tamReg
         else:
             return -1
@@ -763,7 +767,7 @@ def crear_local() -> Locales():
         #Se verifica que el nombre no se esté ya usado
         while busDicoLoc(nombreLocal) != -1:
             nombreLocal = input("El nombre del local ya existe, introduzca uno no ocupado por favor: ")
-            nombreLocal = validarLong(nombreLocal, 1, 50)
+            nombreLocal = validarLong(nombreLocal)
         
         ubicacion = input("Ingrese la ubicación del local: ")
         
@@ -861,7 +865,7 @@ def modificar_local() -> None:
     sep()
     confirm = input("¿Está seguro de querer modificar la información de algún local?: ").lower()
     
-    if confirm == "sí" and confirm == "si":
+    if confirm in ("sí", "si"):
         sep()
         codigo = int(input("Ingrese el código del local que desea modificar: "))
         os.system("cls")
@@ -916,7 +920,7 @@ def modificar_local() -> None:
                     loc.ubicacionLocal = ubi.ljust(50,' ')
                     
                     os.system('cls')                
-                    print(Fore.GREEN + "Ubicación modificada con éxito."+ Fore.RESET)
+                    print(Fore.GREEN + "Ubicación modificada con éxito."+ Fore.Reset)
                 
                 case 'c':
                     rubro = input("Ingrese el nuevo rubro del local (indumentaria/perfumería/comida): ").lower()
@@ -927,7 +931,7 @@ def modificar_local() -> None:
                     loc.rubroLocal = rubro.ljust(50,' ')
                     
                     os.system('cls')                
-                    print(Fore.GREEN + "Rubro modificado con éxito."+ Fore.RESET)
+                    print(Fore.GREEN + "Rubro modificado con éxito."+ Fore.Reset)
                 
                 case 'd':
                     codUser = int(input("Ingrese el nuevo código del usuario dueño del local: "))
@@ -938,7 +942,7 @@ def modificar_local() -> None:
                     loc.codUsuario = codUser
                     
                     os.system('cls')
-                    print(Fore.GREEN + "Código de usuario modificado con éxito."+ Fore.RESET)
+                    print(Fore.GREEN + "Código de usuario modificado con éxito."+ Fore.Reset)
                 
                 case 'e':
                     pass
@@ -969,39 +973,38 @@ def eliminar_local() -> None:
     if mostrar == "si" or mostrar == "sí":
         mostrar_locales()
     sep()
-    codigo = int(input("Ingrese el código del local que desea eliminar: "))
+    codigo = input("Ingrese el código del local que desea eliminar: ")
     
     pos = buscSecCod(codigo)
     
-    while pos == -1 and codigo != 0:
+    while pos == -1:
         print("Lo lamentamos pero no se encontró ningún local con ese código.")
-        codigo = int(input("Ingrese el código del local que desea modificar de nuevo por favor: "))
+        codigo = input("Ingrese el código del local que desea modificar de nuevo por favor: ")
         pos = buscSecCod(codigo)
-    if codigo != 0:
-        ALL.seek(pos)
-        loc = load(ALL)
 
-        if loc.estado == "B":
-            print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado.")
-            sep()
+    ALL.seek(pos)
+    loc = load(ALL)
+    
+    if loc.estado == "B":
+        print("Lo lamentamos pero el local que quiere eliminar ya ha sido eliminado.")
+        sep()
+    else:
+        os.system("cls")
+        print(Fore.LIGHTRED_EX + f"Eliminando local '{loc.nombreLocal}' (Código: {loc.codLocal})" + Fore.RESET)
+        
+        sep()
+        
+        confirmacion = input("¿Está seguro/a de que desea eliminar este local? (Si/No): ").lower() 
+        
+        if confirmacion == 'sí' or confirmacion == 'si':
+            
+            # Cambiar el estado del local a "Baja"
+            loc.estado = "B"
+            dump(loc,ALL)
+            ALL.flush()
+            print(Fore.LIGHTRED_EX + "Local eliminado exitosamente." + Fore.RESET)
         else:
-            os.system("cls")
-            print(Fore.LIGHTRED_EX + f"Eliminando local '{loc.nombreLocal.strip()}' (Código: {loc.codLocal})" + Fore.RESET)
-
-            sep()
-
-            confirmacion = input("¿Está seguro/a de que desea eliminar este local? (Si/No): ").lower() 
-
-            if confirmacion == 'sí' or confirmacion == 'si':
-
-                # Cambiar el estado del local a "Baja"
-                loc.estado = "B"
-                ALL.seek(pos)
-                dump(loc,ALL)
-                ALL.flush()
-                print(Fore.LIGHTRED_EX + "Local eliminado exitosamente." + Fore.RESET)
-            else:
-                print(Fore.GREEN + "Eliminación cancelada." + Fore.RESET)
+            print(Fore.GREEN + "Eliminación cancelada." + Fore.RESET)
 
 #MÓDULO para mostrar los locales cargados en un mapa
 def mostrar_mapa_locales() -> None:
@@ -1025,7 +1028,7 @@ def mostrar_mapa_locales() -> None:
         a = 0
         while ALL.tell() < arch and a < fil:
             b = 0
-            while ALL.tell() < arch and b < fil:
+            while ALL.tell < arch and b < col:
                 loc = load(ALL)
                 if loc.estado == 'B':
                     mapa_locales[a][b] = -loc.codLocal
@@ -1055,7 +1058,7 @@ def mostrar_mapa_locales() -> None:
             
             print('\n+' + '-' * 29 + '+')
             
-            if mapa_locales[fil-1][col-1] != 0:
+            if mapa_locales[fil-1][col] != 0:
                 print('\nPróximamente se habilitará un mapa con los demás locales...')
     else:
         print('No hay locales cargados. Por ende no se encuetra habilitado el mapa de locales')
@@ -1072,6 +1075,8 @@ def CrearDueño() -> Usuarios():
     
     nombreUsuario = input("Ingrese el nombre del dueño (un '0' indicará fin de la carga y máximo 100 caracteres): ")
     os.system("cls")
+    
+    codUsuario += 1
     
     #Se valida la longuitud del nombre
     nombreUsuario = validarLong(nombreUsuario, 1, 50)
