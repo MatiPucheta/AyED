@@ -253,7 +253,7 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                 elif session != 1 and desde != '':
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
                         
-                        if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
+                        if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado.strip() == 'aceptada':
                             usos = busSecUsoPromo(prom.codPromo)
                             
                             print(f"""
@@ -264,7 +264,7 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                 else:
                     if (loc.codLocal == prom.codLocal):
                         
-                        if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado == 'aceptada':
+                        if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado.strip() == 'aceptada':
                             usos = busSecUsoPromo(prom.codPromo)
                             
                             print(f"""
