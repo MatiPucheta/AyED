@@ -1138,12 +1138,14 @@ def solicitud_Dueño() -> None:
                     
                     if opcion == 'A':
                         prom.estado == 'aceptada'.ljust(10,' ')
+                        ALP.seek(pos)
                         dump(prom, ALP)
                         ALP.flush()
                         print(Fore.GREEN + '¡Promoción aceptada exitosamente!' + Fore.RESET)
                         sep()
                     else:
                         prom.estado == 'rechazada'.ljust(10,' ')
+                        ALP.seek(pos)
                         dump(prom, ALP)
                         ALP.flush()
                         print(Fore.GREEN + '¡Promoción rechazada exitosamente!' + Fore.RESET)
