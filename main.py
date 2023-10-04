@@ -73,7 +73,7 @@ class Novedades:
         self.fechaDesdenovedad = ''.ljust(10,' ')
         self.fechaHastaNevedad = ''.ljust(10,' ')
         self.tipoUsuario = ''.ljust(20,' ')
-        self.estado = ' '
+        self.estado = ''.ljust(10,' ')
 
 class Rubros:
     def __init__(self) -> None:
@@ -625,7 +625,7 @@ def crearDescuentos() -> Promociones():
         prom.fechaDesdePromo = fecha_desde
         prom.fechaHastaPromo = fecha_hasta
         prom.codLocal = codigo
-        prom.estado = 'pendiente'
+        prom.estado = 'pendiente'.ljust(10,' ')
         
         #Se guardan los cambios
         dump(prom,ALP)
@@ -1137,14 +1137,14 @@ def solicitud_Dueño() -> None:
                         opcion = input('Opción inválida, eliga una nuevamente por favor: ')
                     
                     if opcion == 'A':
-                        prom.estado == 'aceptada'.ljust(10,' ')
+                        prom.estado = 'aceptada'.ljust(10,' ')
                         ALP.seek(pos)
                         dump(prom, ALP)
                         ALP.flush()
                         print(Fore.GREEN + '¡Promoción aceptada exitosamente!' + Fore.RESET)
                         sep()
                     else:
-                        prom.estado == 'rechazada'.ljust(10,' ')
+                        prom.estado = 'rechazada'.ljust(10,' ')
                         ALP.seek(pos)
                         dump(prom, ALP)
                         ALP.flush()
