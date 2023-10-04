@@ -221,13 +221,13 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
         tamRegPro = ALP.tell()
         cantRegPro = int(tamp/tamRegPro)
         
-        if desde != 0:
+        if desde != '':
             sep()
             print(f"Fecha desde: {desde} Fecha hasta: {hasta}")
             sep()
         
         for j in range(cantRegLoc):
-            ALL.seek(j*cantRegLoc)
+            ALL.seek(j*tamRegLoc)
             loc = load(ALL)
             for i in range(cantRegPro):
                 ALP.seek(i*tamRegPro)
@@ -236,7 +236,7 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                 #Dueño
                 if session != 1 and desde == '':
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
-                        if prom.fechaHastaPromo < datetime.strftime(datetime.now(), '%d/%m/%Y'):
+                        if prom.fechaHastaPromo > datetime.strftime(datetime.now(), '%d/%m/%Y'):
                             valid = 'Promo vigente'
                         else:
                             valid = 'Promo no vigente'
@@ -268,7 +268,7 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                             usos = busSecUsoPromo(prom.codPromo)
                             
                             print(f"""
-                                Local: {loc.nombreLocal}
+                                Local: {loc.nombreLocal.strip()}
                                 
                                 Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {u_prom.usos}""")
         
@@ -405,11 +405,11 @@ def busSecUserNom(nom: str) -> int:
 def busSecPromo(codP: int) -> int:
     tamp = getsize(AFP)
     encontrado = False
-    
-    while ALP.tell() < tamp and not encontrado:
+    ALP.seek(0)
+    while ALP.tell() < tamp and (not encontrado):
         pos = ALP.tell()
         prom = load(ALP)
-        if prom.codLocal == codP:
+        if prom.codPromo == codP:
             encontrado = True
     if encontrado:
         return pos
@@ -548,7 +548,6 @@ def menuDueño() -> None:
                 pass
             case default:
                 print("Opción inválida, elija nuevamente.")
-        os.system('cls')
         
         print(menú_Dueño)
         elección = input("¿Qué parte del menú principal le gustaría ver?: ")
@@ -1119,6 +1118,7 @@ def solicitud_Dueño() -> None:
     
     while pos == -1 and codP != 0:
         codP = int(input('El código que introduzco no existe, hagalo nuevamente por favor: '))
+        pos = busSecPromo(codP)
         
     while codP != 0:
         
@@ -1138,10 +1138,14 @@ def solicitud_Dueño() -> None:
                     
                     if opcion == 'A':
                         prom.estado == 'aceptada'.ljust(10,' ')
+                        dump(prom, ALP)
+                        ALP.flush()
                         print(Fore.GREEN + '¡Promoción aceptada exitosamente!' + Fore.RESET)
                         sep()
                     else:
                         prom.estado == 'rechazada'.ljust(10,' ')
+                        dump(prom, ALP)
+                        ALP.flush()
                         print(Fore.GREEN + '¡Promoción rechazada exitosamente!' + Fore.RESET)
                         sep()
                     
@@ -1158,7 +1162,7 @@ def solicitud_Dueño() -> None:
             print('La promoción no se encuentra más vigente')
             sep()
         
-        opcion = input('¿Desea ver las promociones cargadas nuevamente?: ').lower()
+        opcion = input('¿Desea ver las promociones cargadas?: ').lower()
         if opcion == 'si' or opcion == 'sí':
             mostrar_promos()
             sep()
@@ -1168,6 +1172,7 @@ def solicitud_Dueño() -> None:
         
         while pos == -1 and codP != 0:
             codP = int(input('El código que introduzco no existe, hagalo nuevamente por favor: '))
+            pos = busSecPromo(codP)
 
 
 
@@ -1214,7 +1219,7 @@ def Registro() -> None:
     ALU.seek(0)
     aux = load(ALU)
     tamañoR = ALU.tell()
-      
+    
     nom = input("Bienvenido seas, ingrese su nombre de usuario para registrarse por favor (un '0' indica anulación del procedimiento y máximo 100 caracteres): ")
     
     while busSec(nom) != -1 and nom != '0':
