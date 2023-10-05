@@ -455,8 +455,7 @@ def menuCliente() -> None:
                 print("Diagramado en Chapin.")
             case default:
                 print("Opción inválida, elija nuevamente.")
-        
-        os.system('cls')
+        sep()
         print(menú_Cliente)
         elección = input("¿Qué parte del menú principal le gustaría ver?: ")
     intentos = 3
@@ -475,7 +474,8 @@ def bus_desc_Cliente():
     
     os.system('cls')
     
-    fecha = validarFecha()    
+    fecha = validarFecha()
+    
     while fecha < datetime.strftime(datetime.now(), '%d/%m/%Y'):
             print('La fecha no puede ser menor a la del día de hoy. Introduzcala nuevamente: ')
             fecha = validarFecha()
@@ -490,7 +490,8 @@ def bus_desc_Cliente():
         prom = load(ALP)
         if prom.codLocal == codLocal:            
             if (prom.fechaDesdePromo < fecha) and (prom.fechaHastaPromo > fecha) and (prom.estado.strip() == 'aceptada'):
-                if prom.diasSemana[fecha.weekday()] == 1:
+                fecha_aux = datetime.strptime(fecha, '%d/%m/%Y')
+                if prom.diasSemana[fecha_aux.weekday()] == 1:
                     print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo.strip()}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
             descuentos = False
     if descuentos:
@@ -509,7 +510,11 @@ def uso_Cliente():
     
     fecha = datetime.strftime(datetime.now(), '%d/%m/%Y')
     
-    if (prom.estado.strip() == "aceptada") and (fecha > prom.fechaDesdePromo) and (fecha < prom.fechaHastaPromo) and (prom.diasSemana[fecha.weekday()] == 1):
+    ALP.seek(pos)
+    prom = load(ALP)
+    fecha_aux = datetime.strptime(fecha, '%d/%m/%Y')
+    
+    if (prom.estado.strip() == "aceptada") and (fecha >= prom.fechaDesdePromo) and (fecha <= prom.fechaHastaPromo) and (prom.diasSemana[fecha_aux.weekday()] == 1):
         ALUP.seek(0,2)
         u_prom.codCliente = session
         u_prom.codPromo = codProm
@@ -621,7 +626,7 @@ def crearDescuentos() -> Promociones():
         #Asignación de valores archivo 'Promociones'
         ALP.seek(0,2)
         prom.codPromo = codPromo
-        prom.textoPromo = texto
+        prom.textoPromo = texto.ljust(200,' ')
         prom.fechaDesdePromo = fecha_desde
         prom.fechaHastaPromo = fecha_hasta
         prom.codLocal = codigo
