@@ -270,7 +270,7 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                             print(f"""
                                 Local: {loc.nombreLocal.strip()}
                                 
-                                Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {u_prom.usos}""")
+                                Código promo: {prom.codPromo} | Texto: {prom.textoPromo.strip()} | Fecha desde: {prom.fechaDesdePromo} | Fecha hasta: {prom.fechaHastaPromo} | Cantidad de usos: {usos}""")
         
         return cantRegPro
     else:
@@ -700,7 +700,6 @@ def menuPrincipal() -> None:
                 sep()
                 print("Opción inválida. Eliga una de las opciones disponibles.")
         
-        os.system('cls')
         sep()
         
         print(menú_Admin)
