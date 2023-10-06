@@ -1026,7 +1026,7 @@ def mostrar_mapa_locales() -> None:
         a = 0
         while ALL.tell() < arch and a < fil:
             b = 0
-            while ALL.tell() < arch and b < fil:
+            while ALL.tell() < arch and b < col:
                 loc = load(ALL)
                 if loc.estado == 'B':
                     mapa_locales[a][b] = -loc.codLocal
