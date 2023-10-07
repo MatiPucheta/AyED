@@ -334,7 +334,7 @@ def buscSecUserCod(dato: int) -> int:
     while ALU.tell() < tamaño and not encontrado:
         pos = ALU.tell()
         vrT = load(ALU)
-        if vrT.codUsuario == dato:
+        if vrT.codUsuario == dato and vrT.tipoUsuario.strip() == 'dueño de local':
             encontrado = True
     if encontrado: 
         return pos
