@@ -252,7 +252,6 @@ def mostrar_promos(desde:str = '', hasta:str = '') -> int:
                 #Dueño
                 elif session != 1 and desde != '':
                     if (loc.codLocal == prom.codLocal) and (loc.codUsuario == session):
-                        
                         if prom.fechaHastaPromo <= hasta and prom.fechaDesdePromo >= desde and prom.estado.strip() == 'aceptada':
                             usos = busSecUsoPromo(prom.codPromo)
                             
@@ -489,7 +488,7 @@ def bus_desc_Cliente():
     while ALP.tell() < lim:
         prom = load(ALP)
         if prom.codLocal == codLocal:            
-            if (prom.fechaDesdePromo < fecha) and (prom.fechaHastaPromo > fecha) and (prom.estado.strip() == 'aceptada'):
+            if (prom.fechaDesdePromo <= fecha) and (prom.fechaHastaPromo >= fecha) and (prom.estado.strip() == 'aceptada'):
                 fecha_aux = datetime.strptime(fecha, '%d/%m/%Y')
                 if prom.diasSemana[fecha_aux.weekday()] == 1:
                     print(f"Código: {prom.codPromo}  ||  Texto: {prom.textoPromo.strip()}  ||  Fecha Desde: {prom.fechaDesdePromo}  ||  Fecha Hasta: {prom.fechaHastaPromo}")
